@@ -9,7 +9,7 @@ const Services = () => {
             <div className='text-left md:w-4/5'>
                 <p className='subtitle uppercase'>About Us</p>
                 <h2 className='title'>Our Journey and Services</h2>
-                <p className='my-5 text-secondary leading-[30px]'>
+                <p className='my-5 text-gray-700 leading-[30px]'>
                 Rooted in a commitment to student living, we make finding the perfect boarding house effortless, offering a seamless experience that connects students with safe, affordable, and convenient accommodations.
                 </p>
                 <button className='btn bg-green text-white px-8 py-3 rounded-full'>Explore</button>
