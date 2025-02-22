@@ -187,8 +187,9 @@ const updateRoommate = async (req, res) => {
 };
 //get users who looking for a roommate
 const getRUsers = async (req, res) => {
+    const email = req.params.email;
     try{
-        const query = { roommate: 'yes', role: 'user' };
+        const query = { email: { $ne: email }, roommate: 'yes', role: 'user' };
         const users = await User.find(query).exec();
         if (!users) {
             return res.status(404).json({ message: 'No users found!' });
