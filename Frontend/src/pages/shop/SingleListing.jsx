@@ -424,16 +424,16 @@ const SingleListing = () => {
           </Tabs.Item>
           <Tabs.Item title="Contacts" icon={MdOutlineContactMail}>
             {user?
-            <div className='w-full font-bold bg-black text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2'>
+            <div className='w-full font-bold bg-black text-white hover:text-blue-500 px-4 py-2 rounded-lg flex items-center justify-center gap-2 group'>
                 <div className="p-2 avatar px-2">
-                  <div className="ring-primary ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
+                  <div className="ring-green group-hover:ring-secondary ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
                     <img src={person?.photoURL} alt="User Avatar" />
                   </div>
                 </div>
                 <p className="font-bold text-xl m-auto">
                   {person?.name}
                 </p>
-                 <button onClick={() => handleChat(listing.owner)} className="font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black transition duration-300 flex items-center justify-center gap-2">
+                 <button onClick={() => handleChat(listing.owner)} className="font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-secondary hover:text-black transition duration-300 flex items-center justify-center gap-2">
                  Chat with Owner <FaBuildingUser className="text-xl" />
             </button></div>:
             <div className="bg-gray-200 rounded-lg p-4">
@@ -445,13 +445,13 @@ const SingleListing = () => {
           <Tabs.Item title="Find Your Roommate" icon={MdOutlineContactMail}>
   {user ? (
     isUser ? (
-      roommates.length > 0 ? (
+      roommates?.length > 0 ? (
         roommates.map((roommate, index) => (
-          <details className="collapse bg-gray-200 hover:bg-blue-500 hover:text-white" key={index}>
+          <details className="collapse bg-black text-blue-500 hover:bg-blue-500 hover:text-black group" key={index}>
             <summary className="collapse-title text-xl font-medium">
               <div className="flex flex-row">
                 <div className="avatar px-2">
-                  <div className="ring-primary ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
+                  <div className="ring-primary group-hover:ring-black ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
                     <img src={roommate?.photoURL} alt="User Avatar" />
                   </div>
                 </div>
@@ -463,7 +463,7 @@ const SingleListing = () => {
             <div className="collapse-content flex flex-row gap-2">
               <button
                 onClick={() => handleChat(roommate.email)}
-                className="w-full font-bold bg-secondary text-white py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2"
+                className="w-full font-bold bg-white text-black py-2 rounded-lg hover:bg-black hover:text-white transition duration-300 flex items-center justify-center gap-2"
               >
                 Direct Chat <TbSend2 className="text-xl" />
               </button>
