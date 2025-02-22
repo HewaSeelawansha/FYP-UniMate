@@ -44,7 +44,7 @@ const SingleListing = () => {
   const navigate = useNavigate();
   const [person, setPerson] = useState(null);
   const [isUser, isUserLoading] = useUser();
-  const [roommates = [], refetch] = useRoommateUsers();
+  const [users, refetch] = useRoommateUsers();
 
   const MapResizer = () => {
     const map = useMap();
@@ -170,15 +170,15 @@ const SingleListing = () => {
     ) : null;
   };
 
-  const handleChat = async (receiver) => {
+  const handleChat = async (sender, receiver) => {
     const chatData = {
-      senderId: user.email,
+      senderId: sender,
       receiverId: receiver,
     };
   
     try {
       // First, check if a chat already exists between the two users
-      const existingChat = await axiosSecure.get(`/chat/find/${receiver}/${user.email}`);
+      const existingChat = await axiosSecure.get(`/chat/find/${receiver}/${sender}`);
   
       // If a chat already exists, navigate to the chat page
       if (existingChat.data !== null) {
@@ -246,7 +246,8 @@ const SingleListing = () => {
         {listing.boarding}
       </h2>
       <div className="p-0.5 rounded-lg bg-green my-5 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
-        <Carousel slideInterval={5000}>
+        {listing?(
+          <Carousel slideInterval={5000}>
           {listing?.images && listing?.images?.length > 0 ? (
             listing?.images.map((image, index) => (
               <img
@@ -260,6 +261,7 @@ const SingleListing = () => {
             <></>
           )}
         </Carousel>
+        ):(<></>)}
       </div>
       <div>
         <Tabs aria-label="Tabs with icons" variant="underline" className="custom-tabs">
@@ -316,7 +318,8 @@ const SingleListing = () => {
               <p className="font-bold mt-2">Since: <span className="font-normal">{new Date(boarding?.createdAt).toLocaleDateString()}</span></p>
             </div>
             <div className="p-0.5 rounded-lg bg-green h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
-              <Carousel slideInterval={5000}>
+              {boarding?(
+                <Carousel slideInterval={5000}>
                 {boarding?.images && boarding?.images?.length > 0 ? (
                   boarding?.images.map((image, index) => (
                     <img
@@ -330,6 +333,7 @@ const SingleListing = () => {
                   <></>
                 )}
               </Carousel>
+              ):(<></>)}
             </div>
           </div>
           </Tabs.Item>
@@ -427,13 +431,13 @@ const SingleListing = () => {
             <div className='w-full font-bold bg-black text-white hover:text-blue-500 px-4 py-2 rounded-lg flex items-center justify-center gap-2 group'>
                 <div className="p-2 avatar px-2">
                   <div className="ring-green group-hover:ring-secondary ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
-                    <img src={person?.photoURL} alt="User Avatar" />
+                    <img src={person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="User Avatar" />
                   </div>
                 </div>
-                <p className="font-bold text-xl m-auto">
+                <p className="text-green group-hover:text-secondary font-bold text-xl m-auto">
                   {person?.name}
                 </p>
-                 <button onClick={() => handleChat(listing.owner)} className="font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-secondary hover:text-black transition duration-300 flex items-center justify-center gap-2">
+                 <button onClick={() => handleChat(user.email,listing.owner)} className="font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-secondary hover:text-white transition duration-300 flex items-center justify-center gap-2">
                  Chat with Owner <FaBuildingUser className="text-xl" />
             </button></div>:
             <div className="bg-gray-200 rounded-lg p-4">
@@ -443,16 +447,17 @@ const SingleListing = () => {
               </div>}
           </Tabs.Item>
           <Tabs.Item title="Find Your Roommate" icon={MdOutlineContactMail}>
-  {user ? (
+  {user && users ? (
     isUser ? (
-      roommates?.length > 0 ? (
-        roommates.map((roommate, index) => (
-          <details className="collapse bg-black text-blue-500 hover:bg-blue-500 hover:text-black group" key={index}>
+      users && users?.length > 0 ? (
+        users.map((roommate, index) => (
+          <div className="mb-2">
+            <details className="collapse bg-black text-blue-500 hover:bg-blue-500 hover:text-black group" key={index}>
             <summary className="collapse-title text-xl font-medium">
               <div className="flex flex-row">
                 <div className="avatar px-2">
                   <div className="ring-primary group-hover:ring-black ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
-                    <img src={roommate?.photoURL} alt="User Avatar" />
+                    <img src={roommate?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="User Avatar" />
                   </div>
                 </div>
                 <p className="font-bold m-auto">
@@ -462,13 +467,14 @@ const SingleListing = () => {
             </summary>
             <div className="collapse-content flex flex-row gap-2">
               <button
-                onClick={() => handleChat(roommate.email)}
+                onClick={() => handleChat(user.email,roommate.email)}
                 className="w-full font-bold bg-white text-black py-2 rounded-lg hover:bg-black hover:text-white transition duration-300 flex items-center justify-center gap-2"
               >
                 Direct Chat <TbSend2 className="text-xl" />
               </button>
             </div>
           </details>
+          </div>
         ))
       ) : (
         <div className="bg-gray-200 rounded-lg">
