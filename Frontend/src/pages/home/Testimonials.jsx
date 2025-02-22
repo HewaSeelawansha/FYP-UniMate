@@ -12,7 +12,7 @@ const Testimonials = () => {
             <div className='text-left md:w-4/5'>
                 <p className='subtitle uppercase'>Students' Reviews</p>
                 <h2 className='title'>What Your Peers Say About Us</h2>
-                <blockquote className='my-5 text-secondary leading-[30px]'>
+                <blockquote className='my-5 text-gray-700 leading-[30px]'>
                     "Finding a boarding house near campus was never this easy! Thanks to this platform, I found a safe, affordable, and comfortable place that perfectly suits my student life."
                 </blockquote>
                 {/* avatar */}
@@ -44,7 +44,7 @@ const Testimonials = () => {
                         <div className='flex items-center gap-2'>
                             <FaStar className='text-red'/>
                             <span className='font-medium'>4.9</span>
-                            <span className='text-secondary'>(21.1k Reviews)</span>
+                            <span className='text-gray-700'>(21.1k Reviews)</span>
                         </div>
                     </div>
                 </div>
