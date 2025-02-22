@@ -31,6 +31,7 @@ const AuthProvider = ({children}) => {
 
     const logOut = () =>{
         localStorage.removeItem('genius-token');
+        //window.location.reload();
         return signOut(auth);
     }
 
