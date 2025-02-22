@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@media (forced-colors: active) {  
+    /* Styles for forced colors mode */  
+  } 
+
+body{
+    font-family: "Inter", sans-serif;
+}
+
+header{
+    z-index: 10001 !important;
+}
+
+.section-container{
+    @apply max-w-screen-2xl container mx-auto xl:px-24 px-4;
+}
+
+.subtitle{
+    @apply text-green uppercase tracking-wide font-medium text-lg;
+}
+
+.title{
+    @apply text-4xl md:text-5xl font-bold my-2 md:leading-snug leading-snug;
+}
+
+.heartStar{
+    border-radius: 0px 25px 0px 25px;
+}
+
+.active{
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    color: #EE8102;
+}
+
+/* Ensure all tab titles have text-lg */
+.custom-tabs .flex > button {
+    font-size: 1rem !important; 
+    font-weight: bold !important;
+}
+
+/* Change only the selected tab's color */
+.custom-tabs .flex > button[aria-selected="true"] {
+    color: #EE8102 !important;
+    border-bottom: 2px solid #EE8102 !important; 
+}
+
+
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none; /* Standard property */
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: none; /* Standard property */
+}

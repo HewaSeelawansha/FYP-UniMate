@@ -1,0 +1,77 @@
+import React from 'react'
+import { Link, Outlet } from 'react-router-dom'
+import { MdDashboard, MdDashboardCustomize } from "react-icons/md";
+import {FaEdit,FaLocationArrow,FaPlusCircle,FaQuestionCircle,FaRegUser,FaShoppingBag,FaUser,} from "react-icons/fa";
+import logo from "/logon.png";
+import { FaCartShopping } from "react-icons/fa6";
+import Login from '../components/Login';
+import useAdmin from '../hooks/useAdmin';
+import useAuth from '../hooks/useAuth';
+import { IoMdChatboxes } from "react-icons/io";
+
+const sharedLinks = (
+  <>
+    <li className='mt-3'><Link to="/chats"><IoMdChatboxes /> Chats</Link></li>
+    <li><Link to="/"><MdDashboard /> Home</Link></li>
+    <li><Link to="/menu"><FaCartShopping/> Listings</Link></li>
+    <li><Link to="/menu"><FaQuestionCircle/> 24/7 Customer Support</Link></li>
+  </>
+)
+
+const AdminLayout = () => {
+  const {loading} = useAuth()
+  const [isAdmin, isAdminLoading] = useAdmin()
+  return (
+    <div>
+        {
+          isAdmin ? <div className="drawer sm:drawer-open">
+          <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+          <div className="drawer-content flex flex-col sm:items-start sm:justify-start">
+              {/* Page content here */}
+              <div className="flex items-center justify-between mx-4">
+                  <label htmlFor="my-drawer-2" className="btn bg-blue-300 rounded-full drawer-button sm:hidden">
+                  <MdDashboardCustomize/>
+                  </label>
+                  <button className='my-2 flex items-center gap-2 btn sm:hidden rounded-full px-6 bg-green text-white'><FaRegUser />Logout</button>
+              </div>
+              <div className='mt-5 sm:mt-2 mx-4'>
+                  <Outlet />
+              </div>
+          </div>
+          <div className="drawer-side">
+              <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
+              <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+              {/* Sidebar content here */}
+              <li>
+                  <Link to="/dashboard" className="flex justify-start mb-3">
+                  <img src={logo} alt="" className="w-[150px]" />
+                  <span className="badge badge-primary">Admin</span>
+                  </Link>
+              </li>
+              <hr />
+              <li className='mt-3'><Link to="/dashboard"><MdDashboard /> Dashboard</Link></li>
+              <li><Link to="/dashboard/manage-boarding"><FaPlusCircle /> Manage Hostel</Link></li>
+              <li className='mb-3'><Link to="/dashboard/users"><FaUser /> All Users</Link></li>
+              <hr/>
+              {
+                sharedLinks 
+              }
+              </ul>
+          </div>
+          </div> : (loading ? <Login/> : <div className="h-screen flex justify-center items-center"><Link to="/"><button className="btn bg-green text-white rounded-lg">Back to Home</button></Link></div>)
+        }
+          
+          {/*: (loading ? <Modal /> :
+            <div className="h-screen flex justify-center items-center">
+                <Link to="/">
+                <button className="btn bg-green text-white">Back to Home</button>
+                </Link>
+            </div>
+            )}*/}
+          
+          
+    </div>
+  )
+}
+
+export default AdminLayout
