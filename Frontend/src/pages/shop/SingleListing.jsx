@@ -428,7 +428,8 @@ const SingleListing = () => {
           </Tabs.Item>
           <Tabs.Item title="Contacts" icon={MdOutlineContactMail}>
             {user?
-            <div className='w-full font-bold bg-black text-white hover:text-blue-500 px-4 py-2 rounded-lg flex items-center justify-center gap-2 group'>
+            (user.email !== listing.owner ? (
+              <div className='w-full font-bold bg-black text-white hover:text-blue-500 px-4 py-2 rounded-lg flex items-center justify-center gap-2 group'>
                 <div className="p-2 avatar px-2">
                   <div className="ring-green group-hover:ring-secondary ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
                     <img src={person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="User Avatar" />
@@ -437,14 +438,23 @@ const SingleListing = () => {
                 <p className="text-green group-hover:text-secondary font-bold text-xl m-auto">
                   {person?.name}
                 </p>
-                 <button onClick={() => handleChat(user.email,listing.owner)} className="font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-secondary hover:text-white transition duration-300 flex items-center justify-center gap-2">
-                 Chat with Owner <FaBuildingUser className="text-xl" />
-            </button></div>:
+                <button onClick={() => handleChat(user.email, listing.owner)} className="font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-secondary hover:text-white transition duration-300 flex items-center justify-center gap-2">
+                  Chat with the Property Owner <FaBuildingUser className="text-xl" />
+                </button>
+              </div>
+            ) : (
+              <div className="bg-gray-200 rounded-lg p-4">
+                <p className="font-bold">
+                You are currently viewing <span className="text-green">your own listing</span>. Select a listing from another owner to start a conversation.
+                </p>
+              </div>
+            )) : (
             <div className="bg-gray-200 rounded-lg p-4">
               <p className="font-bold">
-                Please<span className="text-green"> login </span>to chat directly with owner.
+              Please <span className="text-green">log in</span> to chat directly with the property owner.
               </p>
-              </div>}
+            </div>
+            )}
           </Tabs.Item>
           <Tabs.Item title="Find Your Roommate" icon={MdOutlineContactMail}>
   {user && users ? (
