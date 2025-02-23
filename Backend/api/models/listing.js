@@ -37,6 +37,14 @@ const listingSchema = new Schema({
         type: Number,
         required: true
     },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    reviewCount: {
+        type: Number,
+        default: 0
+    }
     }, { 
         timestamps: true 
     }
