@@ -32,7 +32,7 @@ const userRoutes = require('./api/routes/userRoutes');
 const paymentsRoutes = require('./api/routes/paymentRoutes');
 const chatRoutes = require('./api/routes/chatRoutes');
 const messageRoutes = require('./api/routes/messageRoutes');
-const registrationRoutes = require('./api/routes/registrationRoutes');
+const reviewRoutes = require('./api/routes/reviewRoutes');
 app.use('/boarding', boardingRoutes);
 app.use('/listing', listingRoutes);
 app.use('/carts', cartRoutes);
@@ -40,7 +40,7 @@ app.use('/users', userRoutes);
 app.use('/payments', paymentsRoutes);
 app.use('/chat', chatRoutes);
 app.use('/message', messageRoutes);
-app.use('/registration', registrationRoutes);
+app.use('/reviews', reviewRoutes);
 
 //stripe routes
 app.post("/create-payment-intent", async (req, res) => {
