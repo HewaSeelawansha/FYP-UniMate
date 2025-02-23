@@ -23,6 +23,7 @@ import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useUser from "../../hooks/useUser";
 import useRoommateUsers from "../../hooks/useRoommate";
+import ReviewComponent from "./Listing/ReviewComponent";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -31,7 +32,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 const SingleListing = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const { id } = useParams();
   const [listing, setListing] = useState(null);
   const [boarding, setBoarding] = useState(null);
@@ -45,6 +46,9 @@ const SingleListing = () => {
   const [person, setPerson] = useState(null);
   const [isUser, isUserLoading] = useUser();
   const [users, refetch] = useRoommateUsers();
+  const [reviews, setReviews] = useState([]);
+  const [reviewText, setReviewText] = useState('');
+  const [rating, setRating] = useState(0);
 
   const MapResizer = () => {
     const map = useMap();
@@ -266,6 +270,7 @@ const SingleListing = () => {
       <div>
         <Tabs aria-label="Tabs with icons" variant="underline" className="custom-tabs">
           <Tabs.Item active title="Details" icon={TbListDetails}>
+          <div className="bg-black rounded-lg p-4">
             <div className="bg-gray-200 p-4 rounded-lg">
               <p className="font-bold">
                 Title: <span className="font-normal">{listing.name}</span>
@@ -289,8 +294,10 @@ const SingleListing = () => {
                 Price: <span className="text-sky-500">${listing.price}</span>
               </p>
             </div>
+          </div>
           </Tabs.Item>
           <Tabs.Item title="Amenities" icon={HiAdjustments}>
+          <div className="bg-black rounded-lg p-4">
             <div className="bg-gray-200 p-4 rounded-lg">
               {listing.amenities.map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2">
@@ -304,20 +311,23 @@ const SingleListing = () => {
                 </div>
               ))}
             </div>
+          </div>
           </Tabs.Item>
           <Tabs.Item active title="Boarding House" icon={RiHotelFill}>
-          <div className="bg-gray-200 rounded-lg">
-            <div className="p-4">
+          <div className="bg-black rounded-lg">
+          <div className='flex gap-4 pt-4 px-4'>
+            <div className="w-full bg-gray-200 p-2 rounded-lg">
               <p className="font-bold">Name: <span className="font-normal">{boarding?.name}</span></p>
               <p className="font-bold mt-2">Owner: <span className="font-normal">{boarding?.owner}</span></p>
               <p className="font-bold mt-2">Address: <span className="font-normal">{boarding?.address}</span></p>
               <p className="font-bold mt-2">Phone: <span className="font-normal">0{boarding?.phone}</span></p>
-              <p className="font-bold mt-2">For: <span className="font-normal">{boarding?.gender}</span></p>
+              <p className="font-bold">For: <span className="font-normal">{boarding?.gender}</span></p>
               <p className="font-bold mt-2">Description: <span className="font-normal">{boarding?.description}</span></p>
               <p className="font-bold mt-2">Total Beds: <span className="font-normal">{boarding?.beds}</span></p>
               <p className="font-bold mt-2">Since: <span className="font-normal">{new Date(boarding?.createdAt).toLocaleDateString()}</span></p>
             </div>
-            <div className="p-0.5 rounded-lg bg-green h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
+            </div>
+            <div className="rounded-lg p-4 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
               {boarding?(
                 <Carousel slideInterval={5000}>
                 {boarding?.images && boarding?.images?.length > 0 ? (
@@ -358,14 +368,18 @@ const SingleListing = () => {
             </div>
           </div>
           </Tabs.Item>
+
+
+
+
           <Tabs.Item title="Reviews" icon={BsStars}>
-            This is{" "}
-            <span className="font-medium text-gray-800 dark:text-white">
-              Settings tab's associated content
-            </span>
-            . Clicking another tab will toggle the visibility of this one for the next. The tab
-            JavaScript swaps classes to control the content visibility and styling.
+            <ReviewComponent listing={listing._id} ruser={user.email}/>
           </Tabs.Item>
+
+
+
+
+
           <Tabs.Item title="View in Map" icon={PiMapPinAreaFill}>
             <div style={{ height: "500px", position: "relative" }}>
               { boarding?.lat && boarding?.lng ? (
@@ -439,7 +453,7 @@ const SingleListing = () => {
                   {person?.name}
                 </p>
                 <button onClick={() => handleChat(user.email, listing.owner)} className="font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-secondary hover:text-white transition duration-300 flex items-center justify-center gap-2">
-                  Chat with the Property Owner <FaBuildingUser className="text-xl" />
+                  Direct Chat <FaBuildingUser className="text-xl" />
                 </button>
               </div>
             ) : (
@@ -457,69 +471,68 @@ const SingleListing = () => {
             )}
           </Tabs.Item>
           <Tabs.Item title="Find Your Roommate" icon={MdOutlineContactMail}>
-  {user && users ? (
-    isUser ? (
-      users && users?.length > 0 ? (
-        users.map((roommate, index) => (
-          <div className="mb-2">
-            <details className="collapse bg-black text-blue-500 hover:bg-blue-500 hover:text-black group" key={index}>
-            <summary className="collapse-title text-xl font-medium">
-              <div className="flex flex-row">
-                <div className="avatar px-2">
-                  <div className="ring-primary group-hover:ring-black ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
-                    <img src={roommate?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="User Avatar" />
+          {user && users ? (
+            isUser ? (
+              users && users?.length > 0 ? (
+                users.map((roommate, index) => (
+                  <div key={index}  className="mb-2">
+                    <details className="collapse bg-black text-blue-500 hover:bg-blue-500 hover:text-black group" key={index}>
+                    <summary className="collapse-title text-xl font-medium">
+                      <div className="flex flex-row">
+                        <div className="avatar px-2">
+                          <div className="ring-primary group-hover:ring-black ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
+                            <img src={roommate?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="User Avatar" />
+                          </div>
+                        </div>
+                        <p className="font-bold m-auto">
+                          {roommate?.name}
+                        </p>
+                      </div>
+                    </summary>
+                    <div className="collapse-content flex flex-row gap-2">
+                      <button
+                        onClick={() => handleChat(user.email,roommate.email)}
+                        className="w-full font-bold bg-white text-black py-2 rounded-lg hover:bg-black hover:text-white transition duration-300 flex items-center justify-center gap-2"
+                      >
+                        Direct Chat <TbSend2 className="text-xl" />
+                      </button>
+                    </div>
+                  </details>
                   </div>
+                ))
+              ) : (
+                <div className="bg-gray-200 rounded-lg">
+                <div className="p-4">
+                  <p className="font-bold">
+                    No students are currently looking for a 
+                    <span className="text-green"> roommate </span>
+                    in listings for {listing.gender}.
+                  </p>
                 </div>
-                <p className="font-bold m-auto">
-                  {roommate?.name}
+              </div>
+              )
+            ) : (
+              <div className="bg-gray-200 rounded-lg">
+                <div className="p-4">
+                  <p className="font-bold">
+                    Only students can access the
+                    <span className="text-green"> direct chat </span>with peers who are
+                    looking for a roommate.
+                  </p>
+                </div>
+              </div>
+            )
+          ) : (
+            <div className="bg-gray-200 rounded-lg">
+              <div className="p-4">
+                <p className="font-bold">
+                  Please<span className="text-green"> login </span>to direct chat with
+                  peers who are looking for a roommate.
                 </p>
               </div>
-            </summary>
-            <div className="collapse-content flex flex-row gap-2">
-              <button
-                onClick={() => handleChat(user.email,roommate.email)}
-                className="w-full font-bold bg-white text-black py-2 rounded-lg hover:bg-black hover:text-white transition duration-300 flex items-center justify-center gap-2"
-              >
-                Direct Chat <TbSend2 className="text-xl" />
-              </button>
             </div>
-          </details>
-          </div>
-        ))
-      ) : (
-        <div className="bg-gray-200 rounded-lg">
-        <div className="p-4">
-          <p className="font-bold">
-            No students are currently looking for a 
-            <span className="text-green"> roommate </span>
-            in listings for {listing.gender}.
-          </p>
-        </div>
-      </div>
-      )
-    ) : (
-      <div className="bg-gray-200 rounded-lg">
-        <div className="p-4">
-          <p className="font-bold">
-            Only students can access the
-            <span className="text-green"> direct chat </span>with peers who are
-            looking for a roommate.
-          </p>
-        </div>
-      </div>
-    )
-  ) : (
-    <div className="bg-gray-200 rounded-lg">
-      <div className="p-4">
-        <p className="font-bold">
-          Please<span className="text-green"> login </span>to direct chat with
-          peers who are looking for a roommate.
-        </p>
-      </div>
-    </div>
-  )}
-</Tabs.Item>
-
+          )}
+        </Tabs.Item>
         </Tabs>
       </div>
     </div>
