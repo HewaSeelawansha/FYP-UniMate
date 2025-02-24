@@ -26,6 +26,7 @@ import useRoommateUsers from "../../hooks/useRoommate";
 import ReviewComponent from "./Listing/ReviewComponent";
 import MapComponent from "./Listing/MapComponent";
 import BoardingComponent from "./Listing/BoardingComponent";
+import RoommateComponent from "./Listing/RoommateComponent";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -39,15 +40,10 @@ const SingleListing = () => {
   const [listing, setListing] = useState(null);
   const [boarding, setBoarding] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userLocation, setUserLocation] = useState(null); // User's current location
-  const [route, setRoute] = useState([]); // Route coordinates
-  const [distance, setDistance] = useState(null); // Distance in kilometers
-  const [duration, setDuration] = useState(null); // Duration in minutes
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const [person, setPerson] = useState(null);
-  const [isUser, isUserLoading] = useUser();
-  const [users, refetch] = useRoommateUsers();
+
 
   
 
@@ -189,6 +185,7 @@ const SingleListing = () => {
       </div>
       <div>
         <Tabs aria-label="Tabs with icons" variant="underline" className="custom-tabs">
+
           <Tabs.Item active title="Details" icon={TbListDetails}>
           <div className="bg-black rounded-lg p-4">
             <div className="bg-gray-200 p-4 rounded-lg">
@@ -216,6 +213,7 @@ const SingleListing = () => {
             </div>
           </div>
           </Tabs.Item>
+
           <Tabs.Item title="Amenities" icon={HiAdjustments}>
           <div className="bg-black rounded-lg p-4">
             <div className="bg-gray-200 p-4 rounded-lg">
@@ -306,69 +304,11 @@ const SingleListing = () => {
             </div>
             )}
           </Tabs.Item>
+
           <Tabs.Item title="Find Your Roommate" icon={MdOutlineContactMail}>
-          {user && users ? (
-            isUser ? (
-              users && users?.length > 0 ? (
-                users.map((roommate, index) => (
-                  <div key={index}  className="mb-2">
-                    <details className="collapse bg-black text-blue-500 hover:bg-blue-500 hover:text-black group" key={index}>
-                    <summary className="collapse-title text-xl font-medium">
-                      <div className="flex flex-row">
-                        <div className="avatar px-2">
-                          <div className="ring-primary group-hover:ring-black ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
-                            <img src={roommate?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="User Avatar" />
-                          </div>
-                        </div>
-                        <p className="font-bold m-auto">
-                          {roommate?.name}
-                        </p>
-                      </div>
-                    </summary>
-                    <div className="collapse-content flex flex-row gap-2">
-                      <button
-                        onClick={() => handleChat(user.email,roommate.email)}
-                        className="w-full font-bold bg-white text-black py-2 rounded-lg hover:bg-black hover:text-white transition duration-300 flex items-center justify-center gap-2"
-                      >
-                        Direct Chat <TbSend2 className="text-xl" />
-                      </button>
-                    </div>
-                  </details>
-                  </div>
-                ))
-              ) : (
-                <div className="bg-gray-200 rounded-lg">
-                <div className="p-4">
-                  <p className="font-bold">
-                    No students are currently looking for a 
-                    <span className="text-green"> roommate </span>
-                    in listings for {listing.gender}.
-                  </p>
-                </div>
-              </div>
-              )
-            ) : (
-              <div className="bg-gray-200 rounded-lg">
-                <div className="p-4">
-                  <p className="font-bold">
-                    Only students can access the
-                    <span className="text-green"> direct chat </span>with peers who are
-                    looking for a roommate.
-                  </p>
-                </div>
-              </div>
-            )
-          ) : (
-            <div className="bg-gray-200 rounded-lg">
-              <div className="p-4">
-                <p className="font-bold">
-                  Please<span className="text-green"> login </span>to direct chat with
-                  peers who are looking for a roommate.
-                </p>
-              </div>
-            </div>
-          )}
-        </Tabs.Item>
+              <RoommateComponent/>
+          </Tabs.Item>
+
         </Tabs>
       </div>
     </div>
