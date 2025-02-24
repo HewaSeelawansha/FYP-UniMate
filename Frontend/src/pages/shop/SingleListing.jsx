@@ -168,7 +168,7 @@ const SingleListing = () => {
       <span className="text-black">{listing.name} - </span>
         {listing.boarding}
       </h2>
-      <div className="p-0.5 rounded-lg bg-green my-5 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
+      <div className="p-4 rounded-lg bg-black my-5 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
         {listing?(
           <Carousel slideInterval={5000}>
           {listing?.images && listing?.images?.length > 0 ? (
