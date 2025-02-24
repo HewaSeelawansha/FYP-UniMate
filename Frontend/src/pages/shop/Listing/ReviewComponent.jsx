@@ -177,7 +177,7 @@ const ReviewComponent = ({listing, ruser}) => {
               </div>
               ))
             ) : (
-              <p className="text-blue-500 font-bold">No reviews yet.</p>
+              <p className="text-green bg-black rounded-lg px-2 mt-4 font-bold">No any reviews found for this listing</p>
             )}
             </div>
           </div>

@@ -24,6 +24,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useUser from "../../hooks/useUser";
 import useRoommateUsers from "../../hooks/useRoommate";
 import ReviewComponent from "./Listing/ReviewComponent";
+import MapComponent from "./Listing/MapComponent";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -46,20 +47,8 @@ const SingleListing = () => {
   const [person, setPerson] = useState(null);
   const [isUser, isUserLoading] = useUser();
   const [users, refetch] = useRoommateUsers();
-  const [reviews, setReviews] = useState([]);
-  const [reviewText, setReviewText] = useState('');
-  const [rating, setRating] = useState(0);
 
-  const MapResizer = () => {
-    const map = useMap();
   
-    useEffect(() => {
-      // Force the map to recalculate its size after the container is fully rendered
-      map.invalidateSize();
-    }, [map]);
-  
-    return null;
-  };
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -100,79 +89,9 @@ const SingleListing = () => {
     fetchListing();
   }, [listing?.owner]);
 
-  // NSBM Green University location
-  const NSBMLocation = [6.822351667770194, 80.04161575881648];
+  
 
-  // Get directions from NSBM
-  const getNSBMLocation = () => {
-    setUserLocation(NSBMLocation);
-    fetchRoute(NSBMLocation, [boarding?.lat, boarding?.lng]); // Fetch route from NSBM to listing
-  };
-
-  // Get the user's current location
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
-          fetchRoute([latitude, longitude], [boarding?.lat, boarding?.lng]); // Fetch route to listing location
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  };
-
-  // Fetch route using OpenRouteService API
-  const fetchRoute = async (start, end) => {
-    try {
-      const API_KEY = import.meta.env.VITE_MAP_TOKEN; // Replace with your OpenRouteService API key
-      const response = await fetch(
-        `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${API_KEY}&start=${start[1]},${start[0]}&end=${end[1]},${end[0]}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch route");
-      }
-      const data = await response.json();
-      const coordinates = data.features[0].geometry.coordinates.map((coord) => [coord[1], coord[0]]);
-      setRoute(coordinates);
-
-      // Extract distance and duration
-      const distanceKm = (data.features[0].properties.segments[0].distance / 1000).toFixed(2);
-      const durationMinutes = (data.features[0].properties.segments[0].duration / 60).toFixed(2);
-      setDistance(distanceKm);
-      setDuration(durationMinutes);
-    } catch (error) {
-      console.error("Error fetching route:", error);
-    }
-  };
-
-  // Draggable marker for user location
-  const DraggableMarker = () => {
-    const map = useMap();
-
-    const eventHandlers = {
-      dragend: (e) => {
-        const { lat, lng } = e.target.getLatLng();
-        setUserLocation([lat, lng]);
-        fetchRoute([lat, lng], [boarding?.lat, boarding?.lng]); // Update route
-      },
-    };
-
-    return userLocation ? (
-      <Marker
-        position={userLocation}
-        draggable
-        eventHandlers={eventHandlers}
-      >
-        <Popup>Your Location (Drag to adjust)</Popup>
-      </Marker>
-    ) : null;
-  };
+  
 
   const handleChat = async (sender, receiver) => {
     const chatData = {
@@ -369,77 +288,19 @@ const SingleListing = () => {
           </div>
           </Tabs.Item>
 
-
-
-
           <Tabs.Item title="Reviews" icon={BsStars}>
-            <ReviewComponent listing={listing._id} ruser={user.email}/>
+            {listing._id&&user.email?(<ReviewComponent listing={listing._id} ruser={user.email}/>
+            ):(
+              <p className="text-green bg-black rounded-lg p-1 px-2 mt-4 font-bold">There is a issue when loading reviews.</p>)}
           </Tabs.Item>
-
-
-
-
 
           <Tabs.Item title="View in Map" icon={PiMapPinAreaFill}>
-            <div style={{ height: "500px", position: "relative" }}>
-              { boarding?.lat && boarding?.lng ? (
-              <MapContainer
-                center={[boarding?.lat, boarding?.lng]}
-                zoom={15}
-                style={{ height: "100%", width: "100%" }}
-              >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <Marker position={[boarding?.lat, boarding?.lng]}>
-                  <Popup>
-                    {listing.name} <br /> {listing.owner}
-                  </Popup>
-                </Marker>
-                <DraggableMarker />
-                {route.length > 0 && <Polyline positions={route} color="blue" />}
-                <MapResizer /> {/* Add this component */}
-              </MapContainer>) : (<div className="text-center py-20">Loading map...</div>)}
-            </div>
-
-            {distance && duration && (
-              <div className="mt-4 text-center">
-                <p className="text-lg font-bold">
-                  Distance: <span className="text-green">{distance} km</span>
-                </p>
-                <p className="text-lg font-bold">
-                  Duration: <span className="text-green">{duration} minutes</span>
-                </p>
-              </div>
-            )}
-
-            <button
-              onClick={getUserLocation}
-              className="w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2 mt-4"
-            >
-              Get Directions to Listing
-            </button>
-
-            <button
-              onClick={getNSBMLocation}
-              className="w-full font-bold bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2 mt-4"
-            >
-              Get Directions to Listing from NSBM Green University
-            </button>
-
-            {/* Start Navigation Button */}
-            {userLocation && (
-              <a
-                href={`https://www.google.com/maps/dir/?api=1&origin=${userLocation[0]},${userLocation[1]}&destination=${boarding?.lat},${boarding?.lng}&travelmode=driving`}
-                //target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center font-bold bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 mt-4"
-              >
-                Start Navigation in Google Maps
-              </a>
-            )}
+            {boarding?.lat&&boarding?.lng?
+            (<MapComponent lati={boarding.lat} lngi={boarding.lng} name={listing.owner}/>
+            ):(
+            <p className="text-green bg-black rounded-lg p-1 px-2 mt-4 font-bold">There is a issue when loading map.</p>)}
           </Tabs.Item>
+
           <Tabs.Item title="Contacts" icon={MdOutlineContactMail}>
             {user?
             (user.email !== listing.owner ? (
