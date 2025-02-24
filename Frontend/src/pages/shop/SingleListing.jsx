@@ -25,6 +25,7 @@ import useUser from "../../hooks/useUser";
 import useRoommateUsers from "../../hooks/useRoommate";
 import ReviewComponent from "./Listing/ReviewComponent";
 import MapComponent from "./Listing/MapComponent";
+import BoardingComponent from "./Listing/BoardingComponent";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -232,40 +233,14 @@ const SingleListing = () => {
             </div>
           </div>
           </Tabs.Item>
+
           <Tabs.Item active title="Boarding House" icon={RiHotelFill}>
-          <div className="bg-black rounded-lg">
-          <div className='flex gap-4 pt-4 px-4'>
-            <div className="w-full bg-gray-200 p-2 rounded-lg">
-              <p className="font-bold">Name: <span className="font-normal">{boarding?.name}</span></p>
-              <p className="font-bold mt-2">Owner: <span className="font-normal">{boarding?.owner}</span></p>
-              <p className="font-bold mt-2">Address: <span className="font-normal">{boarding?.address}</span></p>
-              <p className="font-bold mt-2">Phone: <span className="font-normal">0{boarding?.phone}</span></p>
-              <p className="font-bold">For: <span className="font-normal">{boarding?.gender}</span></p>
-              <p className="font-bold mt-2">Description: <span className="font-normal">{boarding?.description}</span></p>
-              <p className="font-bold mt-2">Total Beds: <span className="font-normal">{boarding?.beds}</span></p>
-              <p className="font-bold mt-2">Since: <span className="font-normal">{new Date(boarding?.createdAt).toLocaleDateString()}</span></p>
-            </div>
-            </div>
-            <div className="rounded-lg p-4 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
-              {boarding?(
-                <Carousel slideInterval={5000}>
-                {boarding?.images && boarding?.images?.length > 0 ? (
-                  boarding?.images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Slide ${index + 1}`}
-                      className="w-full h-full"
-                    />
-                  ))
-                ) : (
-                  <></>
-                )}
-              </Carousel>
-              ):(<></>)}
-            </div>
-          </div>
+            {listing?.owner?
+            (<BoardingComponent owner={listing.owner}/>)
+          :(
+            <p className="text-green bg-black rounded-lg p-1 px-2 mt-4 font-bold">There is a issue when loading the boarding house.</p>)}
           </Tabs.Item>
+
           <Tabs.Item active title="Owner" icon={HiUserCircle}>
           <div className="w-full bg-gray-200 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
             <div className="bg-black text-white p-8 flex flex-col items-center justify-center md:w-1/3">
