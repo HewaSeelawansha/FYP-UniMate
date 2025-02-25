@@ -92,7 +92,7 @@ const CheckoutForm = ({price, cart}) => {
         .then(res => {
           console.log(res.data);
           alert('All Done');
-          navigate('/order')
+          navigate('/payments')
         });
       }
   };
