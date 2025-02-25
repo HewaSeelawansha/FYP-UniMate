@@ -3,7 +3,7 @@ import useAuth from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
-const Order = () => {
+const Payments = () => {
   const {user} = useAuth();
     const token = localStorage.getItem('access-token');
 
@@ -89,4 +89,4 @@ const Order = () => {
   )
 }
 
-export default Order
+export default Payments
