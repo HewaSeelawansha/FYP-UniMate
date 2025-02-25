@@ -12,7 +12,7 @@ import AdminDashboard from "../pages/dashboard/Admin/Dashboard";
 import Users from "../pages/dashboard/Admin/Users";
 import Login from "../components/Login";
 import Payment from "../pages/shop/Payment";
-import Order from "../pages/dashboard/Order";
+import Payments from "../pages/dashboard/Order";
 import Chat from "../pages/chat/Chat";
 import SingleListing from "../pages/shop/SingleListing";
 import AddBoarding from "../pages/dashboard/Owner/AddBoarding";
@@ -45,8 +45,8 @@ const router = createBrowserRouter([
           element: <CartPage/>
         },
         {
-          path: "/order",
-          element:<PrivateRouter><Order/></PrivateRouter>
+          path: "/payments",
+          element:<PrivateRouter><Payments/></PrivateRouter>
         },
         {
           path: "/update-profile",
