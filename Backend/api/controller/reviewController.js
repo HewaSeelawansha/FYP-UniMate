@@ -38,7 +38,8 @@ const addReview = async (req, res) => {
         const listing = await Listing.findById(listingId);
         listing.reviewCount += 1;
         const reviews = await Review.find({ listing: listingId });
-        listing.rating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+        const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+        listing.rating = Math.round(averageRating);
         await listing.save();
 
         res.status(200).json({ message: "Review added successfully", listing });
@@ -62,7 +63,8 @@ const editReview = async (req, res) => {
         // Recalculate and update the average rating for the listing
         const listing = await Listing.findById(review.listing);
         const reviews = await Review.find({ listing: listing._id });
-        listing.rating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+        const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+        listing.rating = Math.round(averageRating);
         await listing.save();
 
         res.status(200).json({ message: "Review updated successfully", review, listing });
@@ -82,7 +84,10 @@ const deleteReview = async (req, res) => {
         const listing = await Listing.findById(review.listing);
         listing.reviewCount -= 1;
         const reviews = await Review.find({ listing: listing._id });
-        listing.rating = reviews.length > 0 ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length : 0;
+        const averageRating = reviews.length > 0 
+            ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length 
+            : 0;
+        listing.rating = Math.round(averageRating);
         await listing.save();
 
         res.status(200).json({ message: "Review deleted successfully", listing });
