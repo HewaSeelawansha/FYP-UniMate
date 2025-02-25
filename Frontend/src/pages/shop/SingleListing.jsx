@@ -4,36 +4,19 @@ import { Carousel, Tabs } from "flowbite-react";
 import { TbListDetails } from "react-icons/tb";
 import { PiMapPinAreaFill } from "react-icons/pi";
 import { FaBuildingUser } from "react-icons/fa6";
-import { FaUserCircle } from "react-icons/fa";
-import { TbSend2 } from "react-icons/tb";
 import { BsCreditCard2BackFill, BsStars } from "react-icons/bs";
 import { HiAdjustments, HiClipboardList, HiUserCircle } from "react-icons/hi";
 import { MdDashboard, MdOutlineContactMail } from "react-icons/md";
 import { RiHotelFill } from "react-icons/ri";
 import Swal from 'sweetalert2';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-
-// Fix for default marker icons in Leaflet
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useUser from "../../hooks/useUser";
-import useRoommateUsers from "../../hooks/useRoommate";
 import ReviewComponent from "./Listing/ReviewComponent";
 import MapComponent from "./Listing/MapComponent";
 import BoardingComponent from "./Listing/BoardingComponent";
 import RoommateComponent from "./Listing/RoommateComponent";
+import BookingComponent from "./Listing/BookingComponent";
 
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
 const SingleListing = () => {
   const { user } = useAuth();
   const { id } = useParams();
@@ -43,9 +26,6 @@ const SingleListing = () => {
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const [person, setPerson] = useState(null);
-
-
-  
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -67,7 +47,7 @@ const SingleListing = () => {
   }, [id]);
 
   useEffect(() => {
-    const fetchListing = async () => {
+    const fetchBoarding = async () => {
       if (!listing?.owner) return;
       try {
         const response = await fetch(`http://localhost:3000/boarding/owner/${listing?.owner}`);
@@ -83,12 +63,8 @@ const SingleListing = () => {
       }
     };
   
-    fetchListing();
+    fetchBoarding();
   }, [listing?.owner]);
-
-  
-
-  
 
   const handleChat = async (sender, receiver) => {
     const chatData = {
@@ -262,9 +238,11 @@ const SingleListing = () => {
           </Tabs.Item>
 
           <Tabs.Item title="Reviews" icon={BsStars}>
-            {listing._id&&user.email?(<ReviewComponent listing={listing._id} ruser={user.email}/>
+            {
+            listing._id? (<ReviewComponent listing={listing._id}/>
             ):(
-              <p className="text-green bg-black rounded-lg p-1 px-2 mt-4 font-bold">There is a issue when loading reviews.</p>)}
+              <p className="text-green bg-black rounded-lg p-1 px-2 mt-4 font-bold">There is a issue when loading reviews.</p>
+            )}
           </Tabs.Item>
 
           <Tabs.Item title="View in Map" icon={PiMapPinAreaFill}>
@@ -299,14 +277,21 @@ const SingleListing = () => {
             )) : (
             <div className="bg-gray-200 rounded-lg p-4">
               <p className="font-bold">
-              Please <span className="text-green">log in</span> to chat directly with the property owner.
+              Please <span className="text-green">login</span> to chat directly with the property owner.
               </p>
             </div>
             )}
           </Tabs.Item>
 
           <Tabs.Item title="Find Your Roommate" icon={MdOutlineContactMail}>
-              <RoommateComponent/>
+              {listing.owner?
+              (<RoommateComponent gender={listing.owner}/>
+              ):(
+              <></>)}
+          </Tabs.Item>
+
+          <Tabs.Item title="Booking" icon={MdOutlineContactMail}>
+              <BookingComponent/>
           </Tabs.Item>
 
         </Tabs>
