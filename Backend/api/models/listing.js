@@ -44,6 +44,10 @@ const listingSchema = new Schema({
     reviewCount: {
         type: Number,
         default: 0
+    },
+    available: {
+        type: Number,
+        default: 0
     }
     }, { 
         timestamps: true 
