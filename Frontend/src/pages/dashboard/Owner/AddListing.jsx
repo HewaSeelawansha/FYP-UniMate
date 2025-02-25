@@ -79,6 +79,7 @@ const AddListing = () => {
         images: imageUrls,
         amenities: selectedAmenities,
         price: data.price,
+        available: data.available,
       };
 
       const postMenuItem = await axiosSecure.post('/listing', menuItem);
@@ -225,6 +226,19 @@ const AddListing = () => {
 
               <div className='form-control w-full'>
                 <label className='block text-sm font-medium mb-2'>
+                  Available Beds
+                </label>
+                <input
+                  {...register('available', { required: true })}
+                  type='number'
+                  defaultValue={boarding.beds}
+                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                />
+              </div>
+            </div>
+
+            <div className='form-control w-full'>
+                <label className='block text-sm font-medium mb-2'>
                   Price
                 </label>
                 <input
@@ -234,7 +248,6 @@ const AddListing = () => {
                   className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                 />
               </div>
-            </div>
 
             <div className='form-control'>
               <label className='block text-sm font-medium mb-2'>
@@ -243,7 +256,7 @@ const AddListing = () => {
               <textarea
                 {...register('description', { required: true })}
                 className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                placeholder='Description of the Dish'
+                placeholder='Description of the Listing'
                 rows='4'
               ></textarea>
             </div>

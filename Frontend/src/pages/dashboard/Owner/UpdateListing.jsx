@@ -21,6 +21,7 @@ const UpdateListing = () => {
       type: item.type,
       price: item.price,
       amenities: item.amenities,
+      available: item.available,
     },
   });
 
@@ -75,6 +76,7 @@ const UpdateListing = () => {
       images: imageUrls,
       amenities: selectedAmenities,
       price: data.price,
+      available: data.available
     };
 
     try {
@@ -179,6 +181,19 @@ const UpdateListing = () => {
 
               <div className='form-control w-full'>
                 <label className='block text-sm font-medium mb-2'>
+                Available Beds
+                </label>
+                <input
+                  {...register('available', { required: true })}
+                  type='number'
+                  placeholder='Available Beds'
+                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                />
+              </div>
+            </div>
+
+            <div className='form-control w-full'>
+                <label className='block text-sm font-medium mb-2'>
                   Price
                 </label>
                 <input
@@ -188,7 +203,6 @@ const UpdateListing = () => {
                   className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                 />
               </div>
-            </div>
 
             <div className='form-control'>
               <label className='block text-sm font-medium mb-2'>
