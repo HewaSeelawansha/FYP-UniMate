@@ -3,10 +3,11 @@ import Cards from '../../components/Cards';
 import { FaFilter } from 'react-icons/fa'
 
 const Menu = () => {
+
   const [menu, setMenu] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortOptions, setSortOptions] = useState("default");
+  const [sortOptions, setSortOptions] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
   //loading data
@@ -16,9 +17,10 @@ const Menu = () => {
         try {
             const response = await fetch('http://localhost:3000/listing');
             const data = await response.json();
+            const availableItems = data.filter((item) => item.available >= 0);
             //console.log(data);
-            setMenu(data);
-            setFilteredItems(data);
+            setMenu(availableItems);
+            setFilteredItems(availableItems);
         } catch (error) {
             console.log("Error fetching data: ",error);
         }
@@ -46,6 +48,9 @@ const Menu = () => {
     let sortedItems = [...filteredItems]
     //logic
     switch(option) {
+        case "newly":
+        sortedItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
         case "A-Z":
             sortedItems.sort((a, b) => a.name.localeCompare(b.name))
             break;
@@ -67,7 +72,7 @@ const Menu = () => {
   // pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -104,7 +109,8 @@ const Menu = () => {
                     </div>
                     {/*sorting options*/}
                     <select name="sort" id='sort' onChange={(e) => handleSortChange(e.target.value)} value={sortOptions} className='bg-black text-white px-2 py-1 rounded-sm'>
-                        <option value="default">Sort by</option>
+                        <option value='' disabled>Sort by</option>
+                        <option value="newly">Newest First</option>
                         <option value="A-Z">A-Z</option>
                         <option value="Z-A">Z-A</option>
                         <option value="low-high">Price(Low to High)</option>
