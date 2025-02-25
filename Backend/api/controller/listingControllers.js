@@ -50,12 +50,12 @@ const singleListing = async (req, res) => {
 // update an existing menu item
 const updateListing = async (req, res) => {
     const listingId = req.params.id;
-    const { name, description, type, images, amenities, price } = req.body;
+    const { name, description, type, images, amenities, price, available } = req.body;
   
     try {
       const updatedListing = await Listing.findByIdAndUpdate(
         listingId,
-        { name, description, type, images, amenities, price },
+        { name, description, type, images, amenities, price, available },
         { new: true, runValidators: true }
       );
   
