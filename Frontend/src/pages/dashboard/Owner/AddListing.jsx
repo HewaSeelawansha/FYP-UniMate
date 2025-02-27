@@ -16,6 +16,7 @@ const AddListing = () => {
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
+  const [keyMoneyRequired, setKeyMoneyRequired] = useState(false);
 
   //const boarding = "LPC Hostels";
   const owner = user.email;
@@ -79,6 +80,7 @@ const AddListing = () => {
         images: imageUrls,
         amenities: selectedAmenities,
         price: data.price,
+        keyMoney: data.kmoney,
         available: data.available,
       };
 
@@ -247,6 +249,35 @@ const AddListing = () => {
                   placeholder='Price'
                   className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                 />
+              </div>
+
+              <div className='form-control'>
+                <label className='block text-sm font-medium mb-2'>
+                  Key Money
+                </label>
+                <select
+                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                  defaultValue=''
+                  onChange={(e) => setKeyMoneyRequired(e.target.value === 'yesk')}
+                >
+                  <option value='' disabled>Pick one</option>
+                  <option value='yesk'>Required</option>
+                  <option value='nok'>Not Required</option>
+                </select>
+
+                {keyMoneyRequired && (
+                  <div className='form-control w-full mt-4'>
+                    <label className='block text-sm font-medium mb-2'>
+                      You selected 'Key Money Required' Please specify the amount.
+                    </label>
+                    <input
+                      {...register('kmoney')}
+                      type='number'
+                      placeholder='Key Money'
+                      className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                    />
+                  </div>
+                )}
               </div>
 
             <div className='form-control'>
