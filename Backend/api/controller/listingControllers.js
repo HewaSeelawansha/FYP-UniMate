@@ -27,9 +27,9 @@ const deleteListing = async (req, res) => {
     try{
         const deletedItem = await Listing.findByIdAndDelete(listingId);
         if(!deletedItem){
-            return res.status(404).json({ message: "Menu item not found!"});
+            return res.status(404).json({ message: "Listing not found!"});
         }
-        res.status(200).json({message: "Menu item deleted successfully!"});
+        res.status(200).json({message: "Listing deleted successfully!"});
     } catch (error) {
         res.status(500).json({message: error.message});
     }
@@ -50,17 +50,17 @@ const singleListing = async (req, res) => {
 // update an existing menu item
 const updateListing = async (req, res) => {
     const listingId = req.params.id;
-    const { name, description, type, images, amenities, price, available } = req.body;
+    const { name, description, type, images, amenities, price, keyMoney, available } = req.body;
   
     try {
       const updatedListing = await Listing.findByIdAndUpdate(
         listingId,
-        { name, description, type, images, amenities, price, available },
+        { name, description, type, images, amenities, price, keyMoney, available },
         { new: true, runValidators: true }
       );
   
       if (!updatedListing) {
-        return res.status(404).json({ message: 'Menu item not found!' });
+        return res.status(404).json({ message: 'Listing not found!' });
       }
   
       res.status(200).json(updatedListing);
