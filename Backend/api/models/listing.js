@@ -37,6 +37,10 @@ const listingSchema = new Schema({
         type: Number,
         required: true
     },
+    keyMoney: {
+        type: Number,
+        default: 0,
+    },
     rating: {
         type: Number,
         default: 0
