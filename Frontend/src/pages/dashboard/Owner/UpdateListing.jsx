@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { FaUndoAlt, FaUpload } from 'react-icons/fa';
@@ -24,6 +24,13 @@ const UpdateListing = () => {
       available: item.available,
     },
   });
+  const [keyMoneyRequired, setKeyMoneyRequired] = useState(item.keyMoney > 0);
+  const [keyMoney, setKeyMoney] = useState(item.keyMoney || 0);
+  useEffect(() => {
+    // Initialize the form state based on the boarding data
+    setKeyMoneyRequired(item.keyMoney > 0);
+    setKeyMoney(item.keyMoney || 0);
+  }, [item]);
 
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -76,7 +83,8 @@ const UpdateListing = () => {
       images: imageUrls,
       amenities: selectedAmenities,
       price: data.price,
-      available: data.available
+      available: data.available,
+      keyMoney:keyMoney
     };
 
     try {
@@ -203,6 +211,44 @@ const UpdateListing = () => {
                   className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                 />
               </div>
+
+              <div className="form-control">
+              <label className="block text-sm font-medium mb-2">
+                Key Money
+              </label>
+              <select
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                value={keyMoneyRequired ? 'yesk' : 'nok'}
+                onChange={(e) => {
+                  const isRequired = e.target.value === 'yesk';
+                  setKeyMoneyRequired(isRequired);
+                  if (!isRequired) {
+                    setKeyMoney(0); // Reset keyMoney if not required
+                  }
+                }}
+              >
+                <option value="" disabled>
+                  Pick one
+                </option>
+                <option value="yesk">Required</option>
+                <option value="nok">Not Required</option>
+              </select>
+
+              {keyMoneyRequired && (
+                <div className="form-control w-full mt-4">
+                  <label className="block text-sm font-medium mb-2">
+                    You selected 'Key Money Required.' Please specify the amount.
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Key Money"
+                    value={keyMoney}
+                    onChange={(e) => setKeyMoney(Number(e.target.value))}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+              )}
+            </div>
 
             <div className='form-control'>
               <label className='block text-sm font-medium mb-2'>
