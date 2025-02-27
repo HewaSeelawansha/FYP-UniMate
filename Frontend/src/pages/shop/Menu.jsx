@@ -9,7 +9,7 @@ const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortOptions, setSortOptions] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage] = useState(6);
   //loading data
   useEffect(()=>{
     //fetch data
