@@ -21,7 +21,7 @@ const MapComponent = ({ lati, lngi, name }) => {
     const [distance, setDistance] = useState(null);
     const [duration, setDuration] = useState(null);
   
-    const NSBMLocation = [6.822351667770194, 80.04161575881648];
+    const NSBMLocation = [6.821380, 80.041691];
   
     const MapResizer = () => {
         const map = useMap();
@@ -31,7 +31,7 @@ const MapComponent = ({ lati, lngi, name }) => {
                 requestAnimationFrame(() => {
                     map.invalidateSize();
                 });
-            }, 2500); // Adjust delay if needed
+            }, 2000); // Adjust delay if needed
         }, [map]);
     
         return null;
@@ -171,7 +171,7 @@ const MapComponent = ({ lati, lngi, name }) => {
           onClick={getUserLocation}
           className="w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 mt-4"
         >
-          Get Directions to Listing
+          Get Directions from Your Location
         </button>
   
         <button
