@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { useNavigate } from 'react-router-dom';
 
-const RoommateComponent = () => {
+const RoommateComponent = ({gender}) => {
     const {user} = useAuth();
     const [isUser, isUserLoading] = useUser();
     const [users, refetch] = useRoommateUsers();
@@ -57,7 +57,7 @@ const RoommateComponent = () => {
     
   return (
     <div>
-        {user && users ? (
+        {user ? (
             isUser ? (
               users && users?.length > 0 ? (
                 users.map((roommate, index) => (
@@ -92,7 +92,7 @@ const RoommateComponent = () => {
                   <p className="font-bold">
                     No students are currently looking for a 
                     <span className="text-green"> roommate </span>
-                    in listings for {listing.gender}.
+                    in listings for {gender}.
                   </p>
                 </div>
               </div>
