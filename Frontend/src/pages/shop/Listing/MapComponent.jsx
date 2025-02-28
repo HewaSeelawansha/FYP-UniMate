@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Fix for default marker icons in Leaflet
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -31,7 +30,7 @@ const MapComponent = ({ lati, lngi, name }) => {
                 requestAnimationFrame(() => {
                     map.invalidateSize();
                 });
-            }, 5000); // Adjust delay if needed
+            }, 5000);
         }, [map]);
     
         return null;
@@ -51,7 +50,7 @@ const MapComponent = ({ lati, lngi, name }) => {
             dragend: (e) => {
                 const { lat, lng } = e.target.getLatLng();
                 setUserLocation([lat, lng]);
-                fetchRoute([lat, lng], [lati, lngi]); // Update route
+                fetchRoute([lat, lng], [lati, lngi]); 
             },
         };
     
@@ -108,22 +107,17 @@ const MapComponent = ({ lati, lngi, name }) => {
     };
 
     self.addEventListener('fetch', (event) => {
-        // Check if navigation preload is supported
         if (event.preloadResponse) {
             event.respondWith(
                 (async () => {
-                    // Wait for the preload response
                     const preloadResponse = await event.preloadResponse;
                     if (preloadResponse) {
                         return preloadResponse;
                     }
-    
-                    // Fallback to network request if no preload response
                     return fetch(event.request);
                 })()
             );
         } else {
-            // If no preload support, fall back to network fetch
             event.respondWith(fetch(event.request));
         }
     });
@@ -149,7 +143,7 @@ const MapComponent = ({ lati, lngi, name }) => {
             </Marker>
             <DraggableMarker />
             {route.length > 0 && <Polyline positions={route} color="blue" />}
-            <MapResizer /> {/* Add this component */}
+            <MapResizer /> 
           </MapContainer>
           ) : (
             <div className="text-center py-20">Loading map...</div>
