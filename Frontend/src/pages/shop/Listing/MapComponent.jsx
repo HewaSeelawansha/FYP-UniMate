@@ -31,7 +31,7 @@ const MapComponent = ({ lati, lngi, name }) => {
                 requestAnimationFrame(() => {
                     map.invalidateSize();
                 });
-            }, 2000); // Adjust delay if needed
+            }, 5000); // Adjust delay if needed
         }, [map]);
     
         return null;
