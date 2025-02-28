@@ -186,6 +186,9 @@ const SingleListing = () => {
               <p className="font-bold mt-2">
                 Price: <span className="text-sky-500">${listing.price}</span>
               </p>
+              <p className="font-bold mt-2">
+                Key Money: {listing.keyMoney>0?<span className="text-sky-500">${listing.keyMoney}</span>:<span className="text-sky-500">Not Required</span>}
+              </p>
             </div>
           </div>
           </Tabs.Item>
@@ -291,7 +294,7 @@ const SingleListing = () => {
           </Tabs.Item>
 
           <Tabs.Item title="Booking" icon={MdOutlineContactMail}>
-              <BookingComponent/>
+              <BookingComponent id={listing._id} place={listing.boarding} title={listing.name} owner={listing.owner}/>
           </Tabs.Item>
 
         </Tabs>
