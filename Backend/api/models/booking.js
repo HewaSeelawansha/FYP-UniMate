@@ -15,11 +15,6 @@ const bookingSchema = new Schema({
         type: String, 
         required: true
     },
-    gender: {
-        type: String, 
-        required: true,
-        enum:['Male','Female']
-    },
     payvia: {
         type: String,
         required: true
