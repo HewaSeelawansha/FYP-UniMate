@@ -3,17 +3,33 @@ const Booking = require("../models/booking");
 // get bookings by listing id
 const getBookigsByEmail = async (req, res) => {
     try {
-        const id = req.params.id;
-        if (!id) {
-            return res.status(400).json({ message: 'Listing ID is required' });
+        const email = req.params.email;
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
         }
-        const query = { listing: id };
+        const query = { email: email };
         const result = await Booking.find(query).exec();
         res.status(200).json(result); 
     } catch (error) {
         console.error('Error fetching listings:', error.message);
         res.status(500).json({ message: error.message });
     }
+};
+
+// get bookings by listing id
+const getBookigsByListing = async (req, res) => {
+  try {
+      const id = req.params.id;
+      if (!id) {
+          return res.status(400).json({ message: 'Listing ID is required' });
+      }
+      const query = { listing: id };
+      const result = await Booking.find(query).exec();
+      res.status(200).json(result); 
+  } catch (error) {
+      console.error('Error fetching listings:', error.message);
+      res.status(500).json({ message: error.message });
+  }
 };
 
 // post a new booking
@@ -72,6 +88,7 @@ const updateStatus= async (req, res) => {
 module.exports = {
     postBooking,
     getBookigsByEmail,
+    getBookigsByListing,
     updateBooking,
     updateStatus
 }
