@@ -46,12 +46,12 @@ const postBooking = async (req, res) => {
 // update an existing booking
 const updateBooking = async (req, res) => {
     const bookingId = req.params.id;
-    const { movein, gender, payvia, needs } = req.body;
+    const { movein, payvia, needs } = req.body;
   
     try {
       const updatedStatus = await Booking.findByIdAndUpdate(
         bookingId,
-        { movein, gender, payvia, needs },
+        { movein, payvia, needs },
         { new: true, runValidators: true }
       );
   
