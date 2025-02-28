@@ -4,16 +4,10 @@ const Booking = require('../models/booking');
 const bookingController = require('../controller/bookingController');
 const verifyToken = require('../middleware/verifyToken');
 
-// get all menus
-router.get('/:id', bookingController.getAllListings)
-
-// post a menu item
-router.post('/', bookingController.postListing)
-
-// update single menu item
-router.patch('/:id', bookingController.updateListing)
-
-// update single menu item
-router.patch('/status/:id', bookingController.updateListing)
+router.post('/', bookingController.postBooking)
+router.get('/:id', bookingController.getBookigsByListing)
+router.get('/user/:email', bookingController.getBookigsByEmail)
+router.patch('/:id', bookingController.getBookigsByEmail)
+router.patch('/status/:id', bookingController.updateStatus)
 
 module.exports = router;
