@@ -294,7 +294,9 @@ const SingleListing = () => {
           </Tabs.Item>
 
           <Tabs.Item title="Booking" icon={MdOutlineContactMail}>
-              <BookingComponent id={listing._id} place={listing.boarding} title={listing.name} owner={listing.owner}/>
+              {listing && user?
+              (<BookingComponent currentuser={user.email} id={listing._id} place={listing.boarding} title={listing.name} owner={listing.owner}/>)
+              :(<></>)}   
           </Tabs.Item>
 
         </Tabs>
