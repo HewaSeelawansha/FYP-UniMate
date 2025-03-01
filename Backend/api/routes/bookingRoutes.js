@@ -5,6 +5,7 @@ const bookingController = require('../controller/bookingController');
 const verifyToken = require('../middleware/verifyToken');
 
 router.post('/', bookingController.postBooking)
+router.get('/:email/:id', bookingController.getBookigsByUserListing)
 router.get('/:id', bookingController.getBookigsByListing)
 router.get('/user/:email', bookingController.getBookigsByEmail)
 router.patch('/:id', bookingController.getBookigsByEmail)
