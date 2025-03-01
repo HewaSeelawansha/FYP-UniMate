@@ -32,16 +32,41 @@ const getBookigsByListing = async (req, res) => {
   }
 };
 
+// get bookings by listing id and user
+const getBookigsByUserListing = async (req, res) => {
+  try {
+      const { email, id } = req.params;
+      if (!id || !email) {
+          return res.status(400).json({ message: 'Listing ID and email are required' });
+      }
+      const query = { listing: id, email: email };
+      const result = await Booking.find(query).exec();
+      res.status(200).json(result); 
+  } catch (error) {
+      console.error('Error fetching bookings:', error.message);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 // post a new booking
 const postBooking = async (req, res) => {
-    const newItem = req.body;
-    try{
-        const result = await Booking.create(newItem);
-        res.status(201).json(result);
-    } catch (error) {
-        res.status(400).json({message: error.message});
-    }
-}
+  try {
+      const { email, listing } = req.body;
+      if (!email || !listing) {
+          return res.status(400).json({ message: "Email and listing ID are required." });
+      }
+      const existingBooking = await Booking.findOne({ email, listing });
+
+      if (existingBooking) {
+          return res.status(409).json({ message: "Booking already exists for this listing and email." });
+      }
+      const newBooking = await Booking.create(req.body);
+      res.status(201).json(newBooking);
+  } catch (error) {
+      console.error("Error creating booking:", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 // update an existing booking
 const updateBooking = async (req, res) => {
@@ -87,6 +112,7 @@ const updateStatus= async (req, res) => {
 
 module.exports = {
     postBooking,
+    getBookigsByUserListing,
     getBookigsByEmail,
     getBookigsByListing,
     updateBooking,
