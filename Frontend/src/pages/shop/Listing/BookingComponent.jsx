@@ -16,22 +16,21 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
   const [loading, setLoading] = useState(null);
 
   const fetchBooking = async () => {
-    setLoading(true); // Set loading to true before fetching
+    setLoading(true); 
     try {
         const response = await fetch(`http://localhost:3000/booking/${currentuser}/${id}`);
         if (!response.ok) {
             throw new Error(`Failed to fetch booking: ${response.statusText}`);
         }
         const data = await response.json();
-        setBooking(data.length > 0 ? data : null); // Set to null if no booking
+        setBooking(data.length > 0 ? data : null); 
     } catch (error) {
         console.error("Error fetching booking:", error);
-        setBooking(null); // Clear booking on error
+        setBooking(null); 
     } finally {
         setLoading(false);
     }
 };
-
 
   useEffect(() => {
     fetchBooking();
