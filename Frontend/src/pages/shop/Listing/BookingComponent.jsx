@@ -1,22 +1,53 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import useAuth from '../../../hooks/useAuth';
 import useUser from '../../../hooks/useUser';
 import { useForm } from 'react-hook-form';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { FaUpload } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
 
-const BookingComponent = ({id, place, title, owner}) => {
+const BookingComponent = ({currentuser, id, place, title, owner}) => {
   const {user} = useAuth();
   const { register, handleSubmit, reset } = useForm();
   const [isUser, isUserLoading] = useUser();
   const axiosSecure = useAxiosSecure();
+  const [booking, setBooking] = useState(null);
+  const [loading, setLoading] = useState(null);
+
+  const fetchBooking = async () => {
+    setLoading(true); // Set loading to true before fetching
+    try {
+        const response = await fetch(`http://localhost:3000/booking/${currentuser}/${id}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch booking: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setBooking(data.length > 0 ? data : null); // Set to null if no booking
+    } catch (error) {
+        console.error("Error fetching booking:", error);
+        setBooking(null); // Clear booking on error
+    } finally {
+        setLoading(false);
+    }
+};
+
+
+  useEffect(() => {
+    fetchBooking();
+  }, [currentuser, id]);
+
+  const refetchBooking = () => {
+    setTimeout(() => {
+        fetchBooking();
+    }, 1000); 
+};
 
   const onSubmit = async (data) => {
     try {
       const Booking = {
         listing: id,
-        email: owner,
+        email: currentuser,
         movein: data.movein,
         payvia: data.paymethod,
         needs: data.needs
@@ -33,9 +64,9 @@ const BookingComponent = ({id, place, title, owner}) => {
           timer: 1500,
         });
         reset();
+        refetchBooking();
       }
     } catch (error) {
-      console.error('Error:', error);
       Swal.fire({
         position: 'center',
         icon: 'error',
@@ -46,10 +77,15 @@ const BookingComponent = ({id, place, title, owner}) => {
     }
   };
 
+  if (loading) {
+    return <div className="text-center py-20">Loading...</div>;
+}
+
   return (
     <div>
     {user ? (
       isUser ? (
+        !booking ? (
       <div className="bg-black rounded-lg p-4">
         <div className="bg-gray-300 mb-2 rounded-lg p-2 pb-4">
           <div className='p-2'>
@@ -132,6 +168,7 @@ const BookingComponent = ({id, place, title, owner}) => {
           </div>
         </div>
       </div>
+      ):(<>Already add a booking to this listing</>)
       ) : (
         <div className="bg-gray-200 rounded-lg">
           <div className="p-4">
