@@ -49,6 +49,7 @@ const OwnerLayout = () => {
         throw new Error(`Failed to fetch boarding: ${response.statusText}`);
       }
       const data = await response.json();
+      console.log(data);
       setBoarding(data); 
     } catch (error) {
       console.error("Error fetching boarding:", error);
