@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
-//schema menu
 const paymentSchema = new Schema({
     transactionId: String,
     email: String,
