@@ -9,11 +9,13 @@ import { Link } from 'react-router-dom';
 
 const BookingComponent = ({currentuser, id, place, title, owner}) => {
   const {user} = useAuth();
-  const { register, handleSubmit, reset } = useForm();
+  const { register: registerAdd, handleSubmit: handleSubmitAdd, reset: resetAdd } = useForm();
+  const { register: registerUpdate, handleSubmit: handleSubmitUpdate, reset: resetUpdate, setValue } = useForm();
   const [isUser, isUserLoading] = useUser();
   const axiosSecure = useAxiosSecure();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(null);
+  const [update, setUpdate] = useState(null);
 
   const fetchBooking = async () => {
     setLoading(true); 
@@ -23,7 +25,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
             throw new Error(`Failed to fetch booking: ${response.statusText}`);
         }
         const data = await response.json();
-        setBooking(data.length > 0 ? data : null); 
+        setBooking(data); 
     } catch (error) {
         console.error("Error fetching booking:", error);
         setBooking(null); 
@@ -42,7 +44,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
     }, 1000); 
 };
 
-  const onSubmit = async (data) => {
+  const onSubmitAdd = async (data) => {
     try {
       const Booking = {
         listing: id,
@@ -62,7 +64,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           showConfirmButton: false,
           timer: 1500,
         });
-        reset();
+        resetAdd();
         refetchBooking();
       }
     } catch (error) {
@@ -84,7 +86,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
     <div>
     {user ? (
       isUser ? (
-        !booking ? (
+        
       <div className="bg-black rounded-lg p-4">
         <div className="bg-gray-300 mb-2 rounded-lg p-2 pb-4">
           <div className='p-2'>
@@ -94,10 +96,10 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           <h2 className='mb-4 text-xl text-green'>
             {title} - {place} by <span className='text-black'>{owner}</span>
           </h2>
-          <p className='font-mono font-semibold text-gray-500 mb-2'>Once the request accepted you will see a link <span className='text-secondary font-bold'>here</span> to the payments page.</p>
           </div>
+          {!booking ? (
           <div className="border bg-gray-300 rounded-lg p-4 px-2">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmitAdd(onSubmitAdd)}>
               <div className='space-y-6'>
                 <div className='form-control'>
                   <label className='block text-sm font-medium mb-2'>
@@ -110,13 +112,12 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                     className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                   />
                 </div>
-
                 <div className='form-control'>
                   <label className='block text-sm font-medium mb-2'>
                     Select when would you like to move in
                   </label>
                   <select
-                    {...register('movein', { required: true })}
+                    {...registerAdd('movein', { required: true })}
                     className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                     defaultValue=''
                   >
@@ -134,7 +135,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                       Payment Method
                     </label>
                     <select
-                      {...register('paymethod', { required: true })}
+                      {...registerAdd('paymethod', { required: true })}
                       className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                       defaultValue=''
                     >
@@ -151,7 +152,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                     Special Needs
                   </label>
                   <textarea
-                    {...register('needs')}
+                    {...registerAdd('needs')}
                     className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                     placeholder='Special Needs'
                     defaultValue=''
@@ -165,9 +166,102 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
               </div>
             </form>
           </div>
+          ):(
+            
+            <div className="border bg-gray-300 rounded-lg p-4 px-2">
+              <div>
+                <h2 className='mb-2 text-lg font-semibold'>
+                  Status: <span className='text-blue-500'>{booking.status}</span>
+                </h2>
+                <h2 className='mb-2 text-lg font-semibold'>
+                  Payments: <span className='text-blue-500'>{booking.paystatus}</span>
+                </h2>
+                <h2 className='mb-4 text-lg font-semibold'>
+                  Paid Amount: <span className='text-blue-500'>${booking.payment}</span>
+                </h2>
+              </div>
+            <form onSubmit={handleSubmitUpdate(onSubmitAdd)}>
+              <div className='space-y-6'>
+                <div className='form-control'>
+                  <label className='block text-sm font-medium mb-2'>
+                    Your e-mail
+                  </label>
+                  <input
+                    type='text'
+                    defaultValue={user.email}
+                    disabled
+                    className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                  />
+                </div>
+    
+                <div className='form-control'>
+                  <label className='block text-sm font-medium mb-2'>
+                    Select when would you like to move in
+                  </label>
+                  <select
+                    {...registerUpdate('movein', { required: true })}
+                    className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                    defaultValue={booking.movein}
+                    disabled
+                  >
+                    <option value='' disabled>Pick one</option>
+                    <option value='Immediately'>Immediately</option>
+                    <option value='1-Week'>1-Week</option>
+                    <option value='2-Weeks'>2-Weeks</option>
+                    <option value='1-Month'>1-Month</option>
+                  </select>
+                </div>
+    
+                <div className='flex gap-4'>
+                  <div className='form-control w-full'>
+                    <label className='block text-sm font-medium mb-2'>
+                      Payment Method
+                    </label>
+                    <select
+                      {...registerUpdate('paymethod', { required: true })}
+                      className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                      defaultValue={booking.payvia}
+                      disabled
+                    >
+                      <option value='' disabled>Pick one</option>
+                      <option value='Card'>Pay via Website (Card)</option>
+                      <option value='Cash'>Cash in Hand</option>
+                      <option value='Bank'>Bank Transfer</option>
+                    </select>
+                  </div>
+                </div>
+    
+                <div className='form-control'>
+                  <label className='block text-sm font-medium mb-2'>
+                    Special Needs
+                  </label>
+                  <textarea
+                    {...registerUpdate('needs')}
+                    className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                    placeholder='Special Needs'
+                    defaultValue={booking.needs}
+                    rows='2'
+                    disabled
+                  ></textarea>
+                </div>
+
+                <div className='w-full flex gap-2 justify-between'>
+                <button className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black transition duration-300 flex items-center justify-center gap-2'>
+                  Update a Booking
+                </button>
+                <button onClick={() => handleDelete(todo._id)} className="w-full bg-rose-500 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">
+                  Delete
+                </button>
+                </div>
+    
+                
+              </div>
+            </form>
+          </div>
+          )}
         </div>
       </div>
-      ):(<>Already add a booking to this listing</>)
+      
       ) : (
         <div className="bg-gray-200 rounded-lg">
           <div className="p-4">
