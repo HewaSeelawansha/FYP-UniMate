@@ -67,15 +67,15 @@ const updateCart = async (req, res) => {
     }
 }
 // get single recipe
-const getSingleCart = async (req, res) => {
-    const cartId = req.params.id;
-    try {
-        const cartItem = await Carts.findById(cartId)
-        res.status(200).json(cartItem)
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-};
+// const getSingleCart = async (req, res) => {
+//     const cartId = req.params.id;
+//     try {
+//         const cartItem = await Carts.findById(cartId)
+//         res.status(200).json(cartItem)
+//     } catch (error) {
+//         res.status(500).json({message: error.message});
+//     }
+// };
 
 
 module.exports = {
