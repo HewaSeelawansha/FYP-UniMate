@@ -15,7 +15,4 @@ router.delete('/:id', cartController.deleteCart)
 // Update an item in the cart
 router.put('/:id', cartController.updateCart)
 
-// Get a single cart item by its ID
-router.get('/:id', cartController.getSingleCart)
-
 module.exports = router;
