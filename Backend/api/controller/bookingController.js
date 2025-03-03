@@ -40,7 +40,7 @@ const getBookigsByUserListing = async (req, res) => {
           return res.status(400).json({ message: 'Listing ID and email are required' });
       }
       const query = { listing: id, email: email };
-      const result = await Booking.find(query).exec();
+      const result = await Booking.findOne(query).exec();
       res.status(200).json(result); 
   } catch (error) {
       console.error('Error fetching bookings:', error.message);
