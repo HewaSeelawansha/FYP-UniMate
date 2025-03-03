@@ -1,25 +1,38 @@
-import React, { useContext } from 'react'
-import { AuthContext } from '../contexts/AuthProvider'
+import React, { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthProvider';
 import { useQuery } from '@tanstack/react-query';
 
-  const useCart = () => {
-    const {user} = useContext(AuthContext);
-    const token = localStorage.getItem('access-token');
+// Create a custom hook for fetching cart data
+const useCart = () => {
+  const { user } = useContext(AuthContext);
+  const token = localStorage.getItem('access-token');
 
-    const { refetch, data:cart = []} = useQuery({
-        queryKey: ['carts', user?.email],
-        queryFn: async () => {
-            const res = await fetch(`http://localhost:3000/carts?email=${user?.email}`,{
-              headers: {
-                authorization : `Bearer ${token}`,
-              },
-              method: 'GET',
-            })
-            return res.json();
-        },
-    })
-  
-  return [cart, refetch]
-}
+  // Use the useQuery hook from react-query to fetch cart data
+  const { refetch, data: cart = [] } = useQuery({
+    queryKey: ['carts', user?.email],
+    queryFn: async () => {
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/carts?email=${user?.email}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            method: 'GET',
+          }
+        );
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+      }
+    },
+  });
 
-export default useCart
+  return [cart, refetch];
+};
+
+export default useCart;
