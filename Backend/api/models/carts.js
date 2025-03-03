@@ -18,6 +18,9 @@ const cartSchema = new Schema({
         type: String,
         trim: true,
         required: true,
+    },
+    promotions:{
+        type:String
     }
 });
 
