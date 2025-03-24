@@ -44,7 +44,8 @@ const Cards = ({ item }) => {
           <h2 className="text-xl font-bold text-gray-800 mb-1">{name}</h2>
         </Link>
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-        {description.length > 35 ? description.slice(0, 36) + "..." : description}
+        {description.length > 33 ? description.slice(0, 33) + "..." : description}
+        
         </p>
 
         {/* Price */}
