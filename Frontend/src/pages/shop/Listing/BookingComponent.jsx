@@ -200,8 +200,6 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           </div>
           ):(
             <div className="border bg-white rounded-lg p-4 px-2">
-              {update}
-              <div>
                 <div>
                   <h2 className='mb-2 text-lg font-semibold'>
                     Status: <span className='text-blue-500'>{booking.status}</span>
@@ -214,6 +212,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                   </h2>
                 </div>
                 <hr />
+                {!update? (
                 <div>
                   <h2 className='my-2 text-lg font-semibold'>
                     Email: <span className=''>{booking.email}</span>
@@ -227,8 +226,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                   <h2 className='mb-2 text-lg font-semibold'>
                     Needs: <span className=''>{booking.needs}</span>
                   </h2>
-                </div>
-              </div>
+                </div>):(
               <div>
                 <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
                   <div className='space-y-6'>
@@ -308,6 +306,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                   </div>
                 </form>
               </div>
+              )}
           </div>
           )}
         </div>
