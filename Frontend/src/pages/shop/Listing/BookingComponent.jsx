@@ -201,109 +201,111 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           ):(
             <div className="border bg-white rounded-lg p-4 px-2">
               <div>
-                <h2 className='mb-2 text-lg font-semibold'>
-                  Status: <span className='text-blue-500'>{booking.status}</span>
-                </h2>
-                <h2 className='mb-2 text-lg font-semibold'>
-                  Payments: <span className='text-blue-500'>{booking.paystatus}</span>
-                </h2>
-                <h2 className='mb-2 text-lg font-semibold'>
-                  Paid Amount: <span className='text-blue-500'>${booking.payment}</span>
-                </h2>
+                <div>
+                  <h2 className='mb-2 text-lg font-semibold'>
+                    Status: <span className='text-blue-500'>{booking.status}</span>
+                  </h2>
+                  <h2 className='mb-2 text-lg font-semibold'>
+                    Payments: <span className='text-blue-500'>{booking.paystatus}</span>
+                  </h2>
+                  <h2 className='mb-2 text-lg font-semibold'>
+                    Paid Amount: <span className='text-blue-500'>${booking.payment}</span>
+                  </h2>
+                </div>
+                <hr />
+                <div>
+                  <h2 className='my-2 text-lg font-semibold'>
+                    Email: <span className=''>{booking.email}</span>
+                  </h2>
+                  <h2 className='mb-2 text-lg font-semibold'>
+                    Move In: <span className=''>{booking.movein}</span>
+                  </h2>
+                  <h2 className='mb-2 text-lg font-semibold'>
+                    Payment Method: <span className=''>{booking.payvia}</span>
+                  </h2>
+                  <h2 className='mb-2 text-lg font-semibold'>
+                    Needs: <span className=''>{booking.needs}</span>
+                  </h2>
+                </div>
               </div>
-              <hr />
               <div>
-                <h2 className='my-2 text-lg font-semibold'>
-                  Email: <span className=''>{booking.email}</span>
-                </h2>
-                <h2 className='mb-2 text-lg font-semibold'>
-                  Move In: <span className=''>{booking.movein}</span>
-                </h2>
-                <h2 className='mb-2 text-lg font-semibold'>
-                  Payment Method: <span className=''>{booking.payvia}</span>
-                </h2>
-                <h2 className='mb-2 text-lg font-semibold'>
-                  Needs: <span className=''>{booking.needs}</span>
-                </h2>
-              </div>
-              <div>
-              <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
-                <div className='space-y-6'>
-                  <div className='form-control'>
-                    <label className='block text-sm font-medium my-2'>
-                      Your e-mail
-                    </label>
-                    <input
-                      type='text'
-                      defaultValue={user.email}
-                      disabled
-                      className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                    />
-                  </div>
-      
-                  <div className='form-control'>
-                    <label className='block text-sm font-medium mb-2'>
-                      Select when would you like to move in
-                    </label>
-                    <select
-                      {...registerUpdate('movein', { required: true })}
-                      className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                      defaultValue={booking.movein}
-                      // disabled
-                    >
-                      <option value='' disabled>Pick one</option>
-                      <option value='Immediately'>Immediately</option>
-                      <option value='1-Week'>1-Week</option>
-                      <option value='2-Weeks'>2-Weeks</option>
-                      <option value='1-Month'>1-Month</option>
-                    </select>
-                  </div>
-      
-                  <div className='flex gap-4'>
-                    <div className='form-control w-full'>
+                <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
+                  <div className='space-y-6'>
+                    <div className='form-control'>
+                      <label className='block text-sm font-medium my-2'>
+                        Your e-mail
+                      </label>
+                      <input
+                        type='text'
+                        defaultValue={user.email}
+                        disabled
+                        className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                      />
+                    </div>
+        
+                    <div className='form-control'>
                       <label className='block text-sm font-medium mb-2'>
-                        Payment Method
+                        Select when would you like to move in
                       </label>
                       <select
-                        {...registerUpdate('paymethod', { required: true })}
+                        {...registerUpdate('movein', { required: true })}
                         className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                        defaultValue={booking.payvia}
+                        defaultValue={booking.movein}
                         // disabled
                       >
                         <option value='' disabled>Pick one</option>
-                        <option value='Card'>Pay via Website (Card)</option>
-                        <option value='Cash'>Cash in Hand</option>
-                        <option value='Bank'>Bank Transfer</option>
+                        <option value='Immediately'>Immediately</option>
+                        <option value='1-Week'>1-Week</option>
+                        <option value='2-Weeks'>2-Weeks</option>
+                        <option value='1-Month'>1-Month</option>
                       </select>
                     </div>
-                  </div>
-      
-                  <div className='form-control'>
-                    <label className='block text-sm font-medium mb-2'>
-                      Special Needs
-                    </label>
-                    <textarea
-                      {...registerUpdate('needs')}
-                      className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                      placeholder='Special Needs'
-                      defaultValue={booking.needs}
-                      rows='2'
-                      // disabled
-                    ></textarea>
-                  </div>
+        
+                    <div className='flex gap-4'>
+                      <div className='form-control w-full'>
+                        <label className='block text-sm font-medium mb-2'>
+                          Payment Method
+                        </label>
+                        <select
+                          {...registerUpdate('paymethod', { required: true })}
+                          className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                          defaultValue={booking.payvia}
+                          // disabled
+                        >
+                          <option value='' disabled>Pick one</option>
+                          <option value='Card'>Pay via Website (Card)</option>
+                          <option value='Cash'>Cash in Hand</option>
+                          <option value='Bank'>Bank Transfer</option>
+                        </select>
+                      </div>
+                    </div>
+        
+                    <div className='form-control'>
+                      <label className='block text-sm font-medium mb-2'>
+                        Special Needs
+                      </label>
+                      <textarea
+                        {...registerUpdate('needs')}
+                        className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                        placeholder='Special Needs'
+                        defaultValue={booking.needs}
+                        rows='2'
+                        // disabled
+                      ></textarea>
+                    </div>
 
-                  <div className='w-full flex gap-2 justify-between'>
-                  <button className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black transition duration-300 flex items-center justify-center gap-2'>
-                    Edit
-                  </button>
-                  <button onClick={() => handleDelete(todo._id)} className="w-full bg-rose-500 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">
-                    Delete
-                  </button>
+                    <div className='w-full flex gap-2 justify-between'>
+                    <button className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black transition duration-300 flex items-center justify-center gap-2'>
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(todo._id)} className="w-full bg-rose-500 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">
+                      Delete
+                    </button>
+                    </div>
+        
+                    
                   </div>
-      
-                  
-                </div>
-              </form>
+                </form>
               </div>
           </div>
           )}
