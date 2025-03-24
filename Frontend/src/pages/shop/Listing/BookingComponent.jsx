@@ -6,6 +6,7 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { FaUpload } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
+import { MdEditSquare } from "react-icons/md";
 
 const BookingComponent = ({currentuser, id, place, title, owner}) => {
   const {user} = useAuth();
@@ -113,7 +114,10 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
   if (loading) {
     return <div className="text-center py-20">Loading...</div>;
   }
-  
+
+  const toggleUpdate = () => {
+    setUpdate((prevUpdate) => !prevUpdate);
+  };
 
   return (
     <div>
@@ -211,6 +215,12 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                   <h2 className='mb-2 text-lg font-semibold'>
                     Paid Amount: <span className='text-blue-500'>${booking.payment}</span>
                   </h2>
+                  <button
+                          onClick={() => toggleUpdate()}
+                          className="p-1 m-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+                        >
+                          <MdEditSquare />
+                        </button>
                 </div>
                 <hr />
                 {!update? (
