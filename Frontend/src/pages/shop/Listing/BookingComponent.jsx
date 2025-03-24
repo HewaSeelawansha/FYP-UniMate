@@ -112,7 +112,8 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
 
   if (loading) {
     return <div className="text-center py-20">Loading...</div>;
-}
+  }
+  
 
   return (
     <div>
