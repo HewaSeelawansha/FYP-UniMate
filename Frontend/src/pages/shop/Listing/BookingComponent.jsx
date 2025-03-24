@@ -15,7 +15,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
   const axiosSecure = useAxiosSecure();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(null);
-  const [update, setUpdate] = useState(null);
+  const [update, setUpdate] = useState(true);
 
   const fetchBooking = async () => {
     setLoading(true); 
@@ -200,6 +200,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           </div>
           ):(
             <div className="border bg-white rounded-lg p-4 px-2">
+              {update}
               <div>
                 <div>
                   <h2 className='mb-2 text-lg font-semibold'>
