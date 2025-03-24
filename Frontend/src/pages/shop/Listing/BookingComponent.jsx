@@ -16,7 +16,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
   const axiosSecure = useAxiosSecure();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(null);
-  const [update, setUpdate] = useState(true);
+  const [update, setUpdate] = useState(false);
 
   const fetchBooking = async () => {
     setLoading(true); 
@@ -125,7 +125,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
       isUser ? (
         
       <div className="bg-black rounded-lg p-4">
-        <div className="bg-gray-300 mb-2 rounded-lg p-2 pb-4">
+        <div className="bg-blue-200 mb-2 rounded-lg p-2 pb-4">
           <div className='p-2'>
           <h2 className='mb-4 text-2xl font-bold'>
             Make a booking 
@@ -204,43 +204,54 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
             </form>
           </div>
           ):(
-            <div className="border bg-white rounded-lg p-4 px-2">
-                <div>
-                  <h2 className='mb-2 text-lg font-semibold'>
+            <div>
+                <div className="bg-black text-white p-2 text-md border border-gray-700 rounded-lg relative">
+                  <h2 className='mb-2 font-semibold'>
                     Status: <span className='text-blue-500'>{booking.status}</span>
                   </h2>
-                  <h2 className='mb-2 text-lg font-semibold'>
+                  <h2 className='mb-2 font-semibold'>
                     Payments: <span className='text-blue-500'>{booking.paystatus}</span>
                   </h2>
-                  <h2 className='mb-2 text-lg font-semibold'>
+                  <h2 className='font-semibold'>
                     Paid Amount: <span className='text-blue-500'>${booking.payment}</span>
                   </h2>
-                  <button
-                    onClick={() => toggleUpdate()}
-                    className="p-1 m-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
-                  >
-                    <MdEditSquare />
-                  </button>
+                  <div className="absolute top-2 right-2 flex space-x-2">
+                    <button
+                      onClick={() => toggleUpdate()}
+                      className="p-1 w-full bg-blue-500 text-black rounded-md hover:bg-white hover:text-blue-500 transition duration-300"
+                    ><MdEditSquare />
+                    </button>
+                  </div>
+                  <div className="absolute bottom-2 right-2 flex space-x-2">
+                    <button
+                      onClick={() => toggleUpdate()}
+                      className="p-1 px-2 w-full bg-emerald-500 text-black rounded-md hover:bg-white hover:text-emerald-500 transition duration-300"
+                    >Pay Now 
+                    </button>
+                  </div>
                 </div>
-                <hr />
+                <hr className='my-2' />
                 {!update? (
-                <div>
-                  <h2 className='my-2 text-lg font-semibold'>
+                <div className='bg-black text-white p-2 text-md border border-gray-700 rounded-lg'>
+                  <h2 className='my-2 font-semibold'>
                     Email: <span className=''>{booking.email}</span>
                   </h2>
-                  <h2 className='mb-2 text-lg font-semibold'>
+                  <h2 className='mb-2 font-semibold'>
                     Move In: <span className=''>{booking.movein}</span>
                   </h2>
-                  <h2 className='mb-2 text-lg font-semibold'>
+                  <h2 className='mb-2 font-semibold'>
                     Payment Method: <span className=''>{booking.payvia}</span>
                   </h2>
-                  <h2 className='mb-2 text-lg font-semibold'>
+                  <h2 className='mb-2 font-semibold'>
                     Needs: <span className=''>{booking.needs}</span>
                   </h2>
                 </div>):(
               <div>
+                <h2 className='text-2xl font-bold mb-2'>
+                  Edit Your Booking
+                </h2>
                 <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
-                  <div className='space-y-6'>
+                  <div className='space-y-6 bg-white p-1 rounded-lg pb-4'>
                     <div className='form-control'>
                       <label className='block text-sm font-medium my-2'>
                         Your e-mail
@@ -249,7 +260,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                         type='text'
                         defaultValue={user.email}
                         disabled
-                        className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                        className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                       />
                     </div>
         
@@ -259,7 +270,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                       </label>
                       <select
                         {...registerUpdate('movein', { required: true })}
-                        className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                        className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                         defaultValue={booking.movein}
                         // disabled
                       >
@@ -278,7 +289,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                         </label>
                         <select
                           {...registerUpdate('paymethod', { required: true })}
-                          className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                          className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                           defaultValue={booking.payvia}
                           // disabled
                         >
@@ -296,7 +307,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                       </label>
                       <textarea
                         {...registerUpdate('needs')}
-                        className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                        className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
                         placeholder='Special Needs'
                         defaultValue={booking.needs}
                         rows='2'
@@ -305,15 +316,14 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                     </div>
 
                     <div className='w-full flex gap-2 justify-between'>
-                    <button className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black transition duration-300 flex items-center justify-center gap-2'>
-                      Edit
-                    </button>
-                    <button onClick={() => handleDelete(todo._id)} className="w-full bg-rose-500 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">
-                      Delete
-                    </button>
+                      <button className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500 transition duration-300 flex items-center justify-center gap-2'>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(todo._id)} className="w-full text-white bg-rose-500 hover:bg-black hover:text-rose-500 px-4 py-2 rounded-lg">
+                        Delete
+                      </button>
                     </div>
-        
-                    
+
                   </div>
                 </form>
               </div>
