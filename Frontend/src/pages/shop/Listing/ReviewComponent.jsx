@@ -190,7 +190,7 @@ const ReviewComponent = ({listing}) => {
 
           {/* Conditional Rendering for Add or Update Review */}
           {user ? (
-          isUser ? (
+        isUser ? (
           !update ? (
             <div className="bg-gray-200 rounded-lg p-4">
               <h2 className="text-xl font-bold mb-4">Add Review</h2>
