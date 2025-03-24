@@ -226,6 +226,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                   Needs: <span className=''>{booking.needs}</span>
                 </h2>
               </div>
+              <div>
               <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
                 <div className='space-y-6'>
                   <div className='form-control'>
@@ -303,6 +304,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                   
                 </div>
               </form>
+              </div>
           </div>
           )}
         </div>
