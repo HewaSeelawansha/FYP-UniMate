@@ -8,7 +8,7 @@ router.post('/', bookingController.postBooking)
 router.get('/:email/:id', bookingController.getBookigsByUserListing)
 router.get('/:id', bookingController.getBookigsByListing)
 router.get('/user/:email', bookingController.getBookigsByEmail)
-router.patch('/:id', bookingController.getBookigsByEmail)
+router.patch('/:id', bookingController.updateBooking)
 router.patch('/status/:id', bookingController.updateStatus)
 
 module.exports = router;
