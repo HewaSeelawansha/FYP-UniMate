@@ -125,9 +125,9 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           <h2 className='mb-4 text-2xl font-bold'>
             Make a booking 
           </h2>
-          <h2 className='mb-4 text-xl text-green'>
+          {/* <h2 className='mb-4 text-xl text-green'>
             {title} - {place} by <span className='text-black'>{owner}</span>
-          </h2>
+          </h2> */}
           </div>
           {!booking ? (
           <div className="border bg-gray-300 rounded-lg p-4 px-2">
@@ -199,7 +199,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
             </form>
           </div>
           ):(
-            <div className="border bg-gray-300 rounded-lg p-4 px-2">
+            <div className="border bg-white rounded-lg p-4 px-2">
               <div>
                 <h2 className='mb-2 text-lg font-semibold'>
                   Status: <span className='text-blue-500'>{booking.status}</span>
@@ -214,13 +214,16 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
               <hr />
               <div>
                 <h2 className='my-2 text-lg font-semibold'>
-                  Status: <span className='text-blue-500'>{booking.status}</span>
+                  Email: <span className=''>{booking.email}</span>
                 </h2>
                 <h2 className='mb-2 text-lg font-semibold'>
-                  Payments: <span className='text-blue-500'>{booking.paystatus}</span>
+                  Move In: <span className=''>{booking.movein}</span>
                 </h2>
                 <h2 className='mb-2 text-lg font-semibold'>
-                  Paid Amount: <span className='text-blue-500'>${booking.payment}</span>
+                  Payment Method: <span className=''>{booking.payvia}</span>
+                </h2>
+                <h2 className='mb-2 text-lg font-semibold'>
+                  Needs: <span className=''>{booking.needs}</span>
                 </h2>
               </div>
               <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
