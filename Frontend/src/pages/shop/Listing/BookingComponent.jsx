@@ -216,11 +216,11 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                     Paid Amount: <span className='text-blue-500'>${booking.payment}</span>
                   </h2>
                   <button
-                          onClick={() => toggleUpdate()}
-                          className="p-1 m-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
-                        >
-                          <MdEditSquare />
-                        </button>
+                    onClick={() => toggleUpdate()}
+                    className="p-1 m-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+                  >
+                    <MdEditSquare />
+                  </button>
                 </div>
                 <hr />
                 {!update? (
