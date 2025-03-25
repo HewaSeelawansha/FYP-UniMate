@@ -98,6 +98,11 @@ const ViewListing = () => {
         ))}
       </div>
 
+      <div className='bg-gray-100 mb-5 p-4 rounded-lg'>
+        <p className="text-gray-700 mb-4"><strong>Monthly Rental:</strong> {boarding?.price}</p>
+        <p className="text-gray-700"><strong>Key Money:</strong> {boarding?.keyMoney>0? boarding?.keyMoney : 'Not Required'}</p>
+      </div>
+
       <div className="bg-gray-100 p-4 rounded-lg">
         <p className="text-gray-700"><strong>Added On:</strong> {new Date(boarding?.createdAt).toLocaleDateString()}</p>
       </div>
