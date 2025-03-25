@@ -119,6 +119,10 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
     setUpdate((prevUpdate) => !prevUpdate);
   };
 
+  const makePayment = () => {
+    setUpdate((prevUpdate) => !prevUpdate);
+  };
+
   return (
     <div>
     {user ? (
@@ -135,7 +139,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           </h2> */}
           </div>
           {!booking ? (
-          <div className="border bg-gray-300 rounded-lg p-4 px-2">
+          <div className="border bg-white rounded-lg p-4 px-2">
             <form onSubmit={handleSubmitAdd(onSubmitAdd)}>
               <div className='space-y-6'>
                 <div className='form-control'>
@@ -222,13 +226,15 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                     ><MdEditSquare />
                     </button>
                   </div>
+                  {/* Payments */}
                   <div className="absolute bottom-2 right-2 flex space-x-2">
                     <button
-                      onClick={() => toggleUpdate()}
+                      onClick={() => makePayment()}
                       className="p-1 px-2 w-full bg-emerald-500 text-black rounded-md hover:bg-white hover:text-emerald-500 transition duration-300"
                     >Pay Now 
                     </button>
                   </div>
+
                 </div>
                 <hr className='my-2' />
                 {!update? (
