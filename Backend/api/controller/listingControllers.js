@@ -1,6 +1,6 @@
 const Listing = require("../models/listing");
 
-// get all menu items
+// get all listing
 const getAllListings = async (req, res) => {
     try{
         const listings = await Listing.find({}).sort({createdAt: -1});
@@ -10,7 +10,7 @@ const getAllListings = async (req, res) => {
     }
 }
 
-// post a new menu item
+// post a new listing
 const postListing = async (req, res) => {
     const newItem = req.body;
     try{
@@ -21,7 +21,7 @@ const postListing = async (req, res) => {
     }
 }
 
-// delete a menu item
+// delete a listing
 const deleteListing = async (req, res) => {
     const listingId = req.params.id;
     try{
@@ -35,7 +35,7 @@ const deleteListing = async (req, res) => {
     }
 };
 
-// get single menu item
+// get single listing
 const singleListing = async (req, res) => {
     const listingId = req.params.id;
     try {
@@ -47,7 +47,7 @@ const singleListing = async (req, res) => {
     }
 };
 
-// update an existing menu item
+// update an existing listing
 const updateListing = async (req, res) => {
     const listingId = req.params.id;
     const { name, description, type, images, amenities, price, keyMoney, available } = req.body;
@@ -81,9 +81,6 @@ const updateListing = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-
-// update an existing menu item 
 
 module.exports = {
     getAllListings,
