@@ -2,15 +2,10 @@ import React from 'react';
 import {Elements} from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm';
-//import useCart from '../../hooks/useCart';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 const Payment = () => {
-  //const [cart] = useCart();
-  //console.log(cart)
-  // calculate the total amount
-  const cart = 10;
-  const cartTotal = 100;
+  const cartTotal = 15000;
   const totalPrice = parseFloat(cartTotal.toFixed(2));
   const totalItems = 10;
 
