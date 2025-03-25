@@ -110,11 +110,25 @@ const updateStatus= async (req, res) => {
     }
 };
 
+const deleteBooking = async (req, res) => {
+  const BookingId = req.params.id;
+  try{
+      const deletedItem = await Booking.findByIdAndDelete(BookingId);
+      if(!deletedItem){
+          return res.status(404).json({ message: "BookingId not found!"});
+      }
+      res.status(200).json({message: "BookingId deleted successfully!"});
+  } catch (error) {
+      res.status(500).json({message: error.message});
+  }
+};
+
 module.exports = {
     postBooking,
     getBookigsByUserListing,
     getBookigsByEmail,
     getBookigsByListing,
     updateBooking,
-    updateStatus
+    updateStatus,
+    deleteBooking
 }
