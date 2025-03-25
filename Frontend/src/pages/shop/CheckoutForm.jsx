@@ -102,15 +102,14 @@ const CheckoutForm = ({price, cart}) => {
       {/* left */}
       <div className='md:w-1/2 w-full space-y-3'>
         <h4 className='text-green text-lg font-semibold'>
-            Order Summary
+            Summary
         </h4>
-        <p>Number of Items: <span  className='font-semibold'>{cart}</span></p>
-        <p>Subtotal: <span  className='font-semibold'>${price}</span></p>
+        <p>Retal Payment: <span  className='font-semibold'>{price} LKR</span></p>
       </div>
       {/* right */}
       <div className='md:w-1/3 px-4 py-8 card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl space-y-5'>
         <h4 className='text-green text-lg font-semibold'>
-                Order Summary
+                Direct Payment
         </h4>
         <h5><span  className='font-medium'>Credit/Debit </span>Card</h5>
         {/* stripe */}
@@ -139,12 +138,12 @@ const CheckoutForm = ({price, cart}) => {
             cardError ? <p className='items-center flex justify-center font-mono text-red'><FaCcVisa/><span> : </span> {cardError}</p> : ""
         }
         {/* paypal */}
-        <div className='mt-5 text-center'>
+        {/* <div className='mt-5 text-center'>
             <hr/>
             <button className='btn w-full btn-sm mt-5 bg-orange-500 text-white' type="submit">
             <FaPaypal/> Pay with Paypal
             </button>
-        </div>
+        </div> */}
       </div>
     </div>
   )
