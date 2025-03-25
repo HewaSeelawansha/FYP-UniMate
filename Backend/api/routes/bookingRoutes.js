@@ -10,5 +10,6 @@ router.get('/:id', bookingController.getBookigsByListing)
 router.get('/user/:email', bookingController.getBookigsByEmail)
 router.patch('/:id', bookingController.updateBooking)
 router.patch('/status/:id', bookingController.updateStatus)
+router.delete('/:id', bookingController.deleteBooking)
 
 module.exports = router;
