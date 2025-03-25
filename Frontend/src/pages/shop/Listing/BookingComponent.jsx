@@ -136,8 +136,6 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
       if (result.isConfirmed) {
         const res = await axiosSecure.delete(`/booking/${booking?._id}`);
        if(res) {
-        setUpdate(false);
-        refetchReview();
         Swal.fire({
             position: "center",
             icon: "success",
