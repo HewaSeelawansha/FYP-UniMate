@@ -123,6 +123,33 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
     setUpdate((prevUpdate) => !prevUpdate);
   };
 
+  const handleDelete = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const res = await axiosSecure.delete(`/booking/${booking?._id}`);
+       if(res) {
+        setUpdate(false);
+        refetchReview();
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Your review has been deleted",
+            showConfirmButton: false,
+            timer: 1500
+          });
+       }
+      }
+    });
+  }
+
   return (
     <div>
     {user ? (
@@ -322,12 +349,16 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                     </div>
 
                     <div className='w-full flex gap-2 justify-between'>
-                      <button className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500 transition duration-300 flex items-center justify-center gap-2'>
+                      <button type="submit" className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500 transition duration-300 flex items-center justify-center gap-2'>
                         Edit
                       </button>
-                      <button onClick={() => handleDelete(todo._id)} className="w-full text-white bg-rose-500 hover:bg-black hover:text-rose-500 px-4 py-2 rounded-lg">
-                        Delete
-                      </button>
+                      <button 
+  type="button" 
+  onClick={handleDelete} 
+  className="w-full text-white bg-rose-500 hover:bg-black hover:text-rose-500 px-4 py-2 rounded-lg"
+>
+  Delete
+</button>
                     </div>
 
                   </div>
