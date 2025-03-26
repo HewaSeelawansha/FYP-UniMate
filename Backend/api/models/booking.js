@@ -20,7 +20,8 @@ const bookingSchema = new Schema({
         required: true
     },
     needs: {
-        type: String
+        type: String,
+        default: 'Not Specified'
     },
     status: {
         type: String,
@@ -31,6 +32,11 @@ const bookingSchema = new Schema({
         type: String,
         enum: ['Done', 'Not Yet'],
         default: 'Not Yet'
+    },
+    paid: {
+        type: String,
+        enum: ['Key Money & Rental', 'Key Money', 'Rental', 'Nothing'],
+        default: 'Nothing'
     },
     payment: {
         type: Number,
