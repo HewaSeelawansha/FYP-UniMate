@@ -3,13 +3,20 @@ const {Schema} = mongoose;
 
 const paymentSchema = new Schema({
     transactionId: String,
+    listing: {
+        type: Schema.Types.ObjectId,
+        ref: 'Listing',
+        required: true
+    },
+    booking: {
+        type: Schema.Types.ObjectId,
+        ref: 'Booking',
+        required: true
+    },
     email: String,
     price: Number, 
-    quantity: Number,
-    status: String,
-    itemName: String,
-    cartItems: String,
-    menuItems: String,
+    paid: String,
+    status: String
     },
     { timestamps: true }
 );
