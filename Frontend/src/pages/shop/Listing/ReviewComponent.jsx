@@ -146,7 +146,7 @@ const ReviewComponent = ({listing}) => {
             <h2 className={`text-white ${reviews.length > 0 ? 'mb-4' : 'mb-2'} text-xl font-semibold`}>
               Reviews from your peers
             </h2>
-            <div className="border bg-gray-300 rounded-lg pb-4 px-2 max-h-[300px] overflow-y-auto">
+            <div className="border bg-blue-200 rounded-lg pb-4 px-2 max-h-[300px] overflow-y-auto">
               {reviews.length > 0 ? (
                 reviews.map((review, index) => (
                   <div
@@ -190,9 +190,9 @@ const ReviewComponent = ({listing}) => {
 
           {/* Conditional Rendering for Add or Update Review */}
           {user ? (
-        isUser ? (
+          isUser ? (
           !update ? (
-            <div className="bg-gray-200 rounded-lg p-4">
+            <div className="bg-blue-200 rounded-lg p-4">
               <h2 className="text-xl font-bold mb-4">Add Review</h2>
               <label className="block text-sm font-medium text-gray-700">Your Rating</label>
               <div className="flex items-center space-x-2">
@@ -284,7 +284,8 @@ const ReviewComponent = ({listing}) => {
               </div>
             </div>
           )):
-          (<div className="bg-gray-200 font-bold rounded-lg p-4">Please<span className="text-green"> login </span>to add review</div>)}
+          (<div className="bg-gray-200 font-bold rounded-lg p-4">Please<span className="text-green"> login </span>to add review</div>)
+          }
         </div>
     );
 };
