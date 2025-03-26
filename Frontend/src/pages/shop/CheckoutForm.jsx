@@ -5,7 +5,7 @@ import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useNavigate } from 'react-router-dom';
 
-const CheckoutForm = ({price, cart}) => {
+const CheckoutForm = ({price, keyMoney, listing, booking}) => {
   const stripe = useStripe();
   const elements = useElements();
   const {user} = useAuth();
@@ -22,7 +22,7 @@ const CheckoutForm = ({price, cart}) => {
     }
     axiosSecure.post('/create-payment-intent', {price})
     .then( res => {
-        console.log(res.data.clientSecret)
+        // console.log(res.data.clientSecret)
         setClientSecret(res.data.clientSecret)
     })
   },[price, axiosSecure]);
@@ -65,32 +65,27 @@ const CheckoutForm = ({price, cart}) => {
           },
         });
       if (confirmError) {
-        console.log(confirmError)
+        // console.log(confirmError)
         alert('Failed to confirm payment');
       }
-      console.log(paymentIntent);
+      // console.log(paymentIntent);
       if (paymentIntent.status === 'succeeded') {
-        console.log(paymentIntent.id)
+        // console.log(paymentIntent.id)
         setCardError(`Your Transaction ID is ${paymentIntent.id}`)
         // payment info
         const paymentInfo = {
-            email: user.email,
             transactionId: paymentIntent.id,
+            booking: booking,
+            listing: listing,
+            email: user.email,
             price,
-            quantity: cart,
-            status: "Order Processing",
-            itemName: "Order Processing",
-            cartItems: "Order Processing",
-            menuItems: "Order Processing",
-            //itemName: carts.map(item => item.name),
-            //cartItems: carts.map(item => item._id),
-            //menuItems: carts.map(item => item.menuItemId)
+            paid: "Rental",
+            status: "Done"
         }
-        console.log(paymentInfo);
         // sent to backend
         axiosSecure.post('/payments', paymentInfo)
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           alert('All Done');
           navigate('/payments')
         });
