@@ -23,7 +23,6 @@ const getAllReviews = async (req, res) => {
 
 const addReview = async (req, res) => {
     const { listingId, email, rating, reviewText } = req.body;
-
     try {
         // Create a new review
         const newReview = new Review({
@@ -33,7 +32,6 @@ const addReview = async (req, res) => {
             reviewText
         });
         await newReview.save();
-
         // Find the listing and update review count and average rating
         const listing = await Listing.findById(listingId);
         listing.reviewCount += 1;
@@ -41,7 +39,7 @@ const addReview = async (req, res) => {
         const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
         listing.rating = Math.round(averageRating);
         await listing.save();
-
+        
         res.status(200).json({ message: "Review added successfully", listing });
     } catch (error) {
         res.status(500).json({ message: "Error adding review", error });
