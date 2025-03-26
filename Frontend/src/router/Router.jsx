@@ -5,7 +5,6 @@ import Menu from "../pages/shop/Menu";
 import Signup from "../components/Signup";
 import PrivateRouter from "../PrivateRouter/PrivateRouter";
 import UpdateProfile from "../pages/dashboard/UpdateProfile";
-import CartPage from "../pages/shop/CartPage";
 import OwnerLayout from "../layout/OwnerLayout";
 import OwnerDashboard from "../pages/dashboard/Owner/Dashboard";
 import AdminDashboard from "../pages/dashboard/Admin/Dashboard";
@@ -40,10 +39,10 @@ const router = createBrowserRouter([
             path: "/menu",
             element: <Menu/>
         },
-        {
-          path: "/cart-page",
-          element: <CartPage/>
-        },
+        // {
+        //   path: "/cart-page",
+        //   element: <CartPage/>
+        // },
         {
           path: "/payments",
           element:<PrivateRouter><Payments/></PrivateRouter>
