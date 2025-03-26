@@ -2,17 +2,40 @@ const Payment = require("../models/Payments");
 const Carts = require("../models/carts");
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const Booking = require("../models/booking");
 
 // post a new menu item
 const postPaymentItem = async (req, res) => {
     const payment = req.body;
-    try{
+    const { booking, status, paid, price } = req.body;
+    try {
+        // First, create the payment record
         const paymentRequest = await Payment.create(payment);
-        res.status(200).json({paymentRequest});
+
+        // Find and update the booking
+        const updatedBooking = await Booking.findById(booking);
+        
+        // Ensure the booking exists
+        if (!updatedBooking) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+
+        // Update the status and paid properties
+        updatedBooking.paystatus = status;
+        updatedBooking.paid = paid;
+        updatedBooking.payment = price;
+
+        // Save the updated booking
+        await updatedBooking.save();
+
+        // Return success response
+        res.status(200).json({ paymentRequest });
     } catch (error) {
-        res.status(400).json({message: error.message});
+        console.error(error);  // Add logging for better debugging
+        res.status(400).json({ message: error.message });
     }
-}
+};
+
 
 // get all payment requests
 const getPayements = async (req, res) => {
