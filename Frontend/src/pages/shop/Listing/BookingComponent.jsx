@@ -5,10 +5,10 @@ import { useForm } from 'react-hook-form';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { FaUpload } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdEditSquare } from "react-icons/md";
 
-const BookingComponent = ({currentuser, id, place, title, owner}) => {
+const BookingComponent = ({currentuser, id, price, keyMoney}) => {
   const {user} = useAuth();
   const { register: registerAdd, handleSubmit: handleSubmitAdd, reset: resetAdd } = useForm();
   const { register: registerUpdate, handleSubmit: handleSubmitUpdate, reset: resetUpdate, setValue } = useForm();
@@ -17,6 +17,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(null);
   const [update, setUpdate] = useState(false);
+  const navigate = useNavigate(null);
 
   const fetchBooking = async () => {
     setLoading(true); 
@@ -52,7 +53,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
         email: currentuser,
         movein: data.movein,
         payvia: data.paymethod,
-        needs: data.needs
+        needs: data.needs.length>1 && data.needs || 'Not Specified',
       };
 
       const postBooking = await axiosSecure.post('/booking', Booking);
@@ -67,6 +68,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
         });
         resetAdd();
         refetchBooking();
+        setUpdate(false);
       }
     } catch (error) {
       Swal.fire({
@@ -99,6 +101,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
         });
         resetAdd();
         refetchBooking();
+        setUpdate(false);
       }
     } catch (error) {
       Swal.fire({
@@ -120,7 +123,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
   };
 
   const makePayment = () => {
-    setUpdate((prevUpdate) => !prevUpdate);
+    navigate("/process-checkout", { state: { Rent: price, KeyMoney: keyMoney, Listing: id, Booking:booking._id } });
   };
 
   const handleDelete = () => {
@@ -141,7 +144,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
         Swal.fire({
             position: "center",
             icon: "success",
-            title: "Your review has been deleted",
+            title: "Your booking has been deleted",
             showConfirmButton: false,
             timer: 1500
           });
@@ -154,19 +157,18 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
     <div>
     {user ? (
       isUser ? (
-        
       <div className="bg-black rounded-lg p-4">
-        <div className="bg-blue-200 mb-2 rounded-lg p-2 pb-4">
-          <div className='p-2'>
-          <h2 className='mb-4 text-2xl font-bold'>
-            Make a booking 
-          </h2>
-          {/* <h2 className='mb-4 text-xl text-green'>
-            {title} - {place} by <span className='text-black'>{owner}</span>
-          </h2> */}
-          </div>
+        <div className="bg-blue-200 rounded-lg p-2 pb-4">
           {!booking ? (
           <div className="border bg-white rounded-lg p-4 px-2">
+            <div className='p-2'>
+              <h2 className='mb-4 text-2xl font-bold'>
+                Make a Booking 
+              </h2>
+              {/* <h2 className='mb-4 text-xl text-green'>
+                {title} - {place} by <span className='text-black'>{owner}</span>
+              </h2> */}
+            </div>
             <form onSubmit={handleSubmitAdd(onSubmitAdd)}>
               <div className='space-y-6'>
                 <div className='form-control'>
@@ -222,8 +224,8 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                   <textarea
                     {...registerAdd('needs')}
                     className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                    placeholder='Special Needs'
-                    defaultValue=''
+                    placeholder='Specific Needs'
+                    // defaultValue='Not Specified'
                     rows='2'
                   ></textarea>
                 </div>
@@ -236,15 +238,23 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           </div>
           ):(
             <div>
+                <div className='p-2'>
+                  <h2 className='mb-2 text-2xl font-bold'>
+                    Your Booking Details 
+                  </h2>
+                </div>
                 <div className="bg-black text-white p-2 text-md border border-gray-700 rounded-lg relative">
                   <h2 className='mb-2 font-semibold'>
                     Status: <span className='text-blue-500'>{booking.status}</span>
                   </h2>
                   <h2 className='mb-2 font-semibold'>
-                    Payments: <span className='text-blue-500'>{booking.paystatus}</span>
+                    Payments: <span className={`${booking.paystatus === 'Done'? 'text-emerald-500' : 'text-green'}`}>{booking.paystatus}</span>
                   </h2>
+                  {booking.payment===0? <></>:<h2 className='mb-2 font-semibold'>
+                    Paid Amount: <span className='text-blue-500'>{booking.payment} LKR</span>
+                  </h2>}
                   <h2 className='font-semibold'>
-                    Paid Amount: <span className='text-blue-500'>${booking.payment}</span>
+                    Date of Booking: <span className='font-normal'>{new Date(booking.createdAt).toLocaleDateString()}</span>
                   </h2>
                   <div className="absolute top-2 right-2 flex space-x-2">
                     <button
@@ -254,122 +264,121 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
                     </button>
                   </div>
                   {/* Payments */}
-                  <div className="absolute bottom-2 right-2 flex space-x-2">
+                  {booking.status==='Pending'?<div className="absolute bottom-2 right-2 flex space-x-2">
                     <button
                       onClick={() => makePayment()}
                       className="p-1 px-2 w-full bg-emerald-500 text-black rounded-md hover:bg-white hover:text-emerald-500 transition duration-300"
                     >Pay Now 
                     </button>
-                  </div>
+                  </div>:<></>}
 
                 </div>
-                <hr className='my-2' />
+                <hr className='border-white items-center my-2' />
                 {!update? (
-                <div className='bg-black text-white p-2 text-md border border-gray-700 rounded-lg'>
-                  <h2 className='my-2 font-semibold'>
+                <div className='mt-2 bg-black text-white p-2 text-md border border-gray-700 rounded-lg'>
+                  {/* <h2 className='my-2 font-semibold'>
                     Email: <span className=''>{booking.email}</span>
+                  </h2> */}
+                  <h2 className='mb-2 font-semibold'>
+                    Move In: <span className='font-normal'>{booking.movein}</span>
                   </h2>
                   <h2 className='mb-2 font-semibold'>
-                    Move In: <span className=''>{booking.movein}</span>
+                    Payment Method: <span className='font-normal'>{booking.payvia}</span>
                   </h2>
-                  <h2 className='mb-2 font-semibold'>
-                    Payment Method: <span className=''>{booking.payvia}</span>
-                  </h2>
-                  <h2 className='mb-2 font-semibold'>
-                    Needs: <span className=''>{booking.needs}</span>
+                  <h2 className='font-semibold'>
+                    Needs: <span className='font-normal'>{booking.needs}</span>
                   </h2>
                 </div>):(
-              <div>
-                <h2 className='text-2xl font-bold mb-2'>
-                  Edit Your Booking
-                </h2>
-                <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
-                  <div className='space-y-6 bg-white p-1 rounded-lg pb-4'>
-                    <div className='form-control'>
-                      <label className='block text-sm font-medium my-2'>
-                        Your e-mail
-                      </label>
-                      <input
-                        type='text'
-                        defaultValue={user.email}
-                        disabled
-                        className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                      />
-                    </div>
-        
-                    <div className='form-control'>
-                      <label className='block text-sm font-medium mb-2'>
-                        Select when would you like to move in
-                      </label>
-                      <select
-                        {...registerUpdate('movein', { required: true })}
-                        className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                        defaultValue={booking.movein}
-                        // disabled
-                      >
-                        <option value='' disabled>Pick one</option>
-                        <option value='Immediately'>Immediately</option>
-                        <option value='1-Week'>1-Week</option>
-                        <option value='2-Weeks'>2-Weeks</option>
-                        <option value='1-Month'>1-Month</option>
-                      </select>
-                    </div>
-        
-                    <div className='flex gap-4'>
-                      <div className='form-control w-full'>
+                <div>
+                  <h2 className='text-2xl font-bold m-2 my-4'>
+                    Edit Your Booking
+                  </h2>
+                  <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
+                    <div className='space-y-6 bg-white p-2 rounded-lg pb-4'>
+                      <div className='form-control'>
+                        <label className='block text-sm font-medium my-2'>
+                          Your e-mail
+                        </label>
+                        <input
+                          type='text'
+                          defaultValue={user.email}
+                          disabled
+                          className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                        />
+                      </div>
+          
+                      <div className='form-control'>
                         <label className='block text-sm font-medium mb-2'>
-                          Payment Method
+                          Select when would you like to move in
                         </label>
                         <select
-                          {...registerUpdate('paymethod', { required: true })}
+                          {...registerUpdate('movein', { required: true })}
                           className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                          defaultValue={booking.payvia}
+                          defaultValue={booking.movein}
                           // disabled
                         >
                           <option value='' disabled>Pick one</option>
-                          <option value='Card'>Pay via Website (Card)</option>
-                          <option value='Cash'>Cash in Hand</option>
-                          <option value='Bank'>Bank Transfer</option>
+                          <option value='Immediately'>Immediately</option>
+                          <option value='1-Week'>1-Week</option>
+                          <option value='2-Weeks'>2-Weeks</option>
+                          <option value='1-Month'>1-Month</option>
                         </select>
                       </div>
-                    </div>
-        
-                    <div className='form-control'>
-                      <label className='block text-sm font-medium mb-2'>
-                        Special Needs
-                      </label>
-                      <textarea
-                        {...registerUpdate('needs')}
-                        className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                        placeholder='Special Needs'
-                        defaultValue={booking.needs}
-                        rows='2'
-                        // disabled
-                      ></textarea>
-                    </div>
+          
+                      <div className='flex gap-4'>
+                        <div className='form-control w-full'>
+                          <label className='block text-sm font-medium mb-2'>
+                            Payment Method
+                          </label>
+                          <select
+                            {...registerUpdate('paymethod', { required: true })}
+                            className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                            defaultValue={booking.payvia}
+                            // disabled
+                          >
+                            <option value='' disabled>Pick one</option>
+                            <option value='Card'>Pay via Website (Card)</option>
+                            <option value='Cash'>Cash in Hand</option>
+                            <option value='Bank'>Bank Transfer</option>
+                          </select>
+                        </div>
+                      </div>
+          
+                      <div className='form-control'>
+                        <label className='block text-sm font-medium mb-2'>
+                          Special Needs
+                        </label>
+                        <textarea
+                          {...registerUpdate('needs')}
+                          className='bg-black text-white w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                          placeholder='Special Needs'
+                          defaultValue={booking.needs}
+                          rows='2'
+                          // disabled
+                        ></textarea>
+                      </div>
 
-                    <div className='w-full flex gap-2 justify-between'>
-                      <button type="submit" className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500 transition duration-300 flex items-center justify-center gap-2'>
-                        Edit
-                      </button>
-                      <button 
-  type="button" 
-  onClick={handleDelete} 
-  className="w-full text-white bg-rose-500 hover:bg-black hover:text-rose-500 px-4 py-2 rounded-lg"
->
-  Delete
-</button>
-                    </div>
+                      <div className='w-full flex gap-2 justify-between'>
+                        <button type="submit" className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500 transition duration-300 flex items-center justify-center gap-2'>
+                          Edit
+                        </button>
+                        <button 
+                          type="button" 
+                          onClick={handleDelete} 
+                          className="w-full text-white bg-rose-500 hover:bg-black hover:text-rose-500 px-4 py-2 rounded-lg"
+                        >
+                          Delete
+                        </button>
+                      </div>
 
-                  </div>
-                </form>
-              </div>
+                    </div>
+                  </form>
+                </div>
               )}
           </div>
           )}
         </div>
       </div>
-      
       ) : (
         <div className="bg-gray-200 rounded-lg">
           <div className="p-4">
@@ -380,8 +389,7 @@ const BookingComponent = ({currentuser, id, place, title, owner}) => {
           </p>
           </div>
         </div>
-      )
-    ) : (
+      )) : (
       <div className="bg-gray-200 rounded-lg">
         <div className="p-4">
           <p className="font-bold">
