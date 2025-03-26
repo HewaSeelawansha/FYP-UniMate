@@ -164,7 +164,7 @@ const SingleListing = () => {
 
           <Tabs.Item active title="Details" icon={TbListDetails}>
           <div className="bg-black rounded-lg p-4">
-            <div className="bg-gray-200 p-4 rounded-lg">
+            <div className="bg-blue-200 p-4 rounded-lg">
               <p className="font-bold">
                 Title: <span className="font-normal">{listing.name}</span>
               </p>
@@ -195,7 +195,7 @@ const SingleListing = () => {
 
           <Tabs.Item title="Amenities" icon={HiAdjustments}>
           <div className="bg-black rounded-lg p-4">
-            <div className="bg-gray-200 p-4 rounded-lg">
+            <div className="bg-blue-200 p-4 rounded-lg">
               {listing.amenities.map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <input
@@ -219,7 +219,7 @@ const SingleListing = () => {
           </Tabs.Item>
 
           <Tabs.Item active title="Owner" icon={HiUserCircle}>
-          <div className="w-full bg-gray-200 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
+          <div className="w-full bg-blue-200 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
             <div className="bg-black text-white p-8 flex flex-col items-center justify-center md:w-1/3">
               <div className="avatar">
                 <div className="w-[150px] h-[150px] rounded-full overflow-hidden border-4 border-green">
@@ -230,7 +230,7 @@ const SingleListing = () => {
             </div>
             {/* User Details */}
             <div className="p-6 flex-1">
-              <div className="bg-gray-100 p-10 rounded-lg">
+              <div className="bg-white p-10 rounded-lg">
                 <p className="text-gray-700 mb-5"><strong>e-mail:</strong> {person?.email}</p>
                 <p className="text-gray-700 mb-5"><strong>Registered on:</strong> {new Date(person?.createdAt).toLocaleDateString()}</p>
                 <p className="text-gray-700 mb-5"><strong>Address:</strong> {boarding?.address}</p>
@@ -295,8 +295,14 @@ const SingleListing = () => {
 
           <Tabs.Item title="Booking" icon={MdOutlineContactMail}>
               {listing && user?
-              (<BookingComponent currentuser={user.email} id={listing._id} place={listing.boarding} title={listing.name} owner={listing.owner}/>)
-              :(<></>)}   
+              (<BookingComponent currentuser={user.email} id={listing._id} price={listing.price} keyMoney={listing.keyMoney}/>)
+              :(<div className="bg-gray-200 rounded-lg">
+              <div className="p-4">
+                <p className="font-bold">
+                  Please<span className="text-green"> login </span>to proceed with a booking.
+                </p>
+              </div>
+            </div>)}   
           </Tabs.Item>
 
         </Tabs>
