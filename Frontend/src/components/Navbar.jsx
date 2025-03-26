@@ -5,7 +5,6 @@ import { IoMdChatboxes } from "react-icons/io";
 import Modal from './Modal';
 import Profile from './Profile';
 import { Link } from 'react-router-dom';
-import useCart from '../hooks/useCart';
 import useAuth from '../hooks/useAuth';
 
 const Navbar = () => {
@@ -73,7 +72,7 @@ const Navbar = () => {
                 </div>
                 <ul
                     tabIndex={0}
-                    className="bg-green menu menu-sm dropdown-content rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                    className="bg-gray-300 menu menu-sm dropdown-content rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     {navItems}
                 </ul>
                 </div>
