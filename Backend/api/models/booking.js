@@ -7,6 +7,10 @@ const bookingSchema = new Schema({
         ref: 'Listing',
         required: true
     },
+    owner: {
+        type: String, 
+        required: true
+    },
     email: {
         type: String, 
         required: true
