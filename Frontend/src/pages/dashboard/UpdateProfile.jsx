@@ -164,7 +164,7 @@ const UpdateProfile = () => {
         </div>
 
         {/* Right Side: Update Form */}
-        <div className="p-8 flex-1 relative">
+        <div className="p-8 flex-1 relative bg-blue-200">
           {/* Close Button with Responsive Positioning */}
 
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Update Profile</h2>
