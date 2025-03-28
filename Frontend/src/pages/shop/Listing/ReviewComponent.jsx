@@ -157,7 +157,7 @@ const ReviewComponent = ({listing}) => {
                       {review.email === user?.email && (
                         <button
                           onClick={() => toggleUpdate(review)}
-                          className="p-1 m-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+                          className="p-1 m-2 bg-blue-500 text-black rounded-md hover:bg-blue-600 transition duration-300"
                         >
                           <MdEditSquare />
                         </button>
