@@ -27,8 +27,8 @@ const BoardingComponent = ({owner}) => {
 
     return (
         <div>
-            <div className="bg-black rounded-lg">
-            <div className='flex gap-4 pt-4 px-4'>
+            <div className="">
+            <div className='flex gap-4'>
                 <div className="w-full bg-blue-200 p-2 rounded-lg">
                 <p className="font-bold">Name: <span className="font-normal">{boarding?.name}</span></p>
                 <p className="font-bold mt-2">Owner: <span className="font-normal">{boarding?.owner}</span></p>
@@ -40,7 +40,7 @@ const BoardingComponent = ({owner}) => {
                 <p className="font-bold mt-2">Since: <span className="font-normal">{new Date(boarding?.createdAt).toLocaleDateString()}</span></p>
                 </div>
                 </div>
-                <div className="rounded-lg p-4 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
+                <div className="rounded-lg pt-4 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
                 {boarding?(
                     <Carousel slideInterval={5000}>
                     {boarding?.images && boarding?.images?.length > 0 ? (
