@@ -124,7 +124,7 @@ const MapComponent = ({ lati, lngi, name }) => {
     
   
     return (
-      <div className="bg-black p-4 rounded-lg" >
+      <div className="bg-blue-300 p-4 rounded-lg" >
         <div style={{ height: "500px", position: "relative" }}>
           {lati && lngi ? (
             <MapContainer
@@ -151,7 +151,7 @@ const MapComponent = ({ lati, lngi, name }) => {
         </div>
   
         {distance && duration && (
-          <div className="text-white mt-4 text-center">
+          <div className="mt-4 text-center">
             <p className="text-lg font-bold">
               Distance: <span className="text-green">{distance} km</span>
             </p>
@@ -163,14 +163,14 @@ const MapComponent = ({ lati, lngi, name }) => {
   
         <button
           onClick={getUserLocation}
-          className="w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 mt-4"
+          className="w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-black transition duration-300 mt-4"
         >
           Get Directions from Your Location
         </button>
   
         <button
           onClick={getNSBMLocation}
-          className="w-full font-bold bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 mt-4"
+          className="w-full font-bold bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-black transition duration-300 mt-4"
         >
           Get Directions from NSBM
         </button>
@@ -180,7 +180,7 @@ const MapComponent = ({ lati, lngi, name }) => {
             href={`https://www.google.com/maps/dir/?api=1&origin=${userLocation[0]},${userLocation[1]}&destination=${lati},${lngi}&travelmode=driving`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center font-bold bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 mt-4"
+            className="block w-full text-center font-bold bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black transition duration-300 mt-4"
           >
             Start Navigation in Google Maps
           </a>
