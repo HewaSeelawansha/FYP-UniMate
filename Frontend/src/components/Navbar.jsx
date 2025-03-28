@@ -32,7 +32,7 @@ const Navbar = () => {
   const navItems = (
     <>
         <li><a href='/'>Home</a></li>
-        <li><a href='/menu'>Browse</a></li>
+        <li><a href='/browse'>Browse</a></li>
         <li><details><summary>Services</summary>
             <ul className="p-2">
                 <li><a>Online Order</a></li>
