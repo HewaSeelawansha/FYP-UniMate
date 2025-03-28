@@ -1,4 +1,11 @@
 import React from 'react'
+import ser1 from '/images/services/uniser1.png'
+import ser2 from '/images/services/uniser2.png'
+import ser3 from '/images/services/uniser3.png'
+import ser4 from '/images/services/uniser4.png'
+import ser5 from '/images/services/uniser5.png'
+import ser6 from '/images/services/uniser6.png'
+import ser7 from '/images/services/uniser7.png'
 
 const Services = () => {
   return (
@@ -18,36 +25,36 @@ const Services = () => {
         {/*text*/}
         <div className='md:w-1/2'>
           <div className="carousel carousel-center rounded-box">
-            <div className="carousel-item">
-              <img src="https://img.daisyui.com/images/stock/photo-1559703248-dcaaec9fab78.webp" 
+            <div className="h-[400px] carousel-item">
+              <img src={ser4}
               alt="Pizza" />
             </div>
-            <div className="carousel-item">
+            <div className="h-[400px] carousel-item">
               <img
-                src="https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp"
+                src={ser6}
                 alt="Pizza" />
             </div>
-            <div className="carousel-item">
+            <div className="h-[400px] carousel-item">
               <img
-                src="https://img.daisyui.com/images/stock/photo-1572635148818-ef6fd45eb394.webp"
+                src={ser1}
                 alt="Pizza" />
             </div>
-            <div className="carousel-item">
+            <div className="h-[400px] carousel-item">
               <img
-                src="https://img.daisyui.com/images/stock/photo-1494253109108-2e30c049369b.webp"
+                src={ser5}
                 alt="Pizza" />
             </div>
-            <div className="carousel-item">
-              <img src="https://img.daisyui.com/images/stock/photo-1550258987-190a2d41a8ba.webp" 
+            <div className="h-[400px] carousel-item">
+              <img src={ser7}
               alt="Pizza" />
             </div>
-            <div className="carousel-item">
-              <img src="https://img.daisyui.com/images/stock/photo-1559181567-c3190ca9959b.webp" 
+            <div className="h-[400px] carousel-item">
+              <img src={ser3}
               alt="Pizza" />
             </div>
-            <div className="carousel-item">
+            <div className="h-[400px] carousel-item">
               <img
-                src="https://img.daisyui.com/images/stock/photo-1601004890684-d8cbf643f5f2.webp"
+                src={ser2}
                 alt="Pizza" />
             </div>
           </div>
