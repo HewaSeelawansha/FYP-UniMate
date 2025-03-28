@@ -13,7 +13,7 @@ const Cards = ({ item }) => {
   };
 
   return (
-    <div className="card bg-white rounded-xl shadow-lg overflow-hidden w-[300px] relative border border-gray-200">
+    <div className="card bg-white rounded-xl shadow-lg overflow-hidden w-[300px] h-[420px] relative border border-gray-200">
       {/* Heart Icon */}
       <div
         className={`absolute right-2 top-2 p-2 rounded-lg bg-green ${
