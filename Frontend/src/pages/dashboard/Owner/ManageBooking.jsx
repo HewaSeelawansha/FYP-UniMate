@@ -26,9 +26,9 @@ const ManageBooking = () => {
     }
 };
 
-useEffect(() => {
-    fetchBooking();
-}, []);
+// useEffect(() => {
+//     fetchBooking();
+// }, []);
 
 const refetchReview = () => {
     setLoading(true);
