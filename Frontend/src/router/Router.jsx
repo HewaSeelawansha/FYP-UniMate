@@ -25,6 +25,7 @@ import Loading from "../components/LoadingSpinner";
 import ManageBoardings from "../pages/dashboard/Admin/ManageBoardings";
 import SingleUser from "../components/SingleUser";
 import ViewListing from "../pages/dashboard/Owner/ViewListing";
+import ManageBooking from "../pages/dashboard/Owner/ManageBooking";
 
 const router = createBrowserRouter([
     {
@@ -149,6 +150,10 @@ const router = createBrowserRouter([
         {
           path: 'manage-items',
           element: <ManageListing/>
+        },
+        {
+          path: 'manage-booking',
+          element: <ManageBooking/>
         },
         {
           path: "update-listing/:id",
