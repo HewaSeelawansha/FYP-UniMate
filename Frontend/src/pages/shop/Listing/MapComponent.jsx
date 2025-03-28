@@ -153,24 +153,24 @@ const MapComponent = ({ lati, lngi, name }) => {
         {distance && duration && (
           <div className="mt-4 text-center">
             <p className="text-lg font-bold">
-              Distance: <span className="text-green">{distance} km</span>
+              Distance: <span className="text-blue-700">{distance} km</span>
             </p>
             <p className="text-lg font-bold">
-              Duration: <span className="text-green">{duration} minutes</span>
+              Duration: <span className="text-blue-700">{duration} minutes</span>
             </p>
           </div>
         )}
   
         <button
           onClick={getUserLocation}
-          className="w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-black transition duration-300 mt-4"
+          className="w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-black hover:text-green transition duration-300 mt-4"
         >
           Get Directions from Your Location
         </button>
   
         <button
           onClick={getNSBMLocation}
-          className="w-full font-bold bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-black transition duration-300 mt-4"
+          className="w-full font-bold bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-emerald-500 transition duration-300 mt-4"
         >
           Get Directions from NSBM
         </button>
@@ -180,7 +180,7 @@ const MapComponent = ({ lati, lngi, name }) => {
             href={`https://www.google.com/maps/dir/?api=1&origin=${userLocation[0]},${userLocation[1]}&destination=${lati},${lngi}&travelmode=driving`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center font-bold bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black transition duration-300 mt-4"
+            className="block w-full text-center font-bold bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500 transition duration-300 mt-4"
           >
             Start Navigation in Google Maps
           </a>
