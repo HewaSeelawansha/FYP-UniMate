@@ -72,7 +72,7 @@ const postBooking = async (req, res) => {
 const updateBooking = async (req, res) => {
     const bookingId = req.params.id;
     const { movein, payvia, needs } = req.body;
-  
+
     try {
       const updatedStatus = await Booking.findByIdAndUpdate(
         bookingId,
