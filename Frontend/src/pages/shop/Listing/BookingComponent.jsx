@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdEditSquare } from "react-icons/md";
 
-const BookingComponent = ({currentuser, id, price, keyMoney}) => {
+const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
   const {user} = useAuth();
   const { register: registerAdd, handleSubmit: handleSubmitAdd, reset: resetAdd } = useForm();
   const { register: registerUpdate, handleSubmit: handleSubmitUpdate, reset: resetUpdate, setValue } = useForm();
@@ -51,6 +51,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney}) => {
       const Booking = {
         listing: id,
         email: currentuser,
+        owner: owner,
         movein: data.movein,
         payvia: data.paymethod,
         needs: data.needs.length>1 && data.needs || 'Not Specified',
