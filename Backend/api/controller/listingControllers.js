@@ -80,7 +80,7 @@ const updateListing = async (req, res) => {
         console.error('Error fetching listings:', error.message);
         res.status(500).json({ message: error.message });
     }
-};
+  };
 
 module.exports = {
     getAllListings,
