@@ -49,7 +49,7 @@ const OwnerLayout = () => {
         throw new Error(`Failed to fetch boarding: ${response.statusText}`);
       }
       const data = await response.json();
-      console.log(data);
+      //console.log(data);
       setBoarding(data); 
     } catch (error) {
       console.error("Error fetching boarding:", error);
@@ -239,7 +239,7 @@ const OwnerLayout = () => {
               <li><Link to={`/owner/view-boarding/${user.email}`}><FaPlusCircle /> View Hostel</Link></li>
               <li><Link to="/owner/add-listing"><FaPlusCircle /> Add Listing</Link></li>
               <li><Link to="/owner/manage-items"><FaEdit /> Manage Listings</Link></li>
-              <li><Link className='mb-3' to="/owner"><FaShoppingBag /> Manage Booking</Link></li>
+              <li><Link className='mb-3' to="/owner/manage-booking"><FaShoppingBag /> Manage Booking</Link></li>
               <hr/>
               {
                 sharedLinks 
