@@ -141,12 +141,12 @@ const ReviewComponent = ({listing}) => {
     };
 
     return(
-        <div className="bg-black rounded-lg p-4">
+        <div className="bg-blue-300 rounded-lg p-4">
           <div className="pb-4">
-            <h2 className={`text-white ${reviews.length > 0 ? 'mb-4' : 'mb-2'} text-xl font-semibold`}>
+            <h2 className={`${reviews.length > 0 ? 'mb-4' : 'mb-2'} text-xl font-semibold`}>
               Reviews from your peers
             </h2>
-            <div className="border bg-blue-200 rounded-lg pb-4 px-2 max-h-[300px] overflow-y-auto">
+            <div className="bg-blue-200 rounded-lg pb-4 px-4 max-h-[300px] overflow-y-auto">
               {reviews.length > 0 ? (
                 reviews.map((review, index) => (
                   <div
@@ -220,7 +220,7 @@ const ReviewComponent = ({listing}) => {
 
               <button
                 onClick={handleAddReview}
-                className="w-full mt-4 bg-black text-white px-4 py-2 rounded-lg hover:bg-green hover:text-black focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2"
+                className="w-full font-bold mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2"
               >
                 Add Review
               </button>
@@ -254,21 +254,21 @@ const ReviewComponent = ({listing}) => {
 
               <button
                 onClick={handleUpdateReview}
-                className="w-full mt-4 bg-black text-white px-4 py-2 rounded-lg hover:bg-green hover:text-black"
+                className="w-full font-bold mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500"
               >
                 Update Review
               </button>
 
               <button
                 onClick={handleDeleteReview}
-                className="w-full mt-4 bg-black text-white px-4 py-2 rounded-lg hover:bg-emerald-500"
+                className="w-full font-bold mt-4 bg-rose-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-rose-500"
               >
                 Delete
               </button>
 
               <button
                 onClick={() => setUpdate(false)}
-                className="w-full mt-4 bg-black text-white px-4 py-2 rounded-lg hover:bg-blue-500"
+                className="w-full font-bold mt-4 bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-emerald-500"
               >
                 Back to Add Review
               </button>
