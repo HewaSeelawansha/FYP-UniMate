@@ -141,7 +141,7 @@ const SingleListing = () => {
       <span className="text-black">{listing.name} - </span>
         {listing.boarding}
       </h2>
-      <div className="p-4 rounded-lg bg-black my-5 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
+      <div className="rounded-lg bg-black my-5 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
         {listing?(
           <Carousel slideInterval={5000}>
           {listing?.images && listing?.images?.length > 0 ? (
@@ -163,8 +163,8 @@ const SingleListing = () => {
         <Tabs aria-label="Tabs with icons" variant="underline" className="custom-tabs">
 
           <Tabs.Item active title="Details" icon={TbListDetails}>
-          <div className="bg-black rounded-lg p-4">
-            <div className="bg-blue-200 p-4 rounded-lg">
+          <div className="rounded-lg">
+            <div className="bg-blue-300 p-4 rounded-lg">
               <p className="font-bold">
                 Title: <span className="font-normal">{listing.name}</span>
               </p>
@@ -194,8 +194,8 @@ const SingleListing = () => {
           </Tabs.Item>
 
           <Tabs.Item title="Amenities" icon={HiAdjustments}>
-          <div className="bg-black rounded-lg p-4">
-            <div className="bg-blue-200 p-4 rounded-lg">
+          <div className="rounded-lg">
+            <div className="bg-blue-300 p-4 rounded-lg">
               {listing.amenities.map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <input
@@ -219,8 +219,8 @@ const SingleListing = () => {
           </Tabs.Item>
 
           <Tabs.Item active title="Owner" icon={HiUserCircle}>
-          <div className="w-full bg-blue-200 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
-            <div className="bg-black text-white p-8 flex flex-col items-center justify-center md:w-1/3">
+          <div className="w-full bg-blue-300 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
+            <div className="bg-blue-200 text-green p-8 flex flex-col items-center justify-center md:w-1/3">
               <div className="avatar">
                 <div className="w-[150px] h-[150px] rounded-full overflow-hidden border-4 border-green">
                   <img src={person?.photoURL || 'https://i.ibb.co/tPJnyqL1/btmn.jpg'} alt="Profile" className="w-full h-full object-cover" />
@@ -230,7 +230,7 @@ const SingleListing = () => {
             </div>
             {/* User Details */}
             <div className="p-6 flex-1">
-              <div className="bg-white p-10 rounded-lg">
+              <div className="bg-blue-200 p-10 rounded-lg">
                 <p className="text-gray-700 mb-5"><strong>e-mail:</strong> {person?.email}</p>
                 <p className="text-gray-700 mb-5"><strong>Registered on:</strong> {new Date(person?.createdAt).toLocaleDateString()}</p>
                 <p className="text-gray-700 mb-5"><strong>Address:</strong> {boarding?.address}</p>
@@ -295,7 +295,7 @@ const SingleListing = () => {
 
           <Tabs.Item title="Booking" icon={MdOutlineContactMail}>
               {listing && user?
-              (<BookingComponent currentuser={user.email} id={listing._id} price={listing.price} keyMoney={listing.keyMoney}/>)
+              (<BookingComponent currentuser={user.email} id={listing._id} price={listing.price} keyMoney={listing.keyMoney} owner={listing.owner} />)
               :(<div className="bg-gray-200 rounded-lg">
               <div className="p-4">
                 <p className="font-bold">
