@@ -51,7 +51,6 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
       const Booking = {
         listing: id,
         email: currentuser,
-        owner: owner,
         movein: data.movein,
         payvia: data.paymethod,
         needs: data.needs.length>1 && data.needs || 'Not Specified',
@@ -158,10 +157,10 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
     <div>
     {user ? (
       isUser ? (
-      <div className="bg-black rounded-lg p-4">
-        <div className="bg-blue-200 rounded-lg p-2 pb-4">
+      <div className="bg-blue-300 rounded-lg p-4">
+        <div>
           {!booking ? (
-          <div className="border bg-white rounded-lg p-4 px-2">
+          <div className="bg-blue-200 rounded-lg p-4 px-2">
             <div className='p-2'>
               <h2 className='mb-4 text-2xl font-bold'>
                 Make a Booking 
@@ -231,7 +230,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                   ></textarea>
                 </div>
 
-                <button className='w-full bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black transition duration-300 flex items-center justify-center gap-2'>
+                <button className='w-full bg-green text-white px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-black transition duration-300 flex items-center justify-center gap-2'>
                   Make a Booking
                 </button>
               </div>
@@ -244,7 +243,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                     Your Booking Details 
                   </h2>
                 </div>
-                <div className="bg-black text-white p-2 text-md border border-gray-700 rounded-lg relative">
+                <div className="bg-blue-200 p-4 text-md rounded-lg relative">
                   <h2 className='mb-2 font-semibold'>
                     Status: <span className='text-blue-500'>{booking.status}</span>
                   </h2>
@@ -260,23 +259,23 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                   <div className="absolute top-2 right-2 flex space-x-2">
                     <button
                       onClick={() => toggleUpdate()}
-                      className="p-1 w-full bg-blue-500 text-black rounded-md hover:bg-white hover:text-blue-500 transition duration-300"
+                      className="p-1 w-full bg-blue-500 text-black rounded-md hover:bg-black hover:text-blue-500 transition"
                     ><MdEditSquare />
                     </button>
                   </div>
                   {/* Payments */}
-                  {booking.status==='Pending'?<div className="absolute bottom-2 right-2 flex space-x-2">
+                  {booking.status==='Approved' && booking.paystatus !== 'Done' ? (<div className="absolute bottom-2 right-2 flex space-x-2">
                     <button
                       onClick={() => makePayment()}
                       className="p-1 px-2 w-full bg-emerald-500 text-black rounded-md hover:bg-white hover:text-emerald-500 transition duration-300"
                     >Pay Now 
                     </button>
-                  </div>:<></>}
+                  </div>):(<></>)}
 
                 </div>
-                <hr className='border-white items-center my-2' />
+                <hr className='border-blue-200 items-center my-2' />
                 {!update? (
-                <div className='mt-2 bg-black text-white p-2 text-md border border-gray-700 rounded-lg'>
+                <div className='mt-2 bg-blue-200 p-4 text-md rounded-lg'>
                   {/* <h2 className='my-2 font-semibold'>
                     Email: <span className=''>{booking.email}</span>
                   </h2> */}
@@ -295,7 +294,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                     Edit Your Booking
                   </h2>
                   <form onSubmit={handleSubmitUpdate(onSubmitUpdate)}>
-                    <div className='space-y-6 bg-white p-2 rounded-lg pb-4'>
+                    <div className='space-y-6 bg-blue-200 p-4 rounded-lg pb-4'>
                       <div className='form-control'>
                         <label className='block text-sm font-medium my-2'>
                           Your e-mail
