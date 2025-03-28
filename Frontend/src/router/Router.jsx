@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../layout/Main";
 import Home from "../pages/home/Home";
-import Menu from "../pages/shop/Menu";
+import Browse from "../pages/shop/Browse";
 import Signup from "../components/Signup";
 import PrivateRouter from "../PrivateRouter/PrivateRouter";
 import UpdateProfile from "../pages/dashboard/UpdateProfile";
@@ -37,8 +37,8 @@ const router = createBrowserRouter([
             element: <Home/>
         },
         {
-            path: "/menu",
-            element: <Menu/>
+            path: "/browse",
+            element: <Browse/>
         },
         // {
         //   path: "/cart-page",
