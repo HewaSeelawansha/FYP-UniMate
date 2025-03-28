@@ -181,7 +181,7 @@ const ReviewComponent = ({listing}) => {
                   </div>
                 ))
               ) : (
-                <p className="text-green bg-black rounded-lg px-2 mt-4 font-bold">
+                <p className="text-blue-500 bg-black rounded-lg px-2 mt-4 font-bold">
                   No reviews found for this listing
                 </p>
               )}
