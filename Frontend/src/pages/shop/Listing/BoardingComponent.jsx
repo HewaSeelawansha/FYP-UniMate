@@ -29,7 +29,7 @@ const BoardingComponent = ({owner}) => {
         <div>
             <div className="">
             <div className='flex gap-4'>
-                <div className="w-full bg-blue-200 p-2 rounded-lg">
+                <div className="w-full bg-blue-300 p-2 rounded-lg">
                 <p className="font-bold">Name: <span className="font-normal">{boarding?.name}</span></p>
                 <p className="font-bold mt-2">Owner: <span className="font-normal">{boarding?.owner}</span></p>
                 <p className="font-bold mt-2">Address: <span className="font-normal">{boarding?.address}</span></p>
