@@ -99,7 +99,7 @@ const ManageBooking = () => {
               <div className='bg-green p-2'>
                 <FaFilter className='h-4 w-4 text-black'/>
               </div>
-              {/*sorting options*/}
+              {/*render*/}
               <select
                 name="sort"
                 id="sort"
