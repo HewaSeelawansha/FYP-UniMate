@@ -45,7 +45,7 @@ const ManageListing = () => {
   )}
   
   return (
-    <div className='w-full lg:w-[920px] md:w-[620px] px-4 mx-auto'>
+    <div className='w-full xl:w-[1000px] lg:w-[790px] md:w-[620px] px-4 mx-auto'>
       <h2 className='text-3xl font-bold my-4'>
         Manage Existing <span className='text-green'>Listings</span>
       </h2>

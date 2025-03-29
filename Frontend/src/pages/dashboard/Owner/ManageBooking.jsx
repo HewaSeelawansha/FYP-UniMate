@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { FaEdit, FaTrashAlt } from 'react-icons/fa'
+import { FaEdit, FaFilter, FaTrashAlt } from 'react-icons/fa'
 import { FcViewDetails } from "react-icons/fc";
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import useAxiosSecure from '../../../hooks/useAxiosSecure'
 import useAuth from '../../../hooks/useAuth';
+import useMyListing from '../../../hooks/useMyListing';
 
 const ManageBooking = () => {
+  const [mylist, listingLoading] = useMyListing();
   const {user} = useAuth();
   const [bookings, setBookings] = useState([]);
   const axiosSecure = useAxiosSecure();
   const [nstatus, setNstatus] = useState('Pending');
   const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filteredItems, setFilteredItems] = useState([]);
 
   const fetchBooking = async () => {
     try {
@@ -20,7 +24,7 @@ const ManageBooking = () => {
         throw new Error(`Failed to fetch bookings`);
     }
     const data = await response.json();
-    setBookings(data); 
+    setBookings(data.bookings); 
     } catch (error) {
     console.error("Error fetching bookings:", error);
     } finally {
@@ -31,6 +35,10 @@ const ManageBooking = () => {
   useEffect(() => {
       fetchBooking();
   }, []);
+
+  useEffect(() => {
+    setFilteredItems(bookings);
+  }, [bookings]);
 
   const refetchReview = () => {
       setLoading(true);
@@ -63,15 +71,51 @@ const ManageBooking = () => {
       });
     }
   };
+
+  const filterItems = (type) => {
+    if (type === "all") {
+      setFilteredItems(bookings); // Show all bookings
+    } else {
+      const filtered = bookings.filter((item) => item.listing._id === type);
+      setFilteredItems(filtered);
+    }
+    setSelectedCategory(type);
+  };
+
+  const showAll = () => {
+    setFilteredItems(hostel);
+    setSelectedCategory("all");
+  }
   
   return (
-    <div className='w-full lg:w-[920px] md:w-[620px] px-2 mx-auto py-4'>
-      <h2 className='text-3xl font-bold mb-8'>
-        Manage <span className='text-green'>Bookings</span>
-      </h2>
+    <div className='w-full xl:w-[1200px] lg:w-[790px] md:w-[620px] px-2 mx-auto py-4'>
+        <h2 className='text-3xl font-bold mb-4'>
+          Manage <span className='text-green'>Bookings</span>
+        </h2>
+        <div className="text-left">
+          <div className='flex flex-col md:flex-row flex-wrap md:justify-start items-start space-y-3 mb-6'> 
+            {/*sort*/}
+            <div className='flex justify-end rounded-sm'> 
+              <div className='bg-green p-2'>
+                <FaFilter className='h-4 w-4 text-black'/>
+              </div>
+              {/*sorting options*/}
+              <select
+                name="sort"
+                id="sort"
+                className="bg-black text-white px-2 py-1 rounded-sm"
+                onChange={(e) => filterItems(e.target.value)} // Change onClick to onChange
+              >
+                <option value="all">Bookings for All Listings</option>
+                {mylist.map((item) => (
+                  <option key={item._id} value={item._id}>{item.name}</option>
+                ))}
+              </select>
+          </div>
+        </div>
       {/* menu items */}
-      <div>
-      <div className="overflow-x-auto">
+      <div className='overflow-x-auto'>
+        {filteredItems.length>0 ? (
         <table className="table">
             {/* head */}
             <thead className='bg-green text-white'>
@@ -91,28 +135,19 @@ const ManageBooking = () => {
             </thead>
             <tbody>
             {
-                bookings?.map((item, index) => (
+                filteredItems?.map((item, index) => (
                     <tr key={index}>
                         <th>{index + 1}</th>
-
                         <td>{new Date(item.createdAt).toLocaleDateString()}</td>
-
                         <td>{item.email}</td>
-
                         <td>{item.movein}</td>
-
                         <td>{item.needs}</td>
-
                         <td>{item.payvia}</td>
-
                         <td>{item.paystatus}</td>
-
                         <td>{item.paid}</td>
-
-                        <td>{item.payment}</td>
-                        
+                        <td>{item.payment}</td>                 
                         <td>
-                          <Link to={`/dashboard/view-boarding/${item.owner}`}><button className='btn btn-sm btn-circle text-green bg-black'><FcViewDetails/></button></Link>
+                          <Link to={`/owner/view-listing/${item.listing._id}`}><button className='btn btn-sm btn-circle text-green bg-black'><FcViewDetails/></button></Link>
                         </td>
 
                         <td>
@@ -133,7 +168,11 @@ const ManageBooking = () => {
                 ))
             }
             </tbody>
-          </table>
+          </table>):(
+            <div>
+              <h2 className='text-blue-500 font-bold'>No Booking Found!</h2>
+            </div>
+          )}
         </div>
       </div>
     </div>
