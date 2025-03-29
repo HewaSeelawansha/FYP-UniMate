@@ -11,26 +11,41 @@ const getBookigsByEmail = async (req, res) => {
         const result = await Booking.find(query).exec();
         res.status(200).json(result); 
     } catch (error) {
-        console.error('Error fetching listings:', error.message);
+        console.error('Error fetching booking:', error.message);
         res.status(500).json({ message: error.message });
     }
 };
 
 // get bookings by listing id
-const getBookigsByListing = async (req, res) => {
+const getBookingsByOwner = async (req, res) => {
   try {
-      const id = req.params.id;
-      if (!id) {
-          return res.status(400).json({ message: 'Listing ID is required' });
+      const ownerEmail = req.params.email;
+      if (!ownerEmail) {
+          return res.status(400).json({ message: 'Email is required' });
       }
-      const query = { listing: id };
-      const result = await Booking.find(query).exec();
-      res.status(200).json(result); 
+      const bookings = await Booking.find()
+          .populate({
+              path: 'listing',
+              select: 'owner title location price', // Include necessary listing details
+              match: { owner: ownerEmail }
+          })
+          .exec();
+      
+      const filteredBookings = bookings.filter(booking => booking.listing);
+      
+      if (!filteredBookings.length) {
+          return res.status(404).json({ message: 'No bookings found for this owner' });
+      }
+      
+      res.status(200).json({
+          bookings: filteredBookings
+      });
   } catch (error) {
-      console.error('Error fetching listings:', error.message);
+      console.error('Error fetching booking:', error);
       res.status(500).json({ message: error.message });
   }
 };
+
 
 // get bookings by listing id and user
 const getBookigsByUserListing = async (req, res) => {
@@ -127,7 +142,7 @@ module.exports = {
     postBooking,
     getBookigsByUserListing,
     getBookigsByEmail,
-    getBookigsByListing,
+    getBookingsByOwner,
     updateBooking,
     updateStatus,
     deleteBooking
