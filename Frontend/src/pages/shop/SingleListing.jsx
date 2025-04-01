@@ -234,7 +234,7 @@ const SingleListing = () => {
                 <p className="text-gray-700 mb-5"><strong>e-mail:</strong> {person?.email}</p>
                 <p className="text-gray-700 mb-5"><strong>Registered on:</strong> {new Date(person?.createdAt).toLocaleDateString()}</p>
                 <p className="text-gray-700 mb-5"><strong>Address:</strong> {boarding?.address}</p>
-                <p className="text-gray-700"><strong>Phone:</strong> 0{boarding?.phone}</p>
+                <p className="text-gray-500"><strong>Phone:</strong> 0{boarding?.phone}</p>
               </div>
             </div>
           </div>
