@@ -219,7 +219,7 @@ const SingleListing = () => {
           </Tabs.Item>
 
           <Tabs.Item active title="Owner" icon={HiUserCircle}>
-          <div className="w-full bg-blue-300 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
+          <div className="w-full bg-blue-200 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
             <div className="bg-blue-200 text-green p-8 flex flex-col items-center justify-center md:w-1/3">
               <div className="avatar">
                 <div className="w-[150px] h-[150px] rounded-full overflow-hidden border-4 border-green">
