@@ -12,6 +12,7 @@ const createMessage = async (req, res) => {
     }
 };
 
+// get chat messages
 const getChatMessages = async (req, res) => {
     const {chatId} = req.params;
     try{
