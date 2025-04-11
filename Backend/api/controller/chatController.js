@@ -25,6 +25,7 @@ const getChatById = async (req, res) => {
     }
 };
 
+// get chat of 2 members
 const getChat = async (req, res) => {
     try{
         const chat = await Chat.findOne({
