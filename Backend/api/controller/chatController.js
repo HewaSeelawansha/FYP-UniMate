@@ -13,6 +13,7 @@ const createChat = async (req, res) => {
     }
 };
 
+// get chat by id
 const getChatById = async (req, res) => {
     try{
         const chat = await Chat.find({
