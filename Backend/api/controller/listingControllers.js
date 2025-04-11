@@ -1,6 +1,6 @@
 const Listing = require("../models/listing");
 
-// get all listing
+// get all listings
 const getAllListings = async (req, res) => {
     try{
         const listings = await Listing.find({}).sort({createdAt: -1});
