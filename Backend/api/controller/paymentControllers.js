@@ -9,13 +9,8 @@ const postPaymentItem = async (req, res) => {
     const payment = req.body;
     const { booking, status, paid, price } = req.body;
     try {
-        // First, create the payment record
         const paymentRequest = await Payment.create(payment);
-
-        // Find and update the booking
         const updatedBooking = await Booking.findById(booking);
-        
-        // Ensure the booking exists
         if (!updatedBooking) {
             return res.status(404).json({ message: "Booking not found" });
         }
