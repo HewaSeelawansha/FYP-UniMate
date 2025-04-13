@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { Carousel } from "flowbite-react";
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import useOwner from '../../../hooks/useOwner';
-import { FaUndoAlt } from 'react-icons/fa';
+import { FaUndoAlt, FaEdit, FaHome, FaUser, FaVenusMars, FaMoneyBillWave, FaCalendarAlt, FaCheck } from 'react-icons/fa';
+import { IoIosArrowBack } from 'react-icons/io';
 
 const ViewListing = () => {
   const { id } = useParams();
-  const [boarding, setBoarding] = useState(null);
+  const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const ViewListing = () => {
           throw new Error(`Failed to fetch listing: ${response.statusText}`);
         }
         const data = await response.json();
-        setBoarding(data); 
+        setListing(data); 
       } catch (error) {
         console.error("Error fetching listing:", error);
       } finally {
@@ -35,88 +35,197 @@ const ViewListing = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-20">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading listing details...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (!boarding) {
+  if (!listing) {
     return (
-    <div className='w-full lg:w-[780px] md:w-[520px] px-2 mx-auto py-4'>
-        <h2 className='text-3xl font-bold text-center'>Listing Doesn't Exists! <button onClick={() => handleGoBack()} className='text-green underline'>Go Back</button></h2>
-    </div>
-  )}
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
+        <div className="max-w-md text-center bg-white p-8 rounded-xl shadow-lg">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Listing Not Found</h2>
+          <p className="text-gray-600 mb-6">The listing you're looking for doesn't exist or may have been removed.</p>
+          <button 
+            onClick={handleGoBack}
+            className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+          >
+            <IoIosArrowBack /> Back to Listings
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className='w-full xl:w-[1280px] lg:w-[780px] md:w-[520px] px-2 mx-auto'>
-      <h2 className='text-3xl font-bold my-4'>
-          Title -  <span className='text-green'>{boarding.name}</span>
-      </h2>
-      <div className="p-0.5 rounded-lg bg-green my-5 h-[300px] md:h-[400px] sm:h-[300px] xl:h-[600px] 2xl:h-[700px]">
-        <Carousel slideInterval={5000}>
-          {boarding.images && boarding.images.length > 0 ? (
-            boarding.images.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Slide ${index + 1}`}
-                className="w-full h-full"
-              />
-            ))
-          ) : (
-            <img
-              src="https://via.placeholder.com/800x500?text=No+Image+Available"
-              alt="No images"
-            />
-          )}
-        </Carousel>
-      </div>
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <button
+            onClick={handleGoBack}
+            className="flex items-center text-orange-600 hover:text-orange-700 transition duration-200"
+          >
+            <IoIosArrowBack className="mr-2" /> Back
+          </button>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {listing.name}
+          </h1>
+          <div className="w-8"></div> {/* Spacer for alignment */}
+        </div>
 
-      <div className='bg-gray-100 mb-5 p-4 rounded-lg'>
-        <p className="text-gray-700 mb-4"><strong>Boarding:</strong> {boarding?.boarding}</p>
-        <p className="text-gray-700"><strong>Owner:</strong> {boarding?.owner}</p>
-      </div>
+        {/* Image Carousel */}
+        <div className="rounded-xl overflow-hidden shadow-lg mb-8 h-64 sm:h-80 md:h-96 lg:h-[500px]">
+          <Carousel slideInterval={5000} indicators={false}>
+            {listing.images && listing.images.length > 0 ? (
+              listing.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Listing ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              ))
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-500">No images available</span>
+              </div>
+            )}
+          </Carousel>
+        </div>
 
-      <div className='bg-gray-100 mb-5 p-4 rounded-lg'>
-        <p className="text-gray-700"><strong>Description:</strong> {boarding?.description}</p>
-      </div>
-
-      <div className='bg-gray-100 mb-5 p-4 rounded-lg'>
-        <p className="text-gray-700 mb-4"><strong>Type:</strong> {boarding?.type}</p>
-        <p className="text-gray-700"><strong>Gender:</strong> {boarding?.gender}</p>
-      </div>
-
-      <div className="bg-gray-100 mb-4 p-4 rounded-lg flex flex-wrap gap-4">
-        {boarding.amenities.map((amenity, index) => (
-            <div key={index} className="flex items-center gap-2">
-            <input
-                type="checkbox"
-                checked={boarding.amenities.includes(amenity)}
-                readOnly
-                className="text-sky-500 checkbox-xs rounded-md"
-            />
-            <span>{amenity}</span>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column - Details */}
+          <div className="space-y-6">
+            {/* Basic Info Card */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <FaHome className="text-orange-500 mr-2" /> Basic Information
+              </h2>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-orange-100 p-2 rounded-full">
+                    <FaHome className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Boarding House</p>
+                    <p className="font-medium">{listing.boarding}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="bg-orange-100 p-2 rounded-full">
+                    <FaUser className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Owner</p>
+                    <p className="font-medium">{listing.owner}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="bg-orange-100 p-2 rounded-full">
+                    <FaVenusMars className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Gender</p>
+                    <p className="font-medium">{listing.gender}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-        ))}
+
+            {/* Description Card */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Description</h2>
+              <p className="text-gray-600">{listing.description}</p>
+            </div>
+          </div>
+
+          {/* Right Column - Quick Info */}
+          <div className="space-y-6">
+            {/* Pricing Card */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <FaMoneyBillWave className="text-orange-500 mr-2" /> Pricing
+              </h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-gray-600">Monthly Rental:</p>
+                  <p className="font-bold text-orange-600">LKR {listing.price}</p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-gray-600">Key Money:</p>
+                  <p className="font-bold">
+                    {listing.keyMoney > 0 
+                      ? `LKR ${listing.keyMoney}` 
+                      : <span className="text-gray-500">Not Required</span>}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Amenities Card */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Amenities</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {listing.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span className="text-gray-700">{amenity}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Additional Info Card */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <FaCalendarAlt className="text-orange-500 mr-2" /> Additional Information
+              </h2>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-orange-100 p-2 rounded-full">
+                    <FaCheck className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Listing Type</p>
+                    <p className="font-medium">{listing.type}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="bg-orange-100 p-2 rounded-full">
+                    <FaCalendarAlt className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Created On</p>
+                    <p className="font-medium">{new Date(listing.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-8">
+          <Link 
+            to={`/owner/update-listing/${listing._id}`}
+            className="flex-1 btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+          >
+            <FaEdit /> Edit Listing
+          </Link>
+          <button 
+            onClick={handleGoBack}
+            className="flex-1 btn bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+          >
+            <FaUndoAlt /> Back to Listings
+          </button>
+        </div>
       </div>
-
-      <div className='bg-gray-100 mb-5 p-4 rounded-lg'>
-        <p className="text-gray-700 mb-4"><strong>Monthly Rental:</strong> {boarding?.price}</p>
-        <p className="text-gray-700"><strong>Key Money:</strong> {boarding?.keyMoney>0? boarding?.keyMoney : 'Not Required'}</p>
-      </div>
-
-      <div className="bg-gray-100 p-4 rounded-lg">
-        <p className="text-gray-700"><strong>Added On:</strong> {new Date(boarding?.createdAt).toLocaleDateString()}</p>
-      </div>
-
-      <Link to={`/owner/update-listing/${boarding._id}`}>
-        <button className="my-5 w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2">
-            Edit
-        </button>
-      </Link>
-
-      <button onClick={handleGoBack} className="my-5 w-full bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2">
-        Go Back <FaUndoAlt />
-      </button>
-
     </div>
   );
 };
