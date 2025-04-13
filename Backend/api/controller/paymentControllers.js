@@ -1,5 +1,4 @@
 const Payment = require("../models/Payments");
-const Carts = require("../models/carts");
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const Booking = require("../models/booking");
@@ -31,7 +30,6 @@ const postPaymentItem = async (req, res) => {
     }
 };
 
-
 // get all payment requests
 const getPayements = async (req, res) => {
     const email = req.query.email;
@@ -41,7 +39,11 @@ const getPayements = async (req, res) => {
         if(decodedEmail !== email){
             return res.status(403).json({message: "Forbidden access!"})
         }
-        const result = await Payment.find(query).sort({createdAt: -1}).exec();
+        const result = await Payment.find(query)
+            .sort({createdAt: -1})
+            .populate('booking') 
+            .populate('listing') 
+            .exec();
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({message: error.message});
