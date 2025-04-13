@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '../../contexts/AuthProvider';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import useUser from '../../hooks/useUser';
+import useAuth from '../../hooks/useAuth';
+import { FaUserEdit, FaUserFriends, FaUpload, FaCheckCircle } from 'react-icons/fa';
 
 const UpdateProfile = () => {
   const { user } = useAuth();
@@ -14,23 +14,23 @@ const UpdateProfile = () => {
   const { 
     register: registerProfile, 
     handleSubmit: handleProfileSubmit, 
-    reset: resetProfile 
+    reset: resetProfile,
+    formState: { errors: profileErrors }
   } = useForm();
   
   const { 
     register: registerRoommate, 
     handleSubmit: handleRoommateSubmit, 
-    reset: resetRoommate 
+    reset: resetRoommate,
+    formState: { errors: roommateErrors }
   } = useForm();
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const from = location.state?.from?.pathname || '/';
   const [person, setPerson] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [imagePreview, setImagePreview] = useState(null);
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
-  const axiosSecure = useAxiosSecure(); // Use the axiosSecure instance
+  const axiosSecure = useAxiosSecure();
 
   const fetchPerson = async () => {
     try {
@@ -40,6 +40,7 @@ const UpdateProfile = () => {
       }
       const data = await response.json();
       setPerson(data);
+      setImagePreview(data?.photoURL || null);
     } catch (error) {
       console.error('Error fetching user:', error);
     } finally {
@@ -55,6 +56,17 @@ const UpdateProfile = () => {
     setLoading(true);
     fetchPerson();
   }
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const onSubmitProfile = async (data) => {
     const imageFile = data.image[0];
@@ -104,7 +116,6 @@ const UpdateProfile = () => {
         });
         resetProfile();
         refetchPerson();
-        window.location.reload();
       }
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -143,128 +154,223 @@ const UpdateProfile = () => {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading profile data...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col gap-2 items-center justify-center p-4">
-      <div className="max-w-4xl w-full bg-gray-200 rounded-lg shadow-3xl overflow-hidden flex flex-col md:flex-row">
-        {/* Left Side: Profile Information */}
-        <div className="bg-black text-white p-8 flex flex-col items-center justify-center md:w-2/5">
-          <div className="avatar">
-            <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-green">
-              <img src={person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="Profile" className="w-full h-full object-cover" />
-            </div>
-          </div>
-          <h3 className="text-xl font-semibold mt-4">{person?.name}</h3>
-          <p className="text-sm mt-2"><strong>e-mail: </strong>{user.email}</p>
-          <p className="text-sm mt-2">
-            <strong>Registered on: </strong>{new Date(person?.createdAt).toLocaleDateString()}
+    <div className="min-h-screen bg-gray-50 pt-32 pb-8 px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-extrabold text-gray-900 md:text-5xl">
+            Update Your Profile
+          </h1>
+          <p className="mt-3 text-xl text-gray-500">
+            Keep your information up to date for better experience
           </p>
         </div>
 
-        {/* Right Side: Update Form */}
-        <div className="p-8 flex-1 relative bg-blue-200">
-          {/* Close Button with Responsive Positioning */}
-
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Update Profile</h2>
-          <form onSubmit={handleProfileSubmit(onSubmitProfile)} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
-              <input
-                {...registerProfile('name', { required: true })}
-                type="text"
-                placeholder="Your name"
-                defaultValue={person?.name}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green focus:border-green"
-              />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Profile Information Card */}
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            <div className="bg-gradient-to-r from-green to-green p-6 text-white">
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md">
+                    <img 
+                      src={imagePreview || person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {person?.photoURL && (
+                    <div className="absolute bottom-0 right-0 bg-green-500 rounded-full p-1">
+                      <FaCheckCircle className="text-white text-lg" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold">{person?.name}</h2>
+                  <p className="text-orange-100">{user.email}</p>
+                </div>
+              </div>
             </div>
-
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Add Images
-              </label>
-              <input
-                {...registerProfile('image')}
-                type='file'
-                className='w-full file-input file-input-bordered'
-              />
+            <div className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-orange-100 p-2 rounded-full">
+                    <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Member since</p>
+                    <p className="font-medium">{new Date(person?.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="bg-orange-100 p-2 rounded-full">
+                    <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Account type</p>
+                    <p className="font-medium capitalize">{isUser ? "Student" : "Other"}</p>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2"
-              >
-                Update Profile
-              </button>
+          {/* Profile Update Form */}
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            <div className="bg-gradient-to-r from-green to-green p-6 text-white">
+              <div className="flex items-center space-x-3">
+                <FaUserEdit className="text-2xl" />
+                <h2 className="text-2xl font-bold">Update Profile</h2>
+              </div>
             </div>
-          </form>
+            <div className="p-6">
+              <form onSubmit={handleProfileSubmit(onSubmitProfile)} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input
+                    {...registerProfile('name', { required: 'Name is required' })}
+                    type="text"
+                    placeholder="Your name"
+                    defaultValue={person?.name}
+                    className={`mt-1 block w-full px-4 py-3 border ${profileErrors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                  />
+                  {profileErrors.name && (
+                    <p className="mt-1 text-sm text-red-600">{profileErrors.name.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Profile Photo</label>
+                  <div className="flex items-center space-x-4">
+                    <div className="relative">
+                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-300">
+                        <img 
+                          src={imagePreview || person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <label className="flex flex-col items-center px-4 py-3 bg-white rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-50">
+                        <FaUpload className="text-orange-500 mb-1" />
+                        <span className="text-sm text-gray-600">Click to upload</span>
+                        <input
+                          {...registerProfile('image')}
+                          type="file"
+                          className="hidden"
+                          onChange={handleImageChange}
+                          accept="image/*"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    className="w-full bg-green hover:bg-orange-500 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <FaUserEdit />
+                    <span>Update Profile</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
+
+        {/* Roommate Preference Section */}
+        {isUser && (
+          <div className="mt-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            <div className="bg-gradient-to-r from-green to-green p-6 text-white">
+              <div className="flex items-center space-x-3">
+                <FaUserFriends className="text-2xl" />
+                <h2 className="text-2xl font-bold">Roommate Preferences</h2>
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="mb-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium text-gray-900">Current Status</h3>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${person?.roommate && person?.gender ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    {person?.roommate && person?.gender ? 'Active' : 'Not Set'}
+                  </span>
+                </div>
+                {person?.roommate && person?.gender && (
+                  <p className="mt-2 text-gray-600">
+                    Your profile is visible in the <span className="font-semibold text-orange-600">
+                      {person?.gender === 'male' ? 'Male' : person?.gender === 'female' ? 'Female' : 'Unisex'}
+                    </span> roommate listings.
+                  </p>
+                )}
+              </div>
+
+              <form onSubmit={handleRoommateSubmit(onSubmitRoommate)} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Looking for Roommate?</label>
+                    <select
+                      {...registerRoommate('roommate', { required: 'This field is required' })}
+                      defaultValue={person?.roommate || ''}
+                      className={`mt-1 block w-full px-4 py-3 border ${roommateErrors.roommate ? 'border-red-500' : 'border-gray-300'} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                    >
+                      <option value="" disabled>Select Option</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                    {roommateErrors.roommate && (
+                      <p className="mt-1 text-sm text-red-600">{roommateErrors.roommate.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Accommodation For</label>
+                    <select
+                      {...registerRoommate('gender', { required: 'This field is required' })}
+                      defaultValue={person?.gender || ''}
+                      className={`mt-1 block w-full px-4 py-3 border ${roommateErrors.gender ? 'border-red-500' : 'border-gray-300'} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                    >
+                      <option value="" disabled>Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="unisex">Unisex</option>
+                    </select>
+                    {roommateErrors.gender && (
+                      <p className="mt-1 text-sm text-red-600">{roommateErrors.gender.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    className="w-full bg-green hover:bg-orange-500 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <FaUserFriends />
+                    <span>Update Preferences</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
-      {/* for the roommte selection */}
-      {isUser?(
-      <div className="max-w-4xl w-full bg-black rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
-      {/* Right Side: Update Form */}
-      <div className="p-8 flex-1 relative">
-        <h2 className="text-2xl font-semibold text-white mb-2">
-        Need a Roommate?
-        </h2>
-        <p className="font-bold text-lg text-gray-400 mb-6">
-            Status: 
-            <span className={`ml-2 ${person?.roommate ? 'text-blue-500' : 'text-rose-500'}`}>
-              {person?.roommate&&person?.gender ? 'Defined' : 'Not defined yet'} 
-            </span>
-            <span className='font-normal'>{person?.roommate&&person?.gender ? ` "You will be appeared in the listings for - ${person?.gender==='male'?'boys':person?.gender==='female'?'girls':person?.gender}"` : ''}</span>
-        </p>
-
-        <form onSubmit={handleRoommateSubmit(onSubmitRoommate)} className="space-y-6">
-          
-        <div className='flex gap-4'>
-          <div className='form-control w-full'>
-            <label className='block text-white text-sm font-medium mb-1'>
-              Preference?
-            </label>
-            <select
-                {...registerRoommate('roommate', { required: true })}
-                defaultValue={person?.roommate ? person.roommate : ''}
-                className='w-full bg-gray-300 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-              >
-                <option value='' disabled>Select Your Preference</option>
-                <option value='yes'>Yes</option>
-                <option value='no'>No</option>
-              </select>
-          </div>
-
-          <div className='form-control w-full'>
-            <label className='block text-white text-sm font-medium mb-1'>
-              Accommodation for?
-            </label>
-            <select
-                {...registerRoommate('gender', { required: true })}
-                defaultValue={person?.gender ? person.gender : ''}
-                className='w-full bg-gray-300 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-              >
-                <option value='' disabled>Select Your Gender</option>
-                <option value='male'>Male</option>
-                <option value='female'>Female</option>
-                <option value='unisex'>Unisex</option>
-              </select>
-          </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              className="w-full bg-secondary text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2"
-            >
-              Set or Update Your Preference
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-      ):(<></>)}
     </div>
   );
 };
