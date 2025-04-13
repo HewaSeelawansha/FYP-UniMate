@@ -2,18 +2,21 @@ import { motion } from "framer-motion";
 
 const Loading = () => {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="flex space-x-2">
-        {[...Array(5)].map((_, i) => (
+    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="flex space-x-3">
+        {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
-            className="w-5 h-5 bg-green rounded-full"
-            animate={{ y: [0, -10, 0], opacity: [1, 0.5, 1] }}
+            className="w-4 h-4 bg-gradient-to-r from-orange-400 to-green rounded-full"
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.6, 1, 0.6]
+            }}
             transition={{
+              duration: 1.2,
               repeat: Infinity,
-              duration: 0.8,
               ease: "easeInOut",
-              delay: i * 0.15,
+              delay: i * 0.15
             }}
           />
         ))}
@@ -22,4 +25,4 @@ const Loading = () => {
   );
 };
 
-export default Loading;
+export default Loading
