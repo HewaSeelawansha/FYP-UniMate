@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaUpload } from 'react-icons/fa';
+import { FaUpload, FaHome, FaUser, FaMoneyBillWave, FaInfoCircle, FaCheckCircle } from 'react-icons/fa';
+import { IoIosArrowBack } from 'react-icons/io';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
@@ -8,8 +9,8 @@ import useAuth from '../../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const AddListing = () => {
-  const {user} = useAuth();
-  const { register, handleSubmit, reset } = useForm();
+  const { user } = useAuth();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const [boarding, setBoarding] = useState(null);
   const [loading, setLoading] = useState(true);
   const [ltype, setLtype] = useState("");
@@ -17,8 +18,8 @@ const AddListing = () => {
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const [keyMoneyRequired, setKeyMoneyRequired] = useState(false);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
-  //const boarding = "LPC Hostels";
   const owner = user.email;
   const listingtitle = ltype && boarding?.gender ? `${ltype} for ${boarding?.gender}` : "";
 
@@ -44,31 +45,35 @@ const AddListing = () => {
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
-  const amenitiesList = ["wifi", "cctv", "study area", "parking", "gym"];
+  const amenitiesList = [
+    { id: 'wifi', label: 'WiFi' },
+    { id: 'cctv', label: 'CCTV' },
+    { id: 'study', label: 'Study Area' },
+    { id: 'parking', label: 'Parking' },
+    { id: 'gym', label: 'Gym' }
+  ];
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previews);
+  };
 
   const onSubmit = async (data) => {
     const imageFiles = data.image;
-
     const uploadPromises = Array.from(imageFiles).map(async (file) => {
       const formData = new FormData();
       formData.append('image', file);
-
       const response = await axiosPublic.post(image_hosting_api, formData, {
-        headers: {
-          'content-type': 'multipart/form-data',
-        },
+        headers: { 'content-type': 'multipart/form-data' },
       });
-
-      if (response.data.success) {
-        return response.data.data.display_url;
-      }
+      if (response.data.success) return response.data.data.display_url;
       throw new Error('Image upload failed');
     });
 
     try {
       const imageUrls = await Promise.all(uploadPromises);
-
-      const selectedAmenities = amenitiesList.filter(amenity => data[amenity]);
+      const selectedAmenities = amenitiesList.filter(amenity => data[amenity.id]).map(amenity => amenity.label);
 
       const menuItem = {
         boarding: boarding.name,
@@ -90,7 +95,7 @@ const AddListing = () => {
         Swal.fire({
           position: 'center',
           icon: 'success',
-          title: 'Successfully Uploaded',
+          title: 'Listing Created Successfully!',
           showConfirmButton: false,
           timer: 1500,
         });
@@ -104,229 +109,292 @@ const AddListing = () => {
         position: 'center',
         icon: 'error',
         title: 'Upload Failed',
-        text: 'An error occurred while uploading the images or the menu item.',
+        text: error.message || 'An error occurred while creating the listing.',
         showConfirmButton: true,
       });
     }
   };
 
   if (loading) {
-    return <div className="text-center py-20">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading boarding details...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (boarding?.status!=="Approved") {
-    return <div className="w-full lg:w-[780px] md:w-[520px] px-2 mx-auto py-4">
-      <h2 className='text-3xl font-bold text-center mb-5'>
-      Boarding House Is <span className='text-green'> {boarding?.status} </span>
-      </h2>
-      <button
-        className="w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2"
-        onClick={() => navigate(`/owner/update-boarding/${boarding._id}`)}
-      >
-        Resubmit the Boarding House
-      </button>
-      </div>;
+  if (boarding?.status !== "Approved") {
+    return (
+      <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            Boarding House Status: <span className="text-orange-600">{boarding?.status}</span>
+          </h2>
+          <p className="text-gray-600 mb-6">
+            {boarding?.status === "Pending" 
+              ? "Your boarding house is under review. Please wait for approval before adding listings."
+              : "Please update your boarding house details for approval."}
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center gap-2"
+              onClick={() => navigate(`/owner/update-boarding/${boarding._id}`)}
+            >
+              Update Boarding House
+            </button>
+            <button 
+              onClick={() => navigate('/')}
+              className="btn btn-outline border-orange-600 text-orange-600 hover:bg-orange-50 px-6 py-3 rounded-lg transition duration-300"
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!boarding) {
     return (
-      <div className='w-full lg:w-[780px] md:w-[520px] px-2 mx-auto py-4'>
-        <h2 className='text-3xl font-bold text-center'>Please Add Your <button onClick={() => navigate('/owner/add-boarding')} className='text-green underline'>Boarding House</button> Before Add Listings</h2>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
+        <div className="max-w-md text-center bg-white p-8 rounded-xl shadow-lg">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">No Boarding House Found</h2>
+          <p className="text-gray-600 mb-6">You need to register your boarding house before adding listings.</p>
+          <button
+            onClick={() => navigate('/owner/add-boarding')}
+            className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2"
+          >
+            <FaHome /> Register Boarding House
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className='w-full lg:w-[780px] md:w-[520px] px-2 mx-auto'>
-      <h2 className='text-3xl font-bold my-4'>
-        Upload A New <span className='text-green'>Listing</span>
-      </h2>
-      <div className='bg-gray-100 p-6 rounded-lg shadow-lg'>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='space-y-6'>
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Boarding
-              </label>
-              <input
-                type='text'
-                defaultValue={boarding.name}
-                disabled
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-              />
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center text-orange-600 hover:text-orange-700 transition duration-200"
+          >
+            <IoIosArrowBack className="mr-2" /> Back
+          </button>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Create New <span className="text-orange-600">Listing</span>
+          </h1>
+          <div className="w-8"></div> {/* Spacer for alignment */}
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
+            {/* Boarding Info Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                  <FaHome className="text-orange-500 mr-2" /> Boarding Name
+                </label>
+                <input
+                  type="text"
+                  defaultValue={boarding.name}
+                  disabled
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                  <FaUser className="text-orange-500 mr-2" /> Owner Email
+                </label>
+                <input
+                  type="text"
+                  defaultValue={owner}
+                  disabled
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
+                />
+              </div>
             </div>
 
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Owner
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <FaInfoCircle className="text-orange-500 mr-2" /> Listing Title
               </label>
               <input
-                type='text'
-                defaultValue={owner}
-                disabled
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-              />
-            </div>
-
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Listing Title
-              </label>
-              <input
-                type='text'
-                placeholder='Pick a type to generate'
+                type="text"
+                placeholder="Will be generated after selecting type"
                 defaultValue={listingtitle}
                 disabled
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
               />
             </div>
 
-            {/*<div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Name of the Item*
-              </label>
-              <input
-                {...register('name', { required: true })}
-                type='text'
-                placeholder='Name'
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-              />
-            </div>*/}
-
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Pick a Type
-              </label>
-              <select
-                {...register('type', { required: true })}
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                defaultValue=''
-                onChange={(e) => setLtype(e.target.value)}
-              >
-                <option value='' disabled>Pick one</option>
-                <option value='2-Person Shared Room'>2-Person Shared Room</option>
-                <option value='2 to 4-Person Shared Room'>2 to 4-Person Shared Room</option>
-                <option value='1-Person Boarding Room'>1-Person Boarding Room</option>
-                <option value='Whole House-Short Term'>Whole House-Short Term</option>
-                <option value='Whole House-Long Term'>Whole House-Long Term</option>
-              </select>
-            </div>
-
-            <div className='flex gap-4'>
-              <div className='form-control w-full'>
-                <label className='block text-sm font-medium mb-2'>
-                  Gender
-                </label>
-                <input
-                {...register('gender', { required: true })}
-                type='text'
-                defaultValue={boarding.gender}
-                disabled
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-              />
-              </div>
-
-              <div className='form-control w-full'>
-                <label className='block text-sm font-medium mb-2'>
-                  Available Beds
-                </label>
-                <input
-                  {...register('available', { required: true })}
-                  type='number'
-                  defaultValue={boarding.beds}
-                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                />
-              </div>
-            </div>
-
-            <div className='form-control w-full'>
-                <label className='block text-sm font-medium mb-2'>
-                  Price
-                </label>
-                <input
-                  {...register('price', { required: true })}
-                  type='number'
-                  placeholder='Price'
-                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                />
-              </div>
-
-              <div className='form-control'>
-                <label className='block text-sm font-medium mb-2'>
-                  Key Money
-                </label>
+            {/* Listing Details Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Listing Type*</label>
                 <select
-                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                  defaultValue=''
-                  onChange={(e) => setKeyMoneyRequired(e.target.value === 'yesk')}
+                  {...register('type', { required: 'Listing type is required' })}
+                  className={`w-full px-4 py-3 border ${errors.type ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                  defaultValue=""
+                  onChange={(e) => setLtype(e.target.value)}
                 >
-                  <option value='' disabled>Pick one</option>
-                  <option value='yesk'>Required</option>
-                  <option value='nok'>Not Required</option>
+                  <option value="" disabled>Select Listing Type</option>
+                  <option value="2-Person Shared Room">2-Person Shared Room</option>
+                  <option value="2 to 4-Person Shared Room">2 to 4-Person Shared Room</option>
+                  <option value="1-Person Boarding Room">1-Person Boarding Room</option>
+                  <option value="Whole House-Short Term">Whole House-Short Term</option>
+                  <option value="Whole House-Long Term">Whole House-Long Term</option>
                 </select>
+                {errors.type && <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>}
+              </div>
 
-                {keyMoneyRequired && (
-                  <div className='form-control w-full mt-4'>
-                    <label className='block text-sm font-medium mb-2'>
-                      You selected 'Key Money Required' Please specify the amount.
-                    </label>
-                    <input
-                      {...register('kmoney')}
-                      type='number'
-                      placeholder='Key Money'
-                      className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                    />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                <input
+                  {...register('gender', { required: true })}
+                  type="text"
+                  defaultValue={boarding.gender}
+                  disabled
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Available Beds*</label>
+                <input
+                  {...register('available', { 
+                    required: 'Available beds is required',
+                    min: { value: 1, message: 'Must have at least 1 bed' }
+                  })}
+                  type="number"
+                  defaultValue={boarding.beds}
+                  className={`w-full px-4 py-3 border ${errors.available ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                />
+                {errors.available && <p className="mt-1 text-sm text-red-600">{errors.available.message}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Price (LKR)*</label>
+                <input
+                  {...register('price', { 
+                    required: 'Price is required',
+                    min: { value: 1, message: 'Price must be greater than 0' }
+                  })}
+                  type="number"
+                  placeholder="Enter monthly price"
+                  className={`w-full px-4 py-3 border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                />
+                {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>}
+              </div>
+            </div>
+
+            {/* Key Money Section */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Key Money Required?</label>
+              <select
+                className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                defaultValue=""
+                onChange={(e) => setKeyMoneyRequired(e.target.value === 'yesk')}
+              >
+                <option value="" disabled>Select Option</option>
+                <option value="yesk">Yes</option>
+                <option value="nok">No</option>
+              </select>
+
+              {keyMoneyRequired && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Key Money Amount (LKR)</label>
+                  <input
+                    {...register('kmoney', { 
+                      required: keyMoneyRequired ? 'Key money amount is required' : false,
+                      min: { value: 0, message: 'Amount cannot be negative' }
+                    })}
+                    type="number"
+                    placeholder="Enter key money amount"
+                    className={`w-full px-4 py-3 border ${errors.kmoney ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                  />
+                  {errors.kmoney && <p className="mt-1 text-sm text-red-600">{errors.kmoney.message}</p>}
+                </div>
+              )}
+            </div>
+
+            {/* Description Section */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description*</label>
+              <textarea
+                {...register('description', { required: 'Description is required' })}
+                className={`w-full px-4 py-3 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                placeholder="Describe this listing (facilities, rules, special features etc.)"
+                rows="4"
+              ></textarea>
+              {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
+            </div>
+
+            {/* Images Section */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Photos*</label>
+              <div className="space-y-4">
+                {imagePreviews.length > 0 && (
+                  <div className="flex flex-wrap gap-4 mb-4">
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} className="w-24 h-24 rounded-lg overflow-hidden border border-gray-200">
+                        <img src={preview} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                      </div>
+                    ))}
                   </div>
                 )}
+                <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <FaUpload className="text-orange-600 text-2xl mb-2" />
+                  <p className="text-sm text-gray-600">Click to upload listing images</p>
+                  <p className="text-xs text-gray-500">(JPEG, PNG, etc.)</p>
+                  <input
+                    {...register('image', { required: 'At least one image is required' })}
+                    type="file"
+                    className="hidden"
+                    onChange={handleImageChange}
+                    multiple
+                    accept="image/*"
+                  />
+                </label>
+                {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image.message}</p>}
               </div>
-
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Description
-              </label>
-              <textarea
-                {...register('description', { required: true })}
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                placeholder='Description of the Listing'
-                rows='4'
-              ></textarea>
             </div>
 
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Add Images
-              </label>
-              <input
-                {...register('image', { required: true })}
-                type='file'
-                className='w-full file-input file-input-bordered'
-                multiple
-              />
-            </div>
-
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Amenities
-              </label>
-              <div className='flex flex-wrap gap-4'>
-                {amenitiesList.map((amenity, index) => (
-                  <div key={index} className='flex items-center gap-2'>
+            {/* Amenities Section */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amenities</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {amenitiesList.map((amenity) => (
+                  <label key={amenity.id} className="flex items-center space-x-2 cursor-pointer">
                     <input
-                      type='checkbox'
-                      {...register(amenity)}
-                      className='checkbox checkbox-sm'
+                      type="checkbox"
+                      {...register(amenity.id)}
+                      className="checkbox checkbox-sm border-gray-300 rounded text-orange-600 focus:ring-orange-500"
                     />
-                    <span>{amenity}</span>
-                  </div>
+                    <span className="text-sm text-gray-700">{amenity.label}</span>
+                  </label>
                 ))}
               </div>
             </div>
 
-            <button className='w-full bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 hover:text-black transition duration-300 flex items-center justify-center gap-2'>
-              Upload <FaUpload />
-            </button>
-          </div>
-        </form>
+            {/* Submit Button */}
+            <div className="pt-4">
+              <button
+                type="submit"
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+              >
+                <FaCheckCircle /> Create Listing
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
