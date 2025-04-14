@@ -7,9 +7,9 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div>
-            <h3 className="text-xl font-bold mb-4">StudentHomes</h3>
+            <h3 className="text-xl font-bold mb-4">UniMate</h3>
             <p className="text-gray-400">
-              Helping students find their perfect home away from home since 2023.
+              Helping students find their perfect home away from home since 2025.
             </p>
             <div className="flex gap-4 mt-6">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -60,7 +60,7 @@ const Footer = () => {
               />
               <button 
                 type="submit" 
-                className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-r-lg transition-colors"
+                className="bg-green hover:bg-orange-500 px-4 py-2 rounded-r-lg transition-colors"
               >
                 Subscribe
               </button>
