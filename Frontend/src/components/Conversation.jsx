@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
-const Conversation = ({ data, currentUser, online }) => {
+const Conversation = ({ data, currentUser, online, isSelected }) => {
   const [userData, setUserData] = useState(null);
   const [isCurrentUser, setIsCurrentUser] = useState(false);
+  const [lastMessage, setLastMessage] = useState("");
 
   useEffect(() => {
     const email = data?.members?.find((email) => email !== currentUser);
 
-    // Check if the conversation is with the current user
     if (email === undefined) {
       setIsCurrentUser(true);
     }
@@ -15,9 +16,7 @@ const Conversation = ({ data, currentUser, online }) => {
     const getUserData = async () => {
       try {
         const response = await fetch(`http://localhost:3000/users/${email || currentUser}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
+        if (!response.ok) throw new Error("Failed to fetch user data");
         const user = await response.json();
         setUserData(user);
       } catch (error) {
@@ -25,31 +24,49 @@ const Conversation = ({ data, currentUser, online }) => {
       }
     };
 
+    const getLastMessage = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/message/last/${data._id}`);
+        if (response.ok) {
+          const message = await response.json();
+          setLastMessage(message?.text || "");
+        }
+      } catch (error) {
+        console.error("Error fetching last message:", error);
+      }
+    };
+
     getUserData();
+    getLastMessage();
   }, [data, currentUser]);
 
   return (
-    <>
-      <div className="follower conversation flex items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-200 cursor-pointer">
+    <div className={`transition-all rounded ${isSelected ? 'ring-1 ring-green/30' : ''}`}>
+      <div className="flex items-center gap-3 p-3">
         <div className="relative">
-          {online || isCurrentUser && <div className="absolute top-0 left-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></div>}
+          <div className={`absolute top-0 right-0 w-3 h-3 rounded-full border-2 border-white ${online || isCurrentUser ? 'bg-emerald-500' : 'bg-gray-400'}`}></div>
           <img
             src={userData?.photoURL || "https://i.ibb.co/tPJnyqL1/btmn.jpg"}
             alt="Profile"
-            className="min-w-12 w-12 h-12 min-h-12 rounded-full object-cover border-2 border-gray-300"
+            className="w-12 h-12 rounded-full object-cover border-2 border-gray-100 shadow"
           />
         </div>
-        <div className="flex flex-col">
-          <span className="font-semibold text-gray-800">
-            {userData?.name} {isCurrentUser && "(Yourself)"}
-          </span>
-          <span className={`text-sm ${online || isCurrentUser ? "text-emerald-500" : "text-gray-500"}`}>
-            {online || isCurrentUser ? "Online" : "Offline"}
-          </span>
+        
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-center">
+            <h4 className="font-medium text-gray-800 truncate">
+              {userData?.name} {isCurrentUser && "(You)"}
+            </h4>
+            <span className="text-xs text-gray-400">
+              {lastMessage && "2h"} {/* Replace with actual time */}
+            </span>
+          </div>
+          <p className="text-sm text-gray-500 truncate">
+            {lastMessage || (isCurrentUser ? "Your conversation" : "Say hello!")}
+          </p>
         </div>
       </div>
-      <hr className="border-t border-gray-300 my-2" />
-    </>
+    </div>
   );
 };
 
