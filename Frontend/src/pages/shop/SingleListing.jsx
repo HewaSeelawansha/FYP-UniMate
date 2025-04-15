@@ -73,16 +73,13 @@ const SingleListing = () => {
     };
   
     try {
-      // First, check if a chat already exists between the two users
       const existingChat = await axiosSecure.get(`/chat/find/${receiver}/${sender}`);
   
-      // If a chat already exists, navigate to the chat page
       if (existingChat.data !== null) {
         navigate(`/chats`);
         return;
       }
   
-      // If no chat exists, create a new one
       const response = await axiosSecure.post(`/chat`, chatData);
   
       if (response.data) {
@@ -128,183 +125,422 @@ const SingleListing = () => {
   
 
   if (loading) {
-    return <div className="text-center py-20">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      </div>
+    );
   }
 
   if (!listing) {
-    return <div className="text-center py-20">Listing not found</div>;
+    return (
+      <div className="text-center py-20">
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+          <h2 className="text-xl font-bold text-gray-800">Listing not found</h2>
+          <p className="mt-2 text-gray-600">The listing you're looking for doesn't exist or may have been removed.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="section-container py-20">
-      <h2 className="text-green md:text-4xl text-3xl font-bold md:leading-snug leading-snug">
-      <span className="text-black">{listing.name} - </span>
-        {listing.boarding}
-      </h2>
-      <div className="rounded-lg bg-black my-5 h-[300px] md:h-[500px] xl:h-[600px] 2xl:h-[700px]">
-        {listing?(
-          <Carousel slideInterval={5000}>
-          {listing?.images && listing?.images?.length > 0 ? (
-            listing?.images.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Slide ${index + 1}`}
-                className="w-full h-full"
-              />
-            ))
-          ) : (
-            <></>
-          )}
-        </Carousel>
-        ):(<></>)}
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
+      {/* Header Section */}
+      <div className="mb-8 text-center">
+        <h1 className="text-5xl font-bold text-gray-900 mb-2">
+          <span className="text-gray-800">{listing.name}</span>
+          <span className="text-orange-500"> - {listing.boarding}</span>
+        </h1>
+        <div className="w-24 h-1 bg-orange-500 mx-auto mt-4 rounded-full"></div>
       </div>
-      <div>
-        <Tabs aria-label="Tabs with icons" variant="underline" className="custom-tabs">
 
-          <Tabs.Item active title="Details" icon={TbListDetails}>
-          <div className="rounded-lg">
-            <div className="bg-blue-300 p-4 rounded-lg">
-              <p className="font-bold">
-                Title: <span className="font-normal">{listing.name}</span>
-              </p>
-              <p className="font-bold mt-2">
-                Boarding House: <span className="font-normal">{listing.boarding}</span>
-              </p>
-              <p className="font-bold mt-2">
-                Owner: <span className="font-normal">{listing.owner}</span>
-              </p>
-              <p className="font-bold mt-2">
-                Type: <span className="font-normal">{listing.type}</span>
-              </p>
-              <p className="font-bold mt-2">
-                For: <span className="font-normal">{listing.gender}</span>
-              </p>
-              <p className="font-bold mt-2">
-                Description: <span className="font-normal">{listing.description}</span>
-              </p>
-              <p className="font-bold mt-2">
-                Price: <span className="text-sky-500">${listing.price}</span>
-              </p>
-              <p className="font-bold mt-2">
-                Key Money: {listing.keyMoney>0?<span className="text-sky-500">${listing.keyMoney}</span>:<span className="text-sky-500">Not Required</span>}
-              </p>
-            </div>
-          </div>
-          </Tabs.Item>
-
-          <Tabs.Item title="Amenities" icon={HiAdjustments}>
-          <div className="rounded-lg">
-            <div className="bg-blue-300 p-4 rounded-lg">
-              {listing.amenities.map((amenity, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={listing.amenities.includes(amenity)}
-                    readOnly
-                    className="text-sky-500 checkbox-xs rounded-md"
+      {/* Image Carousel */}
+      <div className="rounded-xl shadow-xl overflow-hidden mb-12 h-[300px] md:h-[500px]">
+        {listing ? (
+          <Carousel slideInterval={5000} indicators={false}>
+            {listing?.images?.length > 0 ? (
+              listing.images.map((image, index) => (
+                <div key={index} className="relative h-full w-full">
+                  <img
+                    src={image}
+                    alt={`Slide ${index + 1}`}
+                    className="w-full h-full object-cover"
                   />
-                  <span>{amenity}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          </Tabs.Item>
-
-          <Tabs.Item active title="Boarding House" icon={RiHotelFill}>
-            {listing?.owner?
-            (<BoardingComponent owner={listing.owner}/>)
-          :(
-            <p className="text-green bg-black rounded-lg p-1 px-2 mt-4 font-bold">There is a issue when loading the boarding house.</p>)}
-          </Tabs.Item>
-
-          <Tabs.Item active title="Owner" icon={HiUserCircle}>
-          <div className="w-full bg-blue-300 rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
-            <div className="bg-blue-200 text-green p-8 flex flex-col items-center justify-center md:w-1/3">
-              <div className="avatar">
-                <div className="w-[150px] h-[150px] rounded-full overflow-hidden border-4 border-green">
-                  <img src={person?.photoURL || 'https://i.ibb.co/tPJnyqL1/btmn.jpg'} alt="Profile" className="w-full h-full object-cover" />
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold mt-4">{person?.name}</h3>
-            </div>
-            {/* User Details */}
-            <div className="p-6 flex-1">
-              <div className="bg-blue-200 p-10 rounded-lg">
-                <p className="text-gray-700 mb-5"><strong>e-mail:</strong> {person?.email}</p>
-                <p className="text-gray-700 mb-5"><strong>Registered on:</strong> {new Date(person?.createdAt).toLocaleDateString()}</p>
-                <p className="text-gray-700 mb-5"><strong>Address:</strong> {boarding?.address}</p>
-                <p className="text-gray-700"><strong>Phone:</strong> 0{boarding?.phone}</p>
-              </div>
-            </div>
-          </div>
-          </Tabs.Item>
-
-          <Tabs.Item title="Reviews" icon={BsStars}>
-            {
-            listing._id? (<ReviewComponent listing={listing._id}/>
-            ):(
-              <p className="text-green bg-black rounded-lg p-1 px-2 mt-4 font-bold">There is a issue when loading reviews.</p>
-            )}
-          </Tabs.Item>
-
-          <Tabs.Item title="View in Map" icon={PiMapPinAreaFill}>
-            {boarding?.lat&&boarding?.lng?
-            (<MapComponent lati={boarding.lat} lngi={boarding.lng} name={listing.owner}/>
-            ):(
-            <p className="text-green bg-black rounded-lg p-1 px-2 mt-4 font-bold">There is a issue when loading map.</p>)}
-          </Tabs.Item>
-
-          <Tabs.Item title="Contacts" icon={MdOutlineContactMail}>
-            {user?
-            (user.email !== listing.owner ? (
-              <div className='w-full font-bold bg-black text-white hover:text-blue-500 px-4 py-2 rounded-lg flex items-center justify-center gap-2 group'>
-                <div className="p-2 avatar px-2">
-                  <div className="ring-green group-hover:ring-secondary ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
-                    <img src={person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="User Avatar" />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <span className="text-white font-medium">
+                      Photo {index + 1} of {listing.images.length}
+                    </span>
                   </div>
                 </div>
-                <p className="text-green group-hover:text-secondary font-bold text-xl m-auto">
-                  {person?.name}
-                </p>
-                <button onClick={() => handleChat(user.email, listing.owner)} className="font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-secondary hover:text-white transition duration-300 flex items-center justify-center gap-2">
-                  Direct Chat <FaBuildingUser className="text-xl" />
-                </button>
-              </div>
+              ))
             ) : (
-              <div className="bg-gray-200 rounded-lg p-4">
-                <p className="font-bold">
-                You are currently viewing <span className="text-green">your own listing</span>. Select a listing from another owner to start a conversation.
-                </p>
+              <div className="bg-gray-100 h-full flex items-center justify-center">
+                <span className="text-gray-400">No images available</span>
               </div>
-            )) : (
-            <div className="bg-gray-200 rounded-lg p-4">
-              <p className="font-bold">
-              Please <span className="text-green">login</span> to chat directly with the property owner.
-              </p>
-            </div>
             )}
-          </Tabs.Item>
+          </Carousel>
+        ) : (
+          <div className="bg-gray-100 h-full flex items-center justify-center">
+            <span className="text-gray-400">Loading images...</span>
+          </div>
+        )}
+      </div>
 
-          <Tabs.Item title="Find Your Roommate" icon={MdOutlineContactMail}>
-              {listing.owner?
-              (<RoommateComponent gender={listing.owner}/>
-              ):(
-              <></>)}
-          </Tabs.Item>
-
-          <Tabs.Item title="Booking" icon={MdOutlineContactMail}>
-              {listing && user?
-              (<BookingComponent currentuser={user.email} id={listing._id} price={listing.price} keyMoney={listing.keyMoney} owner={listing.owner} />)
-              :(<div className="bg-gray-200 rounded-lg">
-              <div className="p-4">
-                <p className="font-bold">
-                  Please<span className="text-green"> login </span>to proceed with a booking.
+      {/* Main Content */}
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <Tabs aria-label="Listing details tabs" style={{ underline: true }} className="border-b m-1 border-gray-200">
+          {/* Details Tab */}
+          <Tabs.Item active title="Details" icon={TbListDetails}>
+            <div className="p-6 md:p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-start">
+                    <div className="bg-orange-100 p-2 rounded-lg mr-4">
+                      <RiHotelFill className="text-orange-500 text-xl" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-500">BOARDING HOUSE</h3>
+                      <p className="text-lg font-medium text-gray-900">{listing.boarding}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-orange-100 p-2 rounded-lg mr-4">
+                      <HiUserCircle className="text-orange-500 text-xl" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-500">OWNER</h3>
+                      <p className="text-lg font-medium text-gray-900">{listing.owner}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-orange-100 p-2 rounded-lg mr-4">
+                      <BsCreditCard2BackFill className="text-orange-500 text-xl" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-500">TYPE</h3>
+                      <p className="text-lg font-medium text-gray-900 capitalize">{listing.type}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start">
+                    <div className="bg-orange-100 p-2 rounded-lg mr-4">
+                      <FaBuildingUser className="text-orange-500 text-xl" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-500">FOR</h3>
+                      <p className="text-lg font-medium text-gray-900 capitalize">{listing.gender}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-orange-100 p-2 rounded-lg mr-4">
+                      <HiClipboardList className="text-orange-500 text-xl" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-500">PRICE</h3>
+                      <p className="text-lg font-bold text-orange-500">${listing.price}/month</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-orange-100 p-2 rounded-lg mr-4">
+                      <MdDashboard className="text-orange-500 text-xl" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-500">KEY MONEY</h3>
+                      <p className="text-lg font-medium text-gray-900">
+                        {listing.keyMoney > 0 ? (
+                          <span className="text-orange-500">${listing.keyMoney}</span>
+                        ) : (
+                          <span className="text-green-500">Not Required</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
+                <p className="text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg">
+                  {listing.description}
                 </p>
               </div>
-            </div>)}   
+            </div>
           </Tabs.Item>
 
+          {/* Amenities Tab */}
+          <Tabs.Item title="Amenities" icon={HiAdjustments}>
+            <div className="p-6 md:p-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Available Amenities</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {listing.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center bg-gray-50 p-4 rounded-lg hover:bg-orange-50 transition-colors">
+                    <div className="bg-orange-100 p-2 rounded-full mr-3">
+                      <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <span className="font-medium text-gray-800 capitalize">{amenity}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Tabs.Item>
+
+          {/* Boarding House Tab */}
+          <Tabs.Item title="Boarding House" icon={RiHotelFill}>
+            <div className="p-6 md:p-8">
+              {listing?.owner ? (
+                <BoardingComponent owner={listing.owner} />
+              ) : (
+                <div className="bg-orange-100 border-l-4 border-orange-500">
+                  <p className="text-orange-800 font-medium">
+                    There is an issue loading the boarding house information.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Tabs.Item>
+
+          {/* Owner Tab */}
+          <Tabs.Item title="Owner" icon={HiUserCircle}>
+            <div className="p-6 md:p-8">
+              {person ? (
+                <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                  <div className="md:flex">
+                    <div className="md:w-1/3 bg-gradient-to-br from-orange-100 to-orange-50 p-8 flex flex-col items-center justify-center">
+                      <div className="relative">
+                        <img 
+                          src={person?.photoURL || 'https://i.ibb.co/tPJnyqL1/btmn.jpg'} 
+                          alt="Profile" 
+                          className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
+                        />
+                        <div className="absolute -bottom-2 -right-2 bg-orange-500 rounded-full p-1">
+                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mt-4">{person?.name}</h3>
+                      <p className="text-orange-500 mt-1">Property Owner</p>
+                    </div>
+                    <div className="md:w-2/3 p-8">
+                      <div className="space-y-6">
+                        <div>
+                          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contact Information</h4>
+                          <div className="mt-2 space-y-3">
+                            <div className="flex items-center">
+                              <svg className="w-5 h-5 text-gray-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                              </svg>
+                              <span className="text-gray-700">{person?.email}</span>
+                            </div>
+                            {boarding?.phone && (
+                              <div className="flex items-center">
+                                <svg className="w-5 h-5 text-gray-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                                </svg>
+                                <span className="text-gray-700">0{boarding.phone}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Registration Date</h4>
+                          <div className="mt-2 flex items-center">
+                            <svg className="w-5 h-5 text-gray-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
+                            </svg>
+                            <span className="text-gray-700">
+                              {new Date(person?.createdAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {boarding?.address && (
+                          <div>
+                            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Address</h4>
+                            <div className="mt-2 flex items-start">
+                              <svg className="w-5 h-5 text-gray-400 mr-3 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
+                              </svg>
+                              <span className="text-gray-700">{boarding.address}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-orange-100 border-l-4 border-orange-500 p-4">
+                  <p className="text-orange-800 font-medium">
+                    There is an issue loading the owner information.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Tabs.Item>
+
+          {/* Reviews Tab */}
+          <Tabs.Item title="Reviews" icon={BsStars}>
+            <div className="p-6 md:p-8">
+              {listing._id ? (
+                <ReviewComponent listing={listing._id} />
+              ) : (
+                <div className="bg-orange-100 border-l-4 border-orange-500 p-4">
+                  <p className="text-orange-800 font-medium">
+                    There is an issue loading the reviews.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Tabs.Item>
+
+          {/* Map Tab */}
+          <Tabs.Item title="View in Map" icon={PiMapPinAreaFill}>
+            <div className="p-6 md:p-8">
+              {boarding?.lat && boarding?.lng ? (
+                <MapComponent lati={boarding.lat} lngi={boarding.lng} name={listing.owner} />
+              ) : (
+                <div className="bg-orange-100 border-l-4 border-orange-500 p-4">
+                  <p className="text-orange-800 font-medium">
+                    There is an issue loading the map.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Tabs.Item>
+
+          {/* Contacts Tab */}
+          <Tabs.Item title="Contacts" icon={MdOutlineContactMail}>
+            <div className="p-6 md:p-8">
+              {user ? (
+                user.email !== listing.owner ? (
+                  <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div className="p-6 md:p-8 flex flex-col md:flex-row items-center">
+                      <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                        <div className="relative">
+                          <img 
+                            src={person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} 
+                            alt="User Avatar" 
+                            className="w-20 h-20 rounded-full object-cover border-4 border-orange-100"
+                          />
+                          <div className="absolute -bottom-2 -right-2 bg-orange-500 rounded-full p-1">
+                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex-grow text-center md:text-left">
+                        <h3 className="text-xl font-bold text-gray-900">{person?.name}</h3>
+                        <p className="text-gray-600 mt-1">Property Owner</p>
+                      </div>
+                      <div className="mt-4 md:mt-0">
+                        <button 
+                          onClick={() => handleChat(user.email, listing.owner)}
+                          className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow-md transition-colors flex items-center"
+                        >
+                          <FaBuildingUser className="mr-2" />
+                          Start Chat
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-center">
+                    <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                      <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clipRule="evenodd"></path>
+                      </svg>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">This is your listing</h3>
+                    <p className="text-gray-600">
+                      You're viewing your own property. Explore other listings to connect with their owners.
+                    </p>
+                  </div>
+                )
+              ) : (
+                <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-center">
+                  <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">Please login to chat</h3>
+                  <p className="text-gray-600 mb-4">
+                    Sign in to your account to start a conversation with the property owner.
+                  </p>
+                  <button 
+                    onClick={() => navigate('/login')}
+                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow-md transition-colors"
+                  >
+                    Login Now
+                  </button>
+                </div>
+              )}
+            </div>
+          </Tabs.Item>
+
+          {/* Roommate Tab */}
+          <Tabs.Item title="Find Roommates" icon={FaBuildingUser}>
+            <div className="p-6 md:p-8">
+              {listing.owner ? (
+                <RoommateComponent gender={listing.owner} />
+              ) : (
+                <div className="bg-orange-100 border-l-4 border-orange-500 p-4">
+                  <p className="text-orange-800 font-medium">
+                    There is an issue loading roommate information.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Tabs.Item>
+
+          {/* Booking Tab */}
+          <Tabs.Item title="Book Now" icon={BsCreditCard2BackFill}>
+            <div className="p-6 md:p-8">
+              {listing && user ? (
+                <BookingComponent 
+                  currentuser={user.email} 
+                  id={listing._id} 
+                  price={listing.price} 
+                  keyMoney={listing.keyMoney} 
+                  owner={listing.owner} 
+                />
+              ) : (
+                <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-center">
+                  <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">Ready to book?</h3>
+                  <p className="text-gray-600 mb-4">
+                    Please login to proceed with your booking and secure this property.
+                  </p>
+                  <button 
+                    onClick={() => navigate('/login')}
+                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow-md transition-colors"
+                  >
+                    Login to Book
+                  </button>
+                </div>
+              )}
+            </div>
+          </Tabs.Item>
         </Tabs>
       </div>
     </div>
