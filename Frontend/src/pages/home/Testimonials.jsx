@@ -1,58 +1,89 @@
-import React from 'react'
-import { FaStar } from 'react-icons/fa'
+import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const Testimonials = () => {
-  return (
-    <div className='section-container'>
-      <div className='flex flex-col md:flex-row items-center justify-between gap-12'>
-        <div className='md:w-1/2'>
-            <img src="/images/home/testimonials/testimonialsn.png" alt="" />
-        </div>
-        <div className='md:w-1/2'>
-            <div className='text-left md:w-4/5'>
-                <p className='subtitle uppercase'>Students' Reviews</p>
-                <h2 className='title'>What Your Peers Say About Us</h2>
-                <blockquote className='my-5 text-gray-700 leading-[30px]'>
-                    "Finding a boarding house near campus was never this easy! Thanks to this platform, I found a safe, affordable, and comfortable place that perfectly suits my student life."
-                </blockquote>
-                {/* avatar */}
-                <div className='flex items-center gap-4 flex-wrap'>
-                    <div className="avatar-group -space-x-6 rtl:space-x-reverse">
-                        <div className="avatar">
-                            <div className="w-12">
-                            <img src="/images/home/testimonials/testimonial1.png" />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-12">
-                            <img src="/images/home/testimonials/testimonial2.png" />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-12">
-                            <img src="/images/home/testimonials/testimonial3.png" />
-                            </div>
-                        </div>
-                        <div className="avatar placeholder">
-                            <div className="bg-neutral text-neutral-content w-12">
-                            <span>+99</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='space-y-1'>
-                        <h5 className='text-lg font-semibold'>Customers' Feedback</h5>
-                        <div className='flex items-center gap-2'>
-                            <FaStar className='text-red'/>
-                            <span className='font-medium'>4.9</span>
-                            <span className='text-gray-700'>(21.1k Reviews)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </div>
-    </div>
-  ) 
-}
+  const testimonials = [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      university: "State University",
+      rating: 5,
+      text: "Found my perfect home in just two days! The process was so easy and the landlord was verified and professional.",
+      image: "/images/testimonials/testimonial1.jpg"
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      university: "Tech Institute",
+      rating: 5,
+      text: "As an international student, I was nervous about finding housing. This platform made it stress-free with English-speaking landlords.",
+      image: "/images/testimonials/testimonial2.jpg"
+    },
+    {
+      id: 3,
+      name: "Emma Rodriguez",
+      university: "City College",
+      rating: 4,
+      text: "Love my boarding house! It's clean, affordable, and just 10 minutes from campus. The roommate matching was perfect too.",
+      image: "/images/testimonials/testimonial3.jpg"
+    }
+  ];
 
-export default Testimonials
+  return (
+    <section className="py-16 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">What Students Say</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Hear from students who found their perfect home through our platform
+          </p>
+        </div>
+        
+        <Swiper
+          modules={[Autoplay, Pagination]}
+          spaceBetween={30}
+          slidesPerView={1}
+          autoplay={{ delay: 5000 }}
+          pagination={{ clickable: true }}
+          breakpoints={{
+            768: { slidesPerView: 2 }
+          }}
+          className="pb-12"
+        >
+          {testimonials.map((testimonial) => (
+            <SwiperSlide key={testimonial.id}>
+              <div className="bg-white p-8 rounded-xl shadow-md h-full">
+                <div className="flex items-center mb-6">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                  ))}
+                </div>
+                <blockquote className="text-lg italic mb-6">
+                  "{testimonial.text}"
+                </blockquote>
+                <div className="flex items-center">
+                  <img 
+                    src={testimonial.image} 
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full object-cover mr-4"
+                  />
+                  <div>
+                    <h4 className="font-bold">{testimonial.name}</h4>
+                    <p className="text-gray-600 text-sm">{testimonial.university}</p>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    </section>
+  );
+};
+
+export default Testimonials;
