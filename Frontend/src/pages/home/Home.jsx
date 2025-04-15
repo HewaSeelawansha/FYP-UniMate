@@ -1,18 +1,22 @@
 import React from 'react'
 import Banner from '../../components/Banner'
-import Carousel from './Carousel'
-import PopularPlaces from './PopularPlaces'
+import UniversityHubLocator from './UniversityHubLocator'
+import PropertyShowcase from './PropertyShowcase'
 import Testimonials from './Testimonials'
-import Services from './Services'
+import AmenitiesSpotlight from './AmenitiesSpotlight'
+import FeaturesGrid from './FeaturesGrid'
+import CallToAction from './CallToAction'
 
 const Home = () => {
   return (
     <div>
       <Banner/>
-      <Carousel/>
-      <PopularPlaces/>
+      <UniversityHubLocator/>
+      <AmenitiesSpotlight/>
+      <FeaturesGrid/>
+      <PropertyShowcase/>
       <Testimonials/>
-      <Services/>
+      <CallToAction/>
     </div>
   )
 }
