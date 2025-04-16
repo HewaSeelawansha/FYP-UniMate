@@ -57,7 +57,16 @@ const listingSchema = new Schema({
     available: {
         type: Number,
         default: 0
-    }
+    },
+    payment: {
+        type: Number,
+        default: 0,
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Approved', 'Rejected'],
+        default: 'Pending'
+    },
     }, { 
         timestamps: true 
     }
