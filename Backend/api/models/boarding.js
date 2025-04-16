@@ -22,6 +22,11 @@ const boardingSchema = new Schema({
         type: Number,
         required: true
     },
+    distance: {
+        type: Number,
+        required: true,
+        default: 10
+    },
     phone: {
         type: Number,
         required: true
