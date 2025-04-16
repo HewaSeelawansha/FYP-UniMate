@@ -105,11 +105,6 @@ const ManageBoardings = () => {
                 <div className="md:w-3/4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center">
-                      <FaUser className="text-green-500 mr-2" />
-                      <span className="font-medium">Owner:</span>
-                      <span className="ml-2">{item.owner}</span>
-                    </div>
-                    <div className="flex items-center">
                       <FaPhone className="text-green-500 mr-2" />
                       <span className="font-medium">Phone:</span>
                       <span className="ml-2">{item.phone}</span>
@@ -118,6 +113,11 @@ const ManageBoardings = () => {
                       <FaVenusMars className="text-green-500 mr-2" />
                       <span className="font-medium">Gender:</span>
                       <span className="ml-2 capitalize">{item.gender}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <FaUser className="text-green-500 mr-2" />
+                      <span className="font-medium">Owner:</span>
+                      <span className="ml-2">{item.owner}</span>
                     </div>
                   </div>
 
