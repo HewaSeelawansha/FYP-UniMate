@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { IoArrowBackCircleSharp } from 'react-icons/io5';
 import { motion, AnimatePresence } from 'framer-motion';
 import Conversation from '../../components/Conversation';
@@ -16,6 +16,8 @@ const Chat = () => {
     const [receiveMessage, setReceiveMessage] = useState(null);
     const socket = useRef();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const chatIdParam = searchParams.get('chatId');
 
     useEffect(() => {
         const getChats = async () => {
@@ -23,12 +25,19 @@ const Chat = () => {
                 const response = await fetch(`http://localhost:3000/chat/${user.email}`)
                 const data = await response.json();
                 setChats(data);
+
+                if (chatIdParam) {
+                    const targetChat = data.find(chat => chat._id === chatIdParam);
+                    if (targetChat) {
+                        setCurrentChat(targetChat);
+                    }
+                }
             } catch (error) {
                 console.error("Error fetching chats:", error);
             }
         };
         getChats();
-    }, [user.email]);
+    }, [user.email, chatIdParam]);
 
     useEffect(() => {
         if (sendMessage !== null) {
