@@ -6,6 +6,11 @@ const listingSchema = new Schema({
         type: String,
         required: true
     },
+    distance: {
+        type: Number,
+        required: true,
+        default: 10
+    },
     owner: {
         type: String,
         required: true
