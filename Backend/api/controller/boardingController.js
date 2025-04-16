@@ -1,4 +1,5 @@
 const Boarding = require("../models/boarding");
+const Listing = require("../models/listing");
 const User = require("../models/users");
 
 // get all boardings
@@ -55,24 +56,42 @@ const singleBoarding = async (req, res) => {
 
 // update an existing boarding
 const updateBoarding = async (req, res) => {
-    const boardingId = req.params.id;
-    const { name, address, lng, lat, phone, gender, description, images, amenities, beds, status } = req.body;
-  
-    try {
-      const updatedBoarding = await Boarding.findByIdAndUpdate(
-        boardingId,
-        { name, address, lng, lat, phone, gender, description, images, amenities, beds, status },
-        { new: true, runValidators: true }
-      );
-  
-      if (!updatedBoarding) {
-        return res.status(404).json({ message: 'Boarding not found!' });
-      }
-  
-      res.status(200).json(updatedBoarding);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+  const boardingId = req.params.id;
+  const { name, address, lng, lat, distance, phone, gender, description, images, amenities, beds, status, owner } = req.body;
+
+  try {
+    const currentBoarding = await Boarding.findById(boardingId);
+    if (!currentBoarding) {
+      return res.status(404).json({ message: 'Boarding not found!' });
     }
+
+    // Update the boarding
+    const updatedBoarding = await Boarding.findByIdAndUpdate(
+      boardingId,
+      { name, address, lng, lat, distance, phone, gender, description, images, amenities, beds, status },
+      { new: true, runValidators: true }
+    );
+
+    // Check if distance was changed and update all listings if it was
+    if (distance && distance !== currentBoarding.distance) {
+      await Listing.updateMany(
+        { owner: updatedBoarding.owner },
+        { $set: { distance: distance } }
+      );
+    }
+
+    res.status(200).json({
+      boarding: updatedBoarding,
+      message: distance !== currentBoarding.distance 
+        ? 'Boarding and associated listings updated successfully' 
+        : 'Boarding updated successfully',
+      updatedListingsCount: distance !== currentBoarding.distance 
+        ? (await Listing.countDocuments({ owner: updatedBoarding.owner })) 
+        : 0
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const statusBoarding = async (req, res) => {
