@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaEdit, FaTrashAlt, FaPlusCircle } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaPlusCircle, FaBed, FaBath, FaRulerCombined } from 'react-icons/fa';
 import { FcViewDetails } from "react-icons/fc";
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -76,7 +76,7 @@ const ManageListing = () => {
   
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
@@ -95,86 +95,80 @@ const ManageListing = () => {
           </Link>
         </div>
 
-        {/* Listings Table */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
-                <tr>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    #
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Image
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Listing
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Price
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {mylist.map((item, index) => (
-                  <tr key={item._id} className="hover:bg-gray-50 transition duration-150">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {index + 1}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        {item.images && item.images.length > 0 ? (
-                          <img 
-                            className="h-10 w-10 rounded-full object-cover" 
-                            src={item.images[0]} 
-                            alt="Listing thumbnail" 
-                          />
-                        ) : (
-                          <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                            <span className="text-xs text-gray-500">No image</span>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {item.name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      LKR {item.price}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex space-x-2">
-                        <Link 
-                          to={`/owner/view-listing/${item._id}`}
-                          className="text-green-600 hover:text-green-800 p-2 rounded-full hover:bg-green-50 transition duration-200"
-                          title="View Details"
-                        >
-                          <FcViewDetails className="w-5 h-5" />
-                        </Link>
-                        <Link 
-                          to={`/owner/update-listing/${item._id}`}
-                          className="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50 transition duration-200"
-                          title="Edit"
-                        >
-                          <FaEdit className="w-5 h-5" />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(item)}
-                          className="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition duration-200"
-                          title="Delete"
-                        >
-                          <FaTrashAlt className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {/* Listings Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {mylist.map((item) => (
+            <div key={item._id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+              {/* Listing Image */}
+              <div className="relative h-48 overflow-hidden">
+                {item.images && item.images.length > 0 ? (
+                  <img 
+                    className="w-full h-full object-cover transition duration-300 hover:scale-105" 
+                    src={item.images[0]} 
+                    alt={item.name} 
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-500">No image available</span>
+                  </div>
+                )}
+                {/* Price Tag */}
+                <div className="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                  LKR {item.price}
+                </div>
+              </div>
+
+              {/* Listing Details */}
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-gray-800 mb-2 truncate">{item.name}</h3>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{item.description}</p>
+{/*                 
+                
+                <div className="flex justify-between text-sm text-gray-500 mb-5">
+                  <div className="flex items-center">
+                    <FaBed className="mr-1 text-orange-500" />
+                    <span>{item.totalBeds || 'N/A'} Beds</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FaBath className="mr-1 text-orange-500" />
+                    <span>{item.bathrooms || 'N/A'} Baths</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FaRulerCombined className="mr-1 text-orange-500" />
+                    <span>{item.area || 'N/A'} sqft</span>
+                  </div>
+                </div> */}
+
+                {/* Action Buttons */}
+                <div className="flex justify-between border-t pt-4">
+                  <Link 
+                    to={`/owner/view-listing/${item._id}`}
+                    className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200"
+                    title="View Details"
+                  >
+                    <FcViewDetails className="w-5 h-5 mr-1" />
+                    <span className="text-sm">Details</span>
+                  </Link>
+                  <Link 
+                    to={`/owner/update-listing/${item._id}`}
+                    className="flex items-center text-green-600 hover:text-green-800 transition duration-200"
+                    title="Edit"
+                  >
+                    <FaEdit className="w-4 h-4 mr-1" />
+                    <span className="text-sm">Edit</span>
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(item)}
+                    className="flex items-center text-red-600 hover:text-red-800 transition duration-200"
+                    title="Delete"
+                  >
+                    <FaTrashAlt className="w-4 h-4 mr-1" />
+                    <span className="text-sm">Delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
