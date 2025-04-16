@@ -19,6 +19,7 @@ const AddListing = () => {
   const navigate = useNavigate();
   const [keyMoneyRequired, setKeyMoneyRequired] = useState(false);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const owner = user.email;
   const listingtitle = ltype && boarding?.gender ? `${ltype} for ${boarding?.gender}` : "";
@@ -55,15 +56,23 @@ const AddListing = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const previews = files.map(file => URL.createObjectURL(file));
+    
+    const previews = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+    
     setImagePreviews(previews);
   };
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
+
     const imageFiles = data.image;
-    const uploadPromises = Array.from(imageFiles).map(async (file) => {
+
+    const uploadPromises = imagePreviews.map(async (item) => {
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('image', item.file);
       const response = await axiosPublic.post(image_hosting_api, formData, {
         headers: { 'content-type': 'multipart/form-data' },
       });
@@ -73,10 +82,12 @@ const AddListing = () => {
 
     try {
       const imageUrls = await Promise.all(uploadPromises);
+
       const selectedAmenities = amenitiesList.filter(amenity => data[amenity.id]).map(amenity => amenity.label);
 
-      const menuItem = {
-        boarding: boarding.name,
+      const newItem = {
+        boarding: boarding?.name,
+        distance: boarding?.distance,
         owner: user.email,
         name: data.type + " for " + data.gender,
         gender: data.gender,
@@ -89,9 +100,9 @@ const AddListing = () => {
         available: data.available,
       };
 
-      const postMenuItem = await axiosSecure.post('/listing', menuItem);
+      const postNewItem = await axiosSecure.post('/listing', newItem);
 
-      if (postMenuItem.data) {
+      if (postNewItem.data) {
         Swal.fire({
           position: 'center',
           icon: 'success',
@@ -112,6 +123,8 @@ const AddListing = () => {
         text: error.message || 'An error occurred while creating the listing.',
         showConfirmButton: true,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -339,33 +352,50 @@ const AddListing = () => {
 
             {/* Images Section */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Photos*</label>
-              <div className="space-y-4">
-                {imagePreviews.length > 0 && (
-                  <div className="flex flex-wrap gap-4 mb-4">
-                    {imagePreviews.map((preview, index) => (
-                      <div key={index} className="w-24 h-24 rounded-lg overflow-hidden border border-gray-200">
-                        <img src={preview} alt={`Preview ${index}`} className="w-full h-full object-cover" />
-                      </div>
-                    ))}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Photos*</label>
+                  <div className="space-y-4">
+                    {/* Image previews */}
+                    <div className="flex flex-wrap gap-4 mb-4">
+                      {imagePreviews.map((item, index) => (
+                        <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 group">
+                          <img 
+                            src={item.preview} 
+                            alt={`Preview ${index}`} 
+                            className="w-full h-full object-cover"
+                          />
+                          {/* Remove button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updatedPreviews = [...imagePreviews];
+                              updatedPreviews.splice(index, 1);
+                              setImagePreviews(updatedPreviews);
+                            }}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Upload area */}
+                    <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                      <FaUpload className="text-orange-600 text-2xl mb-2" />
+                      <p className="text-sm text-gray-600">Click to upload images</p>
+                      <p className="text-xs text-gray-500">(JPEG, PNG, etc.)</p>
+                      <input
+                        {...register('image', { required: 'At least one image is required' })}
+                        type="file"
+                        className="hidden"
+                        onChange={handleImageChange}
+                        multiple
+                        accept="image/*"
+                      />
+                    </label>
+                    {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image.message}</p>}
                   </div>
-                )}
-                <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                  <FaUpload className="text-orange-600 text-2xl mb-2" />
-                  <p className="text-sm text-gray-600">Click to upload listing images</p>
-                  <p className="text-xs text-gray-500">(JPEG, PNG, etc.)</p>
-                  <input
-                    {...register('image', { required: 'At least one image is required' })}
-                    type="file"
-                    className="hidden"
-                    onChange={handleImageChange}
-                    multiple
-                    accept="image/*"
-                  />
-                </label>
-                {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image.message}</p>}
-              </div>
-            </div>
+                </div>
 
             {/* Amenities Section */}
             <div>
@@ -388,9 +418,24 @@ const AddListing = () => {
             <div className="pt-4">
               <button
                 type="submit"
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className={`w-full ${
+                  isSubmitting ? 'bg-orange-500' : 'bg-green hover:bg-orange-500'
+                  } text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2`}
               >
-                <FaCheckCircle /> Create Listing
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                    Processing...
+                </>
+                ) : (
+                <>
+                  <FaUpload /> Submit Listing
+                </>
+                )}
               </button>
             </div>
           </form>
