@@ -74,9 +74,8 @@ const SingleListing = () => {
   
     try {
       const existingChat = await axiosSecure.get(`/chat/find/${receiver}/${sender}`);
-  
       if (existingChat.data !== null) {
-        navigate(`/chats`);
+        navigate(`/chats?chatId=${existingChat.data._id}`);
         return;
       }
   
@@ -90,7 +89,7 @@ const SingleListing = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        navigate(`/chats`);
+        navigate(`/chats?chatId=${response.data._id}`);
       }
     } catch (error) {
       console.error('Error creating or fetching chat:', error);
@@ -147,7 +146,7 @@ const SingleListing = () => {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
       {/* Header Section */}
       <div className="mb-8 text-center">
-        <h1 className="text-5xl font-bold text-gray-900 mb-2">
+        <h1 className="text-5xl md:text-4xl font-bold text-gray-900 mb-2">
           <span className="text-gray-800">{listing.name}</span>
           <span className="text-orange-500"> - {listing.boarding}</span>
         </h1>
@@ -155,7 +154,7 @@ const SingleListing = () => {
       </div>
 
       {/* Image Carousel */}
-      <div className="rounded-xl shadow-xl overflow-hidden mb-12 h-[300px] md:h-[500px]">
+      <div className="rounded-xl shadow-xl overflow-hidden mb-12 h-[300px] md:h-[500px] xl:h-[770px]">
         {listing ? (
           <Carousel slideInterval={5000} indicators={false}>
             {listing?.images?.length > 0 ? (
@@ -187,13 +186,19 @@ const SingleListing = () => {
       </div>
 
       {/* Main Content */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden p-4">
       <Tabs aria-label="Listing details tabs" style={{ underline: true }} className="border-b m-1 border-gray-200">
           {/* Details Tab */}
           <Tabs.Item active title="Details" icon={TbListDetails}>
             <div className="p-6 md:p-8">
+
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-900"><span className="font-bold text-green">{listing.distance} Km</span> Away From NSBM Green University</h3>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
+                  
                   <div className="flex items-start">
                     <div className="bg-orange-100 p-2 rounded-lg mr-4">
                       <RiHotelFill className="text-orange-500 text-xl" />
@@ -266,7 +271,7 @@ const SingleListing = () => {
               
               <div className="mt-8">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
-                <p className="text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-700 leading-relaxed bg-gray-100 p-4 rounded-lg">
                   {listing.description}
                 </p>
               </div>
