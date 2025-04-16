@@ -9,6 +9,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const scroll = useRef();
 
   useEffect(() => {
@@ -22,20 +23,30 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
   }, [receiveMessage]);
   
   useEffect(() => {
-    const email = chat?.members?.find((email) => email !== currentUser);
-    
-    const getUserData = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/users/${email || currentUser}`);
-        const data = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    if (chat !== null) getUserData();
-  }, [chat, currentUser]);
+    if (chat) {
+        setIsLoading(true);
+        // Fetch user data and messages
+        const fetchData = async () => {
+            try {
+                const email = chat?.members?.find((email) => email !== currentUser);
+                const userResponse = await fetch(`http://localhost:3000/users/${email || currentUser}`);
+                const userData = await userResponse.json();
+                
+                const messagesResponse = await fetch(`http://localhost:3000/message/${chat._id}`);
+                const messagesData = await messagesResponse.json();
+                
+                setUserData(userData);
+                setMessages(messagesData);
+            } catch (error) {
+                console.error("Error loading chat data:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        fetchData();
+    }
+}, [chat, currentUser]);
 
   useEffect(() => {
     const fetchMessages = async () => {
