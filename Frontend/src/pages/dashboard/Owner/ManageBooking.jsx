@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaFilter, FaTrashAlt, FaCalendarAlt, FaUser, FaMoneyBillWave, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaEdit, FaFilter, FaTrashAlt, FaCalendarAlt, FaUser, FaMoneyBillWave, FaCheckCircle, FaTimesCircle, FaHome } from 'react-icons/fa';
 import { FcViewDetails } from "react-icons/fc";
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -100,7 +100,7 @@ const ManageBooking = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="w-full mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
@@ -113,7 +113,7 @@ const ManageBooking = () => {
           </div>
           
           {/* Filter */}
-          <div className="flex items-center space-x-2 mt-4 sm:mt-0">
+          <div className="flex items-center space-x-2 mx-6 mt-4 sm:mt-0">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaFilter className="text-orange-500" />
@@ -134,127 +134,132 @@ const ManageBooking = () => {
           </div>
         </div>
 
-        {/* Bookings Table */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          {filteredItems.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      #
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      <FaCalendarAlt className="inline mr-1" /> Date
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      <FaUser className="inline mr-1" /> Sender
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      Move In
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      Needs
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      <FaMoneyBillWave className="inline mr-1" /> Payment
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredItems.map((item, index) => (
-                    <tr key={index} className="hover:bg-gray-50 transition duration-150">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {index + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(item.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {item.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {item.movein}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {item.needs}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex flex-col">
-                          <span>Method: {item.payvia}</span>
-                          <span>Status: {item.paystatus}</span>
-                          <span>Amount: LKR {item.payment}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                          item.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                          item.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex items-center space-x-2">
-                          <Link 
-                            to={`/owner/view-listing/${item.listing._id}`}
-                            className="text-green-600 hover:text-green-800 p-2 rounded-full hover:bg-green-50 transition duration-200"
-                            title="View Details"
-                          >
-                            <FcViewDetails className="w-5 h-5" />
-                          </Link>
-                          <div className="flex items-center">
-                            <select
-                              className="mr-2 rounded-lg border-gray-300 text-sm focus:ring-orange-500 focus:border-orange-500"
-                              onChange={(e) => setNstatus(e.target.value)}
-                              defaultValue={item.status}
-                            >
-                              <option value="Pending">Pending</option>
-                              <option value="Approved">Approved</option>
-                              <option value="Rejected">Rejected</option>
-                            </select>
-                            <button 
-                              onClick={() => handleStatus(item)}
-                              className="text-white bg-orange-600 hover:bg-orange-700 p-2 rounded-full transition duration-200"
-                              title="Update Status"
-                            >
-                              <FaEdit className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="p-8 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                <FaTimesCircle className="w-8 h-8 text-gray-400" />
+        {/* Bookings Grid */}
+        {filteredItems.length > 0 ? (
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            {filteredItems.map((item, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 border border-gray-100">
+                {/* Booking Header */}
+                <div className="bg-gradient-to-r from-green to-green p-4 text-white">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-bold text-lg">Booking #{index + 1}</h3>
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      item.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                      item.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {item.status}
+                    </span>
+                  </div>
+                  <p className="text-sm mt-1 flex items-center">
+                    <FaCalendarAlt className="mr-2" />
+                    {new Date(item.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+
+                {/* Booking Details */}
+                <div className="p-5">
+                  {/* Property Info */}
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-gray-800 flex items-center">
+                      <FaHome className="text-orange-500 mr-2" />
+                      {item.listing?.name || 'Property'}
+                    </h4>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Requested by: {item.email}
+                    </p>
+                  </div>
+
+                  {/* Move-in Date */}
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-gray-800">Move-in Date</h4>
+                    <p className="text-sm text-gray-600">{item.movein}</p>
+                  </div>
+
+                  {/* Special Needs */}
+                  {item.needs && (
+                    <div className="mb-4">
+                      <h4 className="font-semibold text-gray-800">Special Needs</h4>
+                      <p className="text-sm text-gray-600">{item.needs}</p>
+                    </div>
+                  )}
+
+                  {/* Payment Info */}
+                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold text-gray-800 flex items-center">
+                      <FaMoneyBillWave className="text-green-500 mr-2" />
+                      Payment Details
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                      <div>
+                        <span className="text-gray-500">Method:</span>
+                        <span className="ml-2 font-medium">{item.payvia}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Status:</span>
+                        <span className="ml-2 font-medium">{item.paystatus}</span>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="text-gray-500">Amount:</span>
+                        <span className="ml-2 font-medium text-green-600">LKR {item.payment}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex justify-between items-center pt-4 border-t">
+                    <Link 
+                      to={`/owner/view-listing/${item.listing._id}`}
+                      className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 text-sm"
+                      title="View Details"
+                    >
+                      <FcViewDetails className="w-4 h-4 mr-1" />
+                      Details
+                    </Link>
+                    
+                    <div className="flex items-center space-x-2">
+                      <select
+                        className="text-sm rounded-lg border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                        onChange={(e) => setNstatus(e.target.value)}
+                        defaultValue={item.status}
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                      </select>
+                      <button 
+                        onClick={() => handleStatus(item)}
+                        className="text-white bg-orange-600 hover:bg-orange-700 px-3 py-1 rounded-lg transition duration-200 text-sm flex items-center"
+                        title="Update Status"
+                      >
+                        <FaEdit className="w-3 h-3 mr-1" />
+                        Update
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h2 className="text-xl font-bold text-gray-800 mb-2">No Bookings Found</h2>
-              <p className="text-gray-600 mb-4">
-                {selectedCategory === "all" 
-                  ? "You don't have any bookings yet." 
-                  : "No bookings found for this listing."}
-              </p>
-              <button
-                onClick={() => filterItems("all")}
-                className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg transition duration-200"
-              >
-                View All Bookings
-              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-md p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+              <FaTimesCircle className="w-8 h-8 text-gray-400" />
             </div>
-          )}
-        </div>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">No Bookings Found</h2>
+            <p className="text-gray-600 mb-4">
+              {selectedCategory === "all" 
+                ? "You don't have any bookings yet." 
+                : "No bookings found for this listing."}
+            </p>
+            <button
+              onClick={() => filterItems("all")}
+              className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg transition duration-200"
+            >
+              View All Bookings
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
