@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { FaCloudUploadAlt, FaUndoAlt, FaUpload } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaUndoAlt, FaUpload, FaSpinner } from 'react-icons/fa';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
@@ -12,49 +12,91 @@ import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import useAuth from '../../../hooks/useAuth';
-
-// Fix for default marker icons in Leaflet
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import useOwner from '../../../hooks/useOwner';
 import { FaMapLocationDot } from 'react-icons/fa6';
 
+// NSBM location coordinates
+const NSBMLocation = [6.821380, 80.041691];
+
+// Fix for default marker icons in Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
 const UpdateBoarding = () => {
   const { user } = useAuth();
-  const [isOwner, isOwnerLoading] = useOwner();
-  const item = useLoaderData(); 
+  const [isOwner] = useOwner();
+  const item = useLoaderData();
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const [lng, setLng] = useState(item.lng);
-  const [lat, setLat] = useState(item.lat); 
+  const [lat, setLat] = useState(item.lat);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
-        name: item.name,
-        address: item.address,
-        lng: item.lan,
-        lat: item.lat,
-        phone: item.phone,
-        gender: item.gender,
-        description: item.description,
-        beds: item.beds,
+      name: item.name,
+      address: item.address,
+      phone: item.phone,
+      gender: item.gender,
+      description: item.description,
+      beds: item.beds,
+      wifi: item.amenities.includes('wifi'),
+      cctv: item.amenities.includes('cctv'),
+      'study area': item.amenities.includes('study area'),
+      parking: item.amenities.includes('parking'),
+      gym: item.amenities.includes('gym'),
     },
   });
 
+  const amenitiesList = ['wifi', 'cctv', 'study area', 'parking', 'gym'];
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
-  const amenitiesList = ['wifi', 'cctv', 'study area', 'parking', 'gym'];
+  // Calculate distance using Haversine formula
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Earth radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return (R * c).toFixed(2); // Distance in km with 2 decimal places
+  };
 
-  // Geocoder component for searching locations
+  // Handle image selection and preview
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const previews = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+    setImagePreviews([...imagePreviews, ...previews]);
+  };
+
+  // Remove image preview
+  const removeImage = (index) => {
+    const newPreviews = [...imagePreviews];
+    URL.revokeObjectURL(newPreviews[index].preview);
+    newPreviews.splice(index, 1);
+    setImagePreviews(newPreviews);
+  };
+
+  // Clean up object URLs
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach(image => URL.revokeObjectURL(image.preview));
+    };
+  }, [imagePreviews]);
+
+  // Geocoder component for map
   const Geocoder = () => {
     const map = useMap();
 
@@ -74,7 +116,6 @@ const UpdateBoarding = () => {
 
       map.addControl(searchControl);
 
-      // Handle search results
       map.on('geosearch/showlocation', (result) => {
         const { x: lng, y: lat } = result.location;
         setLng(lng);
@@ -92,7 +133,7 @@ const UpdateBoarding = () => {
       Swal.fire({
         position: 'center',
         icon: 'success',
-        title: 'Location Set',
+        title: 'Location Set Successfully!',
         showConfirmButton: false,
         timer: 1500,
       });
@@ -100,49 +141,34 @@ const UpdateBoarding = () => {
   };
 
   const onSubmit = async (data) => {
-    let imageUrls = item.images; // Fallback to the existing images
-
-    // If new images are uploaded, host them
-    if (data.image && data.image.length > 0) {
-      const uploadPromises = Array.from(data.image).map(async (file) => {
-        const formData = new FormData();
-        formData.append('image', file);
-
-        const response = await axiosPublic.post(image_hosting_api, formData, {
-          headers: {
-            'content-type': 'multipart/form-data',
-          },
+    setIsSubmitting(true);
+    
+    try {
+      // Upload new images if any
+      let imageUrls = item.images;
+      if (imagePreviews.length > 0) {
+        const uploadPromises = imagePreviews.map(async (image) => {
+          const formData = new FormData();
+          formData.append('image', image.file);
+          const response = await axiosPublic.post(image_hosting_api, formData);
+          if (response.data.success) return response.data.data.display_url;
+          throw new Error('Image upload failed');
         });
-
-        if (response.data.success) {
-          return response.data.data.display_url;
-        }
-        throw new Error('Image upload failed');
-      });
-
-      try {
         imageUrls = await Promise.all(uploadPromises);
-      } catch (error) {
-        console.error('Error uploading images:', error);
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Image Upload Failed',
-          text: 'An error occurred while uploading the images.',
-          showConfirmButton: true,
-        });
-        return;
       }
-    }
 
-    const selectedAmenities = amenitiesList.filter((amenity) => data[amenity]);
+      // Calculate distance from NSBM
+      const distance = calculateDistance(NSBMLocation[0], NSBMLocation[1], lat, lng);
 
-    const updatedBoarding = {
+      // Prepare updated boarding data
+      const selectedAmenities = amenitiesList.filter(amenity => data[amenity]);
+      const updatedBoarding = {
         name: data.name,
-        owner: data.owner,
+        owner: user.email,
         address: data.address,
         lng: lng,
         lat: lat,
+        distance: distance,
         phone: data.phone,
         gender: data.gender,
         description: data.description,
@@ -150,16 +176,16 @@ const UpdateBoarding = () => {
         amenities: selectedAmenities,
         beds: data.beds,
         status: item.status,
-    };
+      };
 
-    try {
+      // Submit to backend
       const response = await axiosSecure.patch(`/boarding/${item._id}`, updatedBoarding);
 
       if (response.data) {
         Swal.fire({
           position: 'center',
           icon: 'success',
-          title: 'Boarding Updated Successfully',
+          title: 'Boarding Updated Successfully!',
           showConfirmButton: false,
           timer: 1500,
         });
@@ -171,190 +197,220 @@ const UpdateBoarding = () => {
         position: 'center',
         icon: 'error',
         title: 'Update Failed',
-        text: 'An error occurred while updating the boarding.',
+        text: error.message || 'An error occurred while updating the boarding.',
         showConfirmButton: true,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
+  const handleGoBack = () => navigate(-1);
 
-  if(item?.owner !== user?.email) {
+  if (item?.owner !== user?.email) {
     return (
-      <div className='w-full lg:w-[780px] md:w-[520px] px-2 mx-auto py-4'>
-        <h2 className='text-3xl font-bold text-center mb-8'>
-          Your Access to Edit This <span className='text-green'>Denied</span>
+      <div className='w-full max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md'>
+        <h2 className='text-3xl font-bold text-center text-gray-800 mb-6'>
+          Access <span className='text-red-500'>Denied</span>
         </h2>
+        <p className='text-center text-gray-600 mb-6'>
+          You don't have permission to edit this boarding.
+        </p>
+        <div className='flex justify-center'>
+          <Link to="/" className='btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg'>
+            Back to Home
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className='w-full 2xl:w-[1320px] xl:w-[1080px] lg:w-[780px] md:w-[520px] px-2 mx-auto py-4'>
-      <h2 className={isOwner? 'text-3xl font-bold':'text-3xl font-bold text-center mb-4'}>
-        Update <span className='text-green'>{item.name}</span>
-      </h2>
-      {isOwner?<></>:
-      <Link to="/owner">
-      <div className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-      ✕
-      </div></Link>
-      }
-      <div className="p-0.5 rounded-lg bg-green my-5 h-[500px] sm:h-[500px] xl:h-[600px] 2xl:h-[700px]">
-        <Carousel slideInterval={5000}>
-          {item.images && item.images.length > 0 ? (
-            item.images.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Slide ${index + 1}`}
-                className="w-full h-full"
-              />
-            ))
-          ) : (
-            <img
-              src="https://via.placeholder.com/800x500?text=No+Image+Available"
-              alt="No images"
-            />
+    <div className='w-full max-w-6xl mx-auto p-4 sm:p-6'>
+      <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
+        {/* Header */}
+        <div className='p-6 border-b border-gray-200 flex justify-between items-center'>
+          <h2 className='text-2xl sm:text-3xl font-bold text-gray-800'>
+            Update <span className='text-green-600'>{item.name}</span>
+          </h2>
+          {!isOwner && (
+            <Link to="/owner" className='text-gray-500 hover:text-gray-700'>
+              <span className='text-2xl'>×</span>
+            </Link>
           )}
-        </Carousel>
-      </div>
-      <div className='bg-gray-100 p-6 rounded-lg'>
-      <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='space-y-6'>
+        </div>
 
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Owner
-              </label>
-              <input
-                {...register('owner', { required: true })}
-                type='text'
-                defaultValue={item.owner}
-                disabled
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-              />
+        {/* Image Carousel */}
+        <div className='p-4'>
+          <div className='rounded-lg overflow-hidden bg-gray-100 h-64 sm:h-80 md:h-96'>
+            <Carousel slideInterval={5000}>
+              {item.images.length > 0 ? (
+                item.images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Boarding ${index + 1}`}
+                    className='w-full h-full object-cover'
+                  />
+                ))
+              ) : (
+                <div className='flex items-center justify-center h-full bg-gray-200'>
+                  <span className='text-gray-500'>No images available</span>
+                </div>
+              )}
+            </Carousel>
+          </div>
+        </div>
+
+        {/* Update Form */}
+        <div className='p-6'>
+          <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              {/* Owner Email */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Owner Email</label>
+                <input
+                  {...register('owner')}
+                  type='text'
+                  defaultValue={user.email}
+                  disabled
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100'
+                />
+              </div>
+
+              {/* Place Name */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Place Name*</label>
+                <input
+                  {...register('name', { required: true })}
+                  type='text'
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
+                />
+              </div>
             </div>
 
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Name of the Place
-              </label>
-              <input
-                {...register('name', { required: true })}
-                type='text'
-                placeholder='Enter the Name'
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-              />
-            </div>
-
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Address of the Place
-              </label>
+            {/* Address */}
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Address*</label>
               <input
                 {...register('address', { required: true })}
                 type='text'
-                placeholder='Enter the Address'
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
               />
             </div>
 
-            <div className='form-control w-full'>
-                <label className='block text-sm font-medium mb-2'>
-                  Gender
-                </label>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              {/* Gender */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Gender*</label>
                 <select
                   {...register('gender', { required: true })}
-                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                  onChange={(e) => setLgender(e.target.value)}
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
                 >
-                  <option value='Girls'>Girls</option>
-                  <option value='Boys'>Boys</option>
-                  <option value='Unisex'>Unisex</option>
+                  <option value="Girls">Girls Only</option>
+                  <option value="Boys">Boys Only</option>
+                  <option value="Unisex">Unisex</option>
                 </select>
               </div>
 
-            <div className='flex gap-4'>
-
-              <div className='form-control w-full'>
-                <label className='block text-sm font-medium mb-2'>
-                  Total Beds
-                </label>
+              {/* Beds */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Total Beds*</label>
                 <input
-                  {...register('beds', { required: true })}
+                  {...register('beds', { required: true, min: 1 })}
                   type='number'
-                  placeholder='No of Total Beds'
-                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                />
-              </div>
-
-              <div className='form-control w-full'>
-                <label className='block text-sm font-medium mb-2'>
-                  Contact
-                </label>
-                <input
-                  {...register('phone', { required: true })}
-                  type='number'
-                  placeholder='Contact Number'
-                  className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
                 />
               </div>
             </div>
 
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Description
-              </label>
-              <textarea
-                {...register('description', { required: true })}
-                className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-                placeholder='Description of the Place'
-                rows='4'
-              ></textarea>
-            </div>
-
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Add Images
-              </label>
+            {/* Contact */}
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Contact Number*</label>
               <input
-                {...register('image')}
-                type='file'
-                className='w-full file-input file-input-bordered'
-                multiple
+                {...register('phone', { required: true })}
+                type='tel'
+                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
               />
             </div>
 
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Amenities
-              </label>
-              <div className='flex flex-wrap gap-4'>
-                {amenitiesList.map((amenity, index) => (
-                  <div key={index} className='flex items-center gap-2'>
+            {/* Description */}
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Description*</label>
+              <textarea
+                {...register('description', { required: true })}
+                rows='4'
+                className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
+              ></textarea>
+            </div>
+
+            {/* Amenities */}
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>Amenities</label>
+              <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3'>
+                {amenitiesList.map((amenity) => (
+                  <label key={amenity} className='flex items-center space-x-2'>
                     <input
                       type='checkbox'
                       {...register(amenity)}
-                      defaultChecked={item.amenities.includes(amenity)}
-                      className='checkbox checkbox-sm'
+                      className='h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded'
                     />
-                    <span>{amenity}</span>
-                  </div>
+                    <span className='text-sm text-gray-700 capitalize'>{amenity}</span>
+                  </label>
                 ))}
               </div>
             </div>
 
-            <div className='form-control'>
-              <label className='block text-sm font-medium mb-2'>
-                Set Location
-              </label>
-              <div style={{ height: '400px', position: 'relative' }}>
+            {/* Image Upload */}
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>Add More Images</label>
+              <div className='space-y-4'>
+                {/* Image Previews */}
+                {imagePreviews.length > 0 && (
+                  <div className='flex flex-wrap gap-4'>
+                    {imagePreviews.map((image, index) => (
+                      <div key={index} className='relative group'>
+                        <img
+                          src={image.preview}
+                          alt={`Preview ${index}`}
+                          className='w-24 h-24 object-cover rounded-lg border border-gray-200'
+                        />
+                        <button
+                          type='button'
+                          onClick={() => removeImage(index)}
+                          className='absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Upload Area */}
+                <label className='flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors'>
+                  <FaUpload className='text-green-600 text-2xl mb-2' />
+                  <p className='text-sm text-gray-600'>Click to upload images</p>
+                  <p className='text-xs text-gray-500'>JPEG, PNG (Max 5MB each)</p>
+                  <input
+                    {...register('image')}
+                    type='file'
+                    className='hidden'
+                    onChange={handleImageChange}
+                    multiple
+                    accept='image/*'
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Map Location */}
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>Set Location*</label>
+              <div className='h-64 sm:h-80 md:h-96 rounded-lg overflow-hidden border border-gray-300'>
                 <MapContainer
                   center={[lat, lng]}
-                  zoom={13}
+                  zoom={15}
                   style={{ height: '100%', width: '100%' }}
                 >
                   <TileLayer
@@ -372,29 +428,52 @@ const UpdateBoarding = () => {
                       },
                     }}
                   >
-                    <Popup>Drag to adjust the location</Popup>
+                    <Popup>Drag to adjust location</Popup>
                   </Marker>
                   <Geocoder />
                 </MapContainer>
               </div>
               <button
-                type="button"
+                type='button'
                 onClick={handleSetLocation}
-                className='w-full bg-green text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2 mt-5'
+                className='mt-3 w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2'
               >
-                Set Location <FaMapLocationDot />
+                <FaMapLocationDot /> Confirm Location
               </button>
             </div>
 
-            <button className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2'>
-              Save Changes <FaCloudUploadAlt />
-            </button>
+            {/* Submit Button */}
+            <div className='pt-4'>
+              <button
+                type='submit'
+                disabled={isSubmitting}
+                className={`w-full ${
+                  isSubmitting ? 'bg-orange-500' : 'bg-green hover:bg-orange-700'
+                } text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2`}
+              >
+                {isSubmitting ? (
+                  <>
+                    <FaSpinner className='animate-spin' /> Processing...
+                  </>
+                ) : (
+                  <>
+                    <FaCloudUploadAlt /> Update Listing
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
 
-          </div>
-        </form>
-        {isOwner?<button onClick={handleGoBack} className="my-5 w-full bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-sky-300 transition duration-300 flex items-center justify-center gap-2">
-          Discard Changes <FaUndoAlt />
-        </button>:<></>}
+          {/* Discard Button for Owners */}
+          {isOwner && (
+            <button
+              onClick={handleGoBack}
+              className='mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2'
+            >
+              <FaUndoAlt /> Discard Changes
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
