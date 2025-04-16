@@ -51,7 +51,8 @@ const boardingSchema = new Schema({
     },
     status: {
         type: String,
-        required: true
+        enum: ['Pending', 'Approved', 'Rejected'],
+        default: 'Pending'
     },
     }, { 
         timestamps: true 
