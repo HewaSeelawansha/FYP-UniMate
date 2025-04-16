@@ -81,7 +81,7 @@ const ManageListing = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">
-              Manage <span className="text-orange-600">Listings</span>
+              Manage <span className="text-green">Listings</span>
             </h1>
             <p className="text-gray-600 mt-2">
               View, edit, or delete your current listings
@@ -89,7 +89,7 @@ const ManageListing = () => {
           </div>
           <Link 
             to="/owner/add-listing"
-            className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center gap-2 mt-4 sm:mt-0"
+            className="btn bg-green hover:bg-orange-500 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center gap-2 mt-4 sm:mt-0"
           >
             <FaPlusCircle /> Add Listing
           </Link>
@@ -112,9 +112,20 @@ const ManageListing = () => {
                     <span className="text-gray-500">No image available</span>
                   </div>
                 )}
+
                 {/* Price Tag */}
-                <div className="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-lg font-bold shadow-md">
-                  LKR {item.price}
+                <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                  <div>LKR {item.price}</div>
+                </div>
+
+                {/* Status */}
+                <div className="absolute top-14 right-4 bg-blue-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                  Approved
+                </div>
+
+                {/* Pay */}
+                <div className="absolute top-24 right-4 bg-emerald-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                  Not Paid
                 </div>
               </div>
 
@@ -151,7 +162,7 @@ const ManageListing = () => {
                   </Link>
                   <Link 
                     to={`/owner/update-listing/${item._id}`}
-                    className="flex items-center text-green-600 hover:text-green-800 transition duration-200"
+                    className="flex items-center text-orange-500 hover:text-orange-700 transition duration-200"
                     title="Edit"
                   >
                     <FaEdit className="w-4 h-4 mr-1" />
@@ -159,7 +170,16 @@ const ManageListing = () => {
                   </Link>
                   <button
                     onClick={() => handleDelete(item)}
-                    className="flex items-center text-red-600 hover:text-red-800 transition duration-200"
+                    className="flex items-center text-emerald-500 hover:text-emmerald-700 transition duration-200"
+                    title="Delete"
+                  >
+                    <FaTrashAlt className="w-4 h-4 mr-1" />
+                    <span className="text-sm">Pay</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(item)}
+                    className="flex items-center text-rose-600 hover:text-rose-800 transition duration-200"
                     title="Delete"
                   >
                     <FaTrashAlt className="w-4 h-4 mr-1" />
