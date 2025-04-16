@@ -132,10 +132,22 @@ const ViewBoarding = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Details */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Owner Card */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Owner</h2>
+              <p className="text-gray-600">{boarding.owner}</p>
+            </div>
+
             {/* Description Card */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4">Description</h2>
               <p className="text-gray-600">{boarding.description}</p>
+            </div>
+
+            {/* Distance Card */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Distance From the NSBM Green University</h2>
+              <p className="text-green font-bold">{boarding.distance} Km</p>
             </div>
 
             {/* Amenities Card */}
@@ -186,13 +198,6 @@ const ViewBoarding = () => {
               <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Info</h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <FaUser className="text-orange-500 mt-1" />
-                  <div>
-                    <p className="text-sm text-gray-500">Owner</p>
-                    <p className="font-medium">{boarding.owner}</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
                   <FaMapMarkerAlt className="text-orange-500 mt-1" />
                   <div>
                     <p className="text-sm text-gray-500">Address</p>
@@ -234,7 +239,7 @@ const ViewBoarding = () => {
             {email === user.email ? (
               <Link to={`/owner/update-boarding/${boarding._id}`}>
                 <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2">
-                  <FaEdit /> Edit Listing
+                  <FaEdit /> Edit Your Boarding
                 </button>
               </Link>
             ) : (
