@@ -4,12 +4,18 @@ import { Carousel } from "flowbite-react";
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { FaUndoAlt, FaEdit, FaHome, FaUser, FaVenusMars, FaMoneyBillWave, FaCalendarAlt, FaCheck } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
+import useOwner from '../../../hooks/useOwner';
+import useAdmin from '../../../hooks/useAdmin';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const ViewListing = () => {
   const { id } = useParams();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [isOwner, isOwnerLoading] = useOwner();
+  const [isAdmin, isAdminLoading] = useAdmin();
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -32,6 +38,39 @@ const ViewListing = () => {
 
   const handleGoBack = () => {
     navigate(-1);
+  };
+
+  const handleListingStatus = async (listingId, status) => {
+    const data = {
+      status: status,
+    };
+    
+    try {
+      const response = await axiosSecure.patch(`/listing/status/${listingId}`, data);
+      if (response.data) {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Listing Status Updated Successfully',
+          showConfirmButton: false,
+          timer: 1500,
+          background: '#ffffff',
+          customClass: {
+            title: 'text-xl font-bold text-gray-800'
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error)
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'An error occurred while updating the listing status.',
+        showConfirmButton: true,
+        background: '#ffffff'
+      });
+    }
   };
 
   if (loading) {
@@ -143,6 +182,12 @@ const ViewListing = () => {
               <h2 className="text-xl font-bold text-gray-800 mb-4">Description</h2>
               <p className="text-gray-600">{listing.description}</p>
             </div>
+
+            {/* Distance Card */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Distance From the NSBM Green University</h2>
+              <p className="text-green font-bold">{listing.distance} Km</p>
+            </div>
           </div>
 
           {/* Right Column - Quick Info */}
@@ -212,17 +257,30 @@ const ViewListing = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mt-8">
-          <Link 
-            to={`/owner/update-listing/${listing._id}`}
-            className="flex-1 btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
-          >
-            <FaEdit /> Edit Listing
-          </Link>
+          {isOwner &&
+            <Link 
+              to={`/owner/update-listing/${listing._id}`}
+              className="flex-1 btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+            >
+              <FaEdit /> Edit Listing
+            </Link>
+          }
+          {isAdmin &&
+            <select
+              className="flex-1 border-none focus:ring-green focus:border-green bg-green text-white rounded-lg gap-2"
+              defaultValue={listing.status}
+              onChange={(e) => handleListingStatus(listing._id, e.target.value)}
+            >
+              <option value='Pending'>Pending</option>
+              <option value='Approved'>Approved</option>
+              <option value='Rejected'>Rejected</option>
+            </select>
+          }
           <button 
             onClick={handleGoBack}
             className="flex-1 btn bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
           >
-            <FaUndoAlt /> Back to Listings
+            <FaUndoAlt /> Go Back
           </button>
         </div>
       </div>
