@@ -14,6 +14,8 @@ import { IoIosArrowBack } from 'react-icons/io';
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import useOwner from '../../../hooks/useOwner';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -29,6 +31,8 @@ const ViewBoarding = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [isAdmin, isAdminLoading] = useAdmin();
+  const [isOwner, isOwnerLoading] = useOwner();
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -51,6 +55,34 @@ const ViewBoarding = () => {
 
   const handleGoBack = () => {
     navigate(-1);
+  };
+
+  const handleBoardingStatus = async (boardingId, status) => {
+    const data = {
+      status: status || item.status,
+    };
+
+    try {
+      const response = await axiosSecure.patch(`/boarding/status/${boardingId}`, data);
+
+      if (response.data) {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Status Updated Successfully',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'An error occurred while updating the status.',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
   };
 
   if (loading) {
@@ -85,6 +117,7 @@ const ViewBoarding = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto">
         {/* Header Section */}
+
         <div className="flex justify-between items-center mb-8">
           <button
             onClick={handleGoBack}
@@ -92,21 +125,11 @@ const ViewBoarding = () => {
           >
             <IoIosArrowBack className="mr-2" /> Back
           </button>
-          {isAdmin && (
-            <Link 
-              to="/dashboard/manage-boarding"
-              className="btn btn-circle btn-ghost text-gray-500 hover:text-orange-600"
-            >
-              ✕
-            </Link>
-          )}
+          <h1 className="text-3xl font-bold text-gray-800">
+            {boarding.name}
+          </h1>
+          <div className="w-8"></div> {/* Spacer for alignment */}
         </div>
-
-        {/* Title */}
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-          {boarding.name}
-        </h1>
-        <div className="h-1 w-20 bg-orange-500 mb-8"></div>
 
         {/* Image Carousel */}
         <div className="rounded-xl overflow-hidden shadow-lg mb-8 h-64 sm:h-80 md:h-96 lg:h-[500px]">
@@ -236,7 +259,18 @@ const ViewBoarding = () => {
             </div>
 
             {/* Action Buttons */}
-            {email === user.email ? (
+            {isAdmin  &&
+              <select
+                className="w-full py-3 px-4 bg-green rounded-lg border-gray-300 focus:ring-green focus:border-green py-1"
+                defaultValue={boarding.status}
+                onChange={(e) => handleBoardingStatus(boarding._id, e.target.value)}
+              >
+                <option value='Pending'>Pending</option>
+                <option value='Approved'>Approved</option>
+                <option value='Rejected'>Rejected</option>
+              </select>
+            }
+            {isOwner && email === user.email ? (
               <Link to={`/owner/update-boarding/${boarding._id}`}>
                 <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2">
                   <FaEdit /> Edit Your Boarding
