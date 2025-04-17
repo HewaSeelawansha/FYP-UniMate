@@ -113,20 +113,21 @@ const ManageListing = () => {
                   </div>
                 )}
 
+                {/* Status */}
+                <div className="absolute top-2 right-2 bg-emerald-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                  <div>{item.status}</div>
+                </div>
+
                 {/* Price Tag */}
-                <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                <div className="absolute top-11 right-2 bg-orange-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
                   <div>LKR {item.price}</div>
                 </div>
 
-                {/* Status */}
-                <div className="absolute top-14 right-4 bg-blue-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
-                  Approved
+                {/* Payment */}
+                <div className="absolute top-20 right-2 bg-blue-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                  <div>Payment - {item.payStatus}</div>
                 </div>
-
-                {/* Pay */}
-                <div className="absolute top-24 right-4 bg-emerald-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
-                  Not Paid
-                </div>
+                
               </div>
 
               {/* Listing Details */}
@@ -171,7 +172,7 @@ const ManageListing = () => {
                   <button
                     onClick={() => handleDelete(item)}
                     className="flex items-center text-emerald-500 hover:text-emmerald-700 transition duration-200"
-                    title="Delete"
+                    title="Pay"
                   >
                     <FaTrashAlt className="w-4 h-4 mr-1" />
                     <span className="text-sm">Pay</span>
