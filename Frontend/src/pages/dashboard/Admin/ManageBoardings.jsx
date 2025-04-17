@@ -1,17 +1,28 @@
 import React, { useState } from 'react'
 import useBoarding from '../../../hooks/useBoarding'
-import { FaEdit, FaTrashAlt, FaPhone, FaUser, FaVenusMars } from 'react-icons/fa'
+import useListings from '../../../hooks/useListings'
+import { FaEdit, FaTrashAlt, FaPhone, FaUser, FaVenusMars, FaChevronDown, FaChevronUp, FaHome, FaExclamationCircle } from 'react-icons/fa'
 import { FcViewDetails } from "react-icons/fc";
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import useAxiosSecure from '../../../hooks/useAxiosSecure'
 
 const ManageBoardings = () => {
-  const [boarding, loading, refetch] = useBoarding();
+  const [boarding, boardingLoading, refetchBoarding] = useBoarding();
+  const [listings, listingsLoading, refetchListings] = useListings();
   const axiosSecure = useAxiosSecure();
   const [nstatus, setNstatus] = useState('Pending');
+  const [expandedBoarding, setExpandedBoarding] = useState(null);
 
-  const handleStatus = async (item) => {
+  const toggleListings = (boardingId) => {
+    if (expandedBoarding === boardingId) {
+      setExpandedBoarding(null);
+    } else {
+      setExpandedBoarding(boardingId);
+    }
+  };
+
+  const handleBoardingStatus = async (item) => {
     const data = {
       status: nstatus || item.status,
     };
@@ -27,7 +38,7 @@ const ManageBoardings = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        refetch();
+        refetchBoarding();
       }
     } catch (error) {
       Swal.fire({
@@ -40,7 +51,40 @@ const ManageBoardings = () => {
     }
   };
 
-  if (loading) {
+  const handleListingStatus = async (listingId, status) => {
+    const data = {
+      status: status,
+    };
+    
+    try {
+      const response = await axiosSecure.patch(`/listing/status/${listingId}`, data);
+      if (response.data) {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Listing Status Updated Successfully',
+          showConfirmButton: false,
+          timer: 1500,
+          background: '#ffffff',
+          customClass: {
+            title: 'text-xl font-bold text-gray-800'
+          }
+        });
+        refetchListings();
+      }
+    } catch (error) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'An error occurred while updating the listing status.',
+        showConfirmButton: true,
+        background: '#ffffff'
+      });
+    }
+  };
+
+  if (boardingLoading || listingsLoading) {
     return (
       <div className="flex items-center justify-center min-h-[300px]">
         <div className="text-center">
@@ -70,91 +114,278 @@ const ManageBoardings = () => {
         Manage Uploaded <span className='text-green-600'>Boarding Houses</span>
       </h2>
 
-      <div className="grid grid-cols-1 gap-6">
-        {boarding.map((item, index) => (
-          <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 border border-gray-100">
-            {/* Card Header */}
-            <div className="bg-gradient-to-r from-green to-green p-4 text-white">
-              <div className="flex justify-between items-center">
-                <h3 className="font-bold text-lg">{item.name}</h3>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  item.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                  item.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                  'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {item.status}
-                </span>
-              </div>
-            </div>
-
-            {/* Card Content */}
-            <div className="p-6">
-              <div className="flex flex-col md:flex-row gap-6">
-                {/* Image */}
-                <div className="md:w-1/4">
-                  <div className="rounded-lg overflow-hidden h-40 w-full">
-                    <img
-                      src={item.images[0]}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* Details */}
-                <div className="md:w-3/4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div className="flex items-center">
-                      <FaPhone className="text-green-500 mr-2" />
-                      <span className="font-medium">Phone:</span>
-                      <span className="ml-2">{item.phone}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <FaVenusMars className="text-green-500 mr-2" />
-                      <span className="font-medium">Gender:</span>
-                      <span className="ml-2 capitalize">{item.gender}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <FaUser className="text-green-500 mr-2" />
-                      <span className="font-medium">Owner:</span>
-                      <span className="ml-2">{item.owner}</span>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex justify-between items-center pt-4 border-t">
-                    <Link 
-                      to={`/dashboard/view-boarding/${item.owner}`}
-                      className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200"
-                    >
-                      <FcViewDetails className="w-5 h-5 mr-1" />
-                      <span>View Details</span>
-                    </Link>
-
-                    <div className="flex items-center space-x-2">
-                      <select
-                        className="rounded-lg border-gray-300 text-sm focus:ring-green-500 focus:border-green-500"
-                        onChange={(e) => setNstatus(e.target.value)}
-                        defaultValue={item.status}
-                      >
-                        <option value='Pending'>Pending</option>
-                        <option value='Approved'>Approved</option>
-                        <option value='Rejected'>Rejected</option>
-                      </select>
-                      <button 
-                        onClick={() => handleStatus(item)} 
-                        className="bg-green hover:bg-orange-500 text-white px-3 py-1 rounded-lg flex items-center"
-                      >
-                        <FaEdit className="mr-1" />
-                        Update
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* Add a summary banner at the top */}
+      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
+        <div className="flex items-center">
+          <FaExclamationCircle className="text-blue-500 mr-3 text-xl" />
+          <div>
+            <p className="font-semibold text-blue-800">
+              Pending Approvals: {listings.filter(l => l.status === 'Pending').length} listings need your attention
+            </p>
+            <p className="text-sm text-blue-600">
+              Review and update the status of pending listings below
+            </p>
           </div>
-        ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        {boarding.map((item, index) => {
+          const boardingListings = listings.filter(listing => listing.owner === item.owner);
+          const pendingListingsCount = boardingListings.filter(l => l.status === 'Pending').length;
+          
+          return (
+            <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 border border-gray-100">
+              {/* Card Header */}
+              <div className="bg-gradient-to-r from-green to-green p-4 text-white">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-lg">{item.name}</h3>
+                  <div className="flex items-center space-x-4">
+                    <span className="flex items-center bg-white bg-opacity-20 px-2 py-1 rounded">
+                      <FaHome className="mr-1" />
+                      {boardingListings.length} listings
+                      {/* Add pending count badge if there are pending listings */}
+                      {pendingListingsCount > 0 && (
+                        <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                          {pendingListingsCount} pending
+                        </span>
+                      )}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      item.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                      item.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {item.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Content */}
+              <div className="p-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Image */}
+                  <div className="md:w-1/4">
+                    <div className="rounded-lg overflow-hidden h-40 md:h-32 w-full">
+                      <img
+                        src={item.images[0]}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Details */}
+                  <div className="md:w-3/4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="flex items-center">
+                        <FaPhone className="text-green-500 mr-2" />
+                        <span className="font-medium">Phone:</span>
+                        <span className="ml-2">{item.phone}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <FaVenusMars className="text-green-500 mr-2" />
+                        <span className="font-medium">Gender:</span>
+                        <span className="ml-2 capitalize">{item.gender}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <FaUser className="text-green-500 mr-2" />
+                        <span className="font-medium">Owner:</span>
+                        <span className="ml-2">{item.owner}</span>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex justify-between items-center pt-4 border-t">
+                      <Link 
+                        to={`/dashboard/view-boarding/${item.owner}`}
+                        className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200"
+                      >
+                        <FcViewDetails className="w-5 h-5 mr-1" />
+                        <span>View Details</span>
+                      </Link>
+
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <select
+                            className="rounded-lg border-gray-300 text-sm focus:ring-green-500 focus:border-green-500"
+                            onChange={(e) => setNstatus(e.target.value)}
+                            defaultValue={item.status}
+                          >
+                            <option value='Pending'>Pending</option>
+                            <option value='Approved'>Approved</option>
+                            <option value='Rejected'>Rejected</option>
+                          </select>
+                          <button 
+                            onClick={() => handleBoardingStatus(item)} 
+                            className="bg-green hover:bg-orange-500 text-white px-3 py-1 rounded-lg flex items-center"
+                          >
+                            <FaEdit className="mr-1" />
+                            Update
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className=''>
+                  <button 
+                    onClick={() => toggleListings(item._id)}
+                    className="w-full justify-center bg-green mt-6 p-1 rounded-lg flex items-center text-white hover:text-black transition duration-200"
+                  >
+                    {expandedBoarding === item._id ? (
+                      <>
+                        <FaChevronUp className="mr-1" />
+                        <span>Hide Listings</span>
+                      </>
+                    ) : (
+                      <>
+                        <FaChevronDown className="mr-1" />
+                        <span>Show {boardingListings.length} Listings - {pendingListingsCount} need approval</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Listings Section */}
+                {expandedBoarding === item._id && (
+                  <div className="mt-6 border-t pt-4">
+                    <h4 className="font-bold text-lg mb-4 flex items-center">
+                      <FaHome className="text-green mr-2" />
+                      Listings from this boarding
+                      {pendingListingsCount > 0 && (
+                        <span className="ml-2 bg-red-100 text-red-800 text-sm font-medium px-2 py-0.5 rounded-full">
+                          {pendingListingsCount} need approval
+                        </span>
+                      )}
+                    </h4>
+                    
+                    {boardingListings.length > 0 ? (
+                      <div className="space-y-4">
+                        {boardingListings.map((listing, idx) => (
+                          <div 
+                            key={idx} 
+                            className={`p-4 rounded-lg ${listing.status === 'Pending' ? 
+                              'bg-red-50 border-l-4 border-red-500' : 
+                              'bg-gray-100'} max-h-96 overflow-hidden`}
+                          >
+                            {/* Top Row - Name, Status, and Pay Status */}
+                            <div className="flex justify-between items-center mb-3">
+                              <div className="flex items-center">
+                                <h5 className="font-medium">
+                                  {listing.name}
+                                </h5>
+                                {listing.status === 'Pending' && (
+                                  <span className="ml-2 flex items-center text-red-600 text-xs">
+                                    <FaExclamationCircle className="mr-1" />
+                                    Needs Approval
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  listing.status === 'Approved' ? 'bg-orange-100 text-orange-800' :
+                                  listing.status === 'Rejected' ? 'bg-rose-100 text-rose-800' :
+                                  'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {listing.status}
+                                </span>
+                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                  {listing.payStatus || 'N/A'}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Second Row - Image and Details */}
+                            <div className="flex flex-col md:flex-row gap-4 mb-3">
+                              {/* Left Side - Image */}
+                              <div className="md:w-1/4">
+                                {listing.images?.length > 0 && (
+                                  <img 
+                                    src={listing.images[0]} 
+                                    alt={listing.name} 
+                                    className="w-full h-28 md:h-22 object-cover rounded-lg"
+                                  />
+                                )}
+                              </div>
+
+                              {/* Right Side - Details */}
+                              <div className="md:w-3/4">
+                                <div className="grid grid-cols-2 gap-2 mb-2">
+                                  <div className="flex items-center">
+                                    <span className="font-medium text-sm mr-1">Available:</span>
+                                    <span>{listing.available || '0'} beds</span>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <span className="font-medium text-sm mr-1">Price:</span>
+                                    <span>Rs. {listing.price?.toLocaleString() || '0'}/mo</span>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <span className="font-medium text-sm mr-1">Key Money:</span>
+                                    <span>{listing.keyMoney === 0 ? 'No need' : `Rs. ${listing.keyMoney}`}</span>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <span className="font-medium text-sm mr-1">Type:</span>
+                                    <span>{listing.type || 'N/A'}</span>
+                                  </div>
+                                </div>
+
+                                {/* Amenities */}
+                                {listing.amenities?.length > 0 && (
+                                  <div className="mt-2">
+                                    <div className="font-medium text-sm mb-1">Amenities:</div>
+                                    <div className="flex flex-wrap gap-1">
+                                      {listing.amenities.map((amenity, aIdx) => (
+                                        <span 
+                                          key={aIdx} 
+                                          className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded"
+                                        >
+                                          {amenity}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Third Row - Actions */}
+                            <div className="flex justify-between items-center border-t pt-3">
+                              <Link 
+                                to={`/dashboard/view-listing/${listing._id}`}
+                                className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 text-sm"
+                              >
+                                <FcViewDetails className="w-4 h-4 mr-1" />
+                                <span>View Details</span>
+                              </Link>
+                              
+                              <div className="flex items-center space-x-2">
+                                <select
+                                  className="rounded-lg border-gray-300 text-xs focus:ring-green focus:border-green py-1"
+                                  defaultValue={listing.status}
+                                  onChange={(e) => handleListingStatus(listing._id, e.target.value)}
+                                >
+                                  <option value='Pending'>Pending</option>
+                                  <option value='Approved'>Approved</option>
+                                  <option value='Rejected'>Rejected</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-4 text-gray-500">
+                        No listings found for this boarding house.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   )
