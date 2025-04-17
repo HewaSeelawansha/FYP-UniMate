@@ -7,19 +7,25 @@ const verifyToken = require('../middleware/verifyToken');
 //get listing by email
 router.get('/owner', verifyToken, listingController.getListingsByEmail);
 
-// get all menus
+// get all listings
 router.get('/', listingController.getAllListings)
 
-// post a menu item
+// search for listings
+router.get('/search', listingController.searchListing)
+
+// post a listing
 router.post('/', listingController.postListing)
 
-// delete a menu item
+// delete a listing
 router.delete('/:id', listingController.deleteListing)
 
-// get single menu item
+// get single listing
 router.get('/:id', listingController.singleListing);
 
-// update single menu item
+// update listing
 router.patch('/:id', listingController.updateListing)
+
+// update listing status
+router.patch('/status/:id', listingController.statusListing)
 
 module.exports = router;
