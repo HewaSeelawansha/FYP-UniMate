@@ -58,9 +58,10 @@ const listingSchema = new Schema({
         type: Number,
         default: 0
     },
-    payment: {
-        type: Number,
-        default: 0,
+    payStatus: {
+        type: String,
+        enum: ['Done', 'Not Yet'],
+        default: 'Not Yet'
     },
     status: {
         type: String,
