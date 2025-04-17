@@ -112,10 +112,9 @@ const router = createBrowserRouter([
           element: <PrivateRouter><SingleUser/></PrivateRouter>
         },
         {
-          path: "update-listing/:id",
-          element: <AdminDashboard/>,
-          loader: ({params}) => fetch(`http://localhost:3000/menu/${params.id}`)
-        }
+          path: 'view-listing/:id',
+          element: <ViewListing/>
+        },
       ],
     },
     {
