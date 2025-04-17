@@ -163,7 +163,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
               value={newMessage}
               onChange={handleChange}
               placeholder="Type a message..."
-              cleanOnEnter
+              cleanOnEnter={false}
               onEnter={handleSend}
               fontSize={14}
               fontFamily="inherit"
