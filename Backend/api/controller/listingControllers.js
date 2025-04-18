@@ -88,6 +88,25 @@ const updateListing = async (req, res) => {
     }
   };
 
+  // update payment status
+  const paymentListing = async (req, res) => {
+    const listingId = req.params.id;
+    const { payStatus } = req.body;
+    try {
+      const updatedListing = await Listing.findByIdAndUpdate(
+        listingId,
+        { payStatus },
+        { new: true, runValidators: true }
+      );
+      if (!updatedListing) {
+        return res.status(404).json({ message: "Listing not found!" });
+      }
+      res.status(200).json({boarding: updatedListing});
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
   // get listings items by email
   const getListingsByEmail = async (req, res) => {
     try {
@@ -107,7 +126,11 @@ const searchListing = async (req, res) => {
         const { q, type, sort, page = 1, limit = 10 } = req.query;
         
         // Build base query
-        const query = { available: { $gte: 0 } };
+        const query = { 
+          available: { $gte: 0 },
+          status: 'Approved',
+          payStatus: 'Done'
+        };
         
         // Search functionality (for Navbar)
         if (q) {
@@ -140,33 +163,49 @@ const searchListing = async (req, res) => {
           };
           sortOption = sortMap[sort] || sortOption;
         }
-    
+        
         // Execute query
-        const results = await Listing.find(query)
-          .sort(sortOption)
-          .skip((page - 1) * limit)
-          .limit(parseInt(limit));
+        let results;
+        let total;
+        
+        if (limit) {
+          // Paginated response
+          results = await Listing.find(query)
+            .sort(sortOption)
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit));
+          total = await Listing.countDocuments(query);
+        } else {
+          // Unlimited response - get all matching documents
+          results = await Listing.find(query).sort(sortOption);
+          total = results.length;
+        }
     
         // Different response formats
         if (req.query.minimal) {
           // For Navbar - simple array of results
           res.json(results);
         } else {
-          // For Browse page - paginated response
-          const total = await Listing.countDocuments(query);
-          res.json({
+          // For Browse page
+          const response = {
             listings: results,
             total,
-            page: parseInt(page),
-            pages: Math.ceil(total / limit)
-          });
+          };
+          
+          // Only include pagination info if limit was specified
+          if (limit) {
+            response.page = parseInt(page);
+            response.pages = Math.ceil(total / limit);
+          }
+          
+          res.json(response);
         }
     
       } catch (error) {
         console.error('Search error:', error);
         res.status(500).json({ error: 'Internal server error' });
       }
-  };
+};
 
 module.exports = {
     getAllListings,
@@ -176,5 +215,6 @@ module.exports = {
     updateListing,
     getListingsByEmail,
     searchListing,
-    statusListing
+    statusListing,
+    paymentListing
 }
