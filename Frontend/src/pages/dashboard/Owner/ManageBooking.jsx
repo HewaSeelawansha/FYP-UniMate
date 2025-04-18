@@ -214,7 +214,7 @@ const ManageBooking = () => {
                       title="View Details"
                     >
                       <FcViewDetails className="w-4 h-4 mr-1" />
-                      Details
+                      Related Listing Details
                     </Link>
                     
                     <div className="flex items-center space-x-2">
@@ -229,7 +229,7 @@ const ManageBooking = () => {
                       </select>
                       <button 
                         onClick={() => handleStatus(item)}
-                        className="text-white bg-orange-600 hover:bg-orange-700 px-3 py-1 rounded-lg transition duration-200 text-sm flex items-center"
+                        className="text-white bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded-lg transition duration-200 text-sm flex items-center"
                         title="Update Status"
                       >
                         <FaEdit className="w-3 h-3 mr-1" />
