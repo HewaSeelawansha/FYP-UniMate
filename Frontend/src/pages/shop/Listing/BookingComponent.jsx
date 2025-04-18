@@ -127,7 +127,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
   };
 
   const makePayment = () => {
-    navigate("/process-checkout", { state: { Rent: price, KeyMoney: keyMoney, Listing: id, Booking:booking._id } });
+    navigate("/pay-boarding", { state: { Rent: price, KeyMoney: keyMoney, Listing: id, Booking:booking._id } });
   };
 
   const handleDelete = () => {
@@ -250,6 +250,20 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                   </button>
                 </div>
 
+                <div className='bg-white p-6 rounded-lg shadow-md'>
+                    <button
+                      onClick={() => makePayment()}
+                      disabled={!(booking.status === 'Approved')}
+                      className={`w-full font-medium py-2 px-6 rounded-lg shadow-md transition duration-300 ${
+                        (booking.status === 'Approved')
+                          ? 'bg-orange-500 hover:bg-orange-600 text-white cursor-pointer'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      {booking.status === 'Approved' ? 'Make a Payment' : 'Payment Available After Approval'}
+                    </button>
+                </div>
+
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="space-y-4">
@@ -316,7 +330,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                     </div>
                   </div>
 
-                  {booking.status === 'Approved' && booking.paystatus !== 'Done' && (
+                  {/* {booking.status === 'Approved' && booking.paystatus !== 'Done' && (
                     <div className="flex justify-end mt-4">
                       <button
                         onClick={() => makePayment()}
@@ -325,7 +339,20 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                         Complete Payment
                       </button>
                     </div>
-                  )}
+                  )} */}
+                  {/* <div className="w-full mt-4">
+                    <button
+                      onClick={() => makePayment()}
+                      disabled={!(booking.status === 'Approved')}
+                      className={`w-full font-medium py-2 px-6 rounded-lg shadow-md transition duration-300 ${
+                        (booking.status === 'Approved')
+                          ? 'bg-orange-500 hover:bg-orange-600 text-white cursor-pointer'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      Make a Payment
+                    </button>
+                  </div> */}
                 </div>
 
                 {!update ? (
@@ -425,7 +452,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Student Access Required</h3>
             <p className="text-orange-800">
-              Only verified students can make booking requests.
+              Only students can make booking requests.
             </p>
           </div>
         )
