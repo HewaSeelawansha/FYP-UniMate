@@ -42,6 +42,12 @@ const AuthProvider = ({children}) => {
           })
     }
 
+    // In your useAuth hook (if you have access to modify it)
+const reloadUser = async () => {
+    await auth.currentUser.reload();
+    setUser(auth.currentUser);
+  };
+
     useEffect( () =>{
         const unsubscribe = onAuthStateChanged(auth, currentUser =>{
             // console.log(currentUser);
@@ -74,7 +80,8 @@ const AuthProvider = ({children}) => {
         login, 
         logOut,
         signUpWithGmail,
-        updateUserProfile
+        updateUserProfile,
+        reloadUser
     }
 
     return (
