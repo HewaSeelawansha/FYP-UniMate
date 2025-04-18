@@ -28,4 +28,7 @@ router.patch('/:id', listingController.updateListing)
 // update listing status
 router.patch('/status/:id', listingController.statusListing)
 
+// update payment status
+router.patch('/payment/:id', listingController.paymentListing)
+
 module.exports = router;
