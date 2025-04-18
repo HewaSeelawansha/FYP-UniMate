@@ -1,13 +1,17 @@
 import React from 'react';
 import useAuth from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaMoneyBillWave, FaHome, FaUser, FaCheckCircle, FaCreditCard } from 'react-icons/fa';
 import { IoIosArrowForward } from 'react-icons/io';
+import Swal from 'sweetalert2';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const Payments = () => {
   const { user } = useAuth();
   const token = localStorage.getItem('access-token');
+  const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
 
   const { data: orders = [] } = useQuery({
     queryKey: ['orders', user?.email],
@@ -33,6 +37,43 @@ const Payments = () => {
       currency: 'LKR',
       minimumFractionDigits: 2
     }).format(amount);
+  };
+
+  const handleChat = async (sender, receiver) => {
+    const chatData = {
+      senderId: sender,
+      receiverId: receiver,
+    };
+  
+    try {
+      const existingChat = await axiosSecure.get(`/chat/find/${receiver}/${sender}`);
+      if (existingChat.data !== null) {
+        navigate(`/chats?chatId=${existingChat.data._id}`);
+        return;
+      }
+  
+      const response = await axiosSecure.post(`/chat`, chatData);
+  
+      if (response.data) {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Chat Created Successfully',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate(`/chats?chatId=${response.data._id}`);
+      }
+    } catch (error) {
+      console.error('Error creating or fetching chat:', error);
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'An error occurred while processing the chat request.',
+        showConfirmButton: true,
+      });
+    }
   };
 
   return (
@@ -78,7 +119,7 @@ const Payments = () => {
                       </h3>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Transaction ID:</span>
+                          <span className="text-gray-600">ID:</span>
                           <span className="font-medium">{order.transactionId}</span>
                         </div>
                         <div className="flex justify-between">
@@ -172,12 +213,13 @@ const Payments = () => {
 
                   {/* Action Button */}
                   <div className="mt-6 flex justify-end">
-                    <Link 
-                      to="/contact" 
+                    <button 
+                      onClick={() => handleChat(user.email, order.listing.owner)} 
                       className="flex items-center text-orange-600 hover:text-orange-700 font-medium"
                     >
                       Contact Owner <IoIosArrowForward className="ml-1" />
-                    </Link>
+                    </button>
+
                   </div>
                 </div>
               </div>
