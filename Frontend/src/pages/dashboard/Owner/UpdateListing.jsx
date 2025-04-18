@@ -90,7 +90,7 @@ const UpdateListing = () => {
         description: data.description,
         type: data.type,
         images: imageUrls,
-        amenities: selectedAmenities,
+        amenities: selectedAmenities || item.amenities,
         price: data.price,
         available: data.available,
         keyMoney: keyMoney
