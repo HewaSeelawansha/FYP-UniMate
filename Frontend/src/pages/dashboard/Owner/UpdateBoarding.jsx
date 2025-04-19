@@ -217,7 +217,7 @@ const UpdateBoarding = () => {
           You don't have permission to edit this boarding.
         </p>
         <div className='flex justify-center'>
-          <Link to="/" className='btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg'>
+          <Link to="/" className='btn bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg'>
             Back to Home
           </Link>
         </div>
@@ -226,12 +226,12 @@ const UpdateBoarding = () => {
   }
 
   return (
-    <div className='w-full max-w-6xl mx-auto p-4 sm:p-6'>
+    <div className='w-full mx-auto p-4 sm:p-6'>
       <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
         {/* Header */}
         <div className='p-6 border-b border-gray-200 flex justify-between items-center'>
           <h2 className='text-2xl sm:text-3xl font-bold text-gray-800'>
-            Update <span className='text-green-600'>{item.name}</span>
+            Update <span className='text-green-500'>{item.name}</span>
           </h2>
           {!isOwner && (
             <Link to="/owner" className='text-gray-500 hover:text-gray-700'>
@@ -242,7 +242,7 @@ const UpdateBoarding = () => {
 
         {/* Image Carousel */}
         <div className='p-4'>
-          <div className='rounded-lg overflow-hidden bg-gray-100 h-64 sm:h-80 md:h-96'>
+          <div className='rounded-lg overflow-hidden bg-gray-100 xl:h-[700px] sm:h-80 md:h-96'>
             <Carousel slideInterval={5000}>
               {item.images.length > 0 ? (
                 item.images.map((image, index) => (
@@ -433,10 +433,11 @@ const UpdateBoarding = () => {
                   <Geocoder />
                 </MapContainer>
               </div>
+
               <button
                 type='button'
                 onClick={handleSetLocation}
-                className='mt-3 w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2'
+                className='mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2'
               >
                 <FaMapLocationDot /> Confirm Location
               </button>
@@ -448,7 +449,7 @@ const UpdateBoarding = () => {
                 type='submit'
                 disabled={isSubmitting}
                 className={`w-full ${
-                  isSubmitting ? 'bg-orange-500' : 'bg-green hover:bg-orange-700'
+                  isSubmitting ? 'bg-green-600' : 'bg-green-500 hover:bg-green-600'
                 } text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2`}
               >
                 {isSubmitting ? (
