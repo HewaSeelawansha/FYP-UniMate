@@ -19,20 +19,16 @@ const RoommateComponent = ({gender}) => {
           senderId: sender,
           receiverId: receiver,
         };
+
       
         try {
-          // First, check if a chat already exists between the two users
           const existingChat = await axiosSecure.get(`/chat/find/${receiver}/${sender}`);
-      
-          // If a chat already exists, navigate to the chat page
           if (existingChat.data !== null) {
-            navigate(`/chats`);
+            navigate(`/chats?chatId=${existingChat.data._id}`);
             return;
           }
       
-          // If no chat exists, create a new one
           const response = await axiosSecure.post(`/chat`, chatData);
-      
           if (response.data) {
             Swal.fire({
               position: 'center',
@@ -41,7 +37,7 @@ const RoommateComponent = ({gender}) => {
               showConfirmButton: false,
               timer: 1500,
             });
-            navigate(`/chats`);
+            navigate(`/chats?chatId=${response.data._id}`);
           }
         } catch (error) {
           console.error('Error creating or fetching chat:', error);
@@ -56,66 +52,86 @@ const RoommateComponent = ({gender}) => {
     };
     
   return (
-    <div>
+    <div className="space-y-6">
         {user ? (
             isUser ? (
               users && users?.length > 0 ? (
-                users.map((roommate, index) => (
-                  <div key={index}  className="mb-2">
-                    <details className="collapse bg-black text-blue-500 hover:bg-blue-500 hover:text-black group" key={index}>
-                    <summary className="collapse-title text-xl font-medium">
-                      <div className="flex flex-row">
-                        <div className="avatar px-2">
-                          <div className="ring-primary group-hover:ring-black ring-offset-base-100 w-12 rounded-full ring ring-offset-2">
-                            <img src={roommate?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} alt="User Avatar" />
+                <div className="grid gap-4">
+                  {users.map((roommate, index) => (
+                    <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg border-l-4 border-green-500">
+                      <div className="p-4 md:p-6 flex items-center">
+                        <div className="flex-shrink-0 mr-4 relative">
+                          <img 
+                            src={roommate?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} 
+                            alt="User Avatar" 
+                            className="w-14 h-14 rounded-full object-cover border-4 border-green-100"
+                          />
+                          <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
+                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd"></path>
+                            </svg>
                           </div>
                         </div>
-                        <p className="font-bold m-auto">
-                          {roommate?.name}
-                        </p>
+                        <div className="flex-grow">
+                          <h3 className="text-lg font-bold text-gray-900">{roommate?.name}</h3>
+                          <p className="text-gray-600 text-sm">Looking for roommate</p>
+                        </div>
+                        <button
+                          onClick={() => handleChat(user.email, roommate.email)}
+                          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-sm transition-colors flex items-center"
+                        >
+                          <TbSend2 className="mr-2" />
+                          Chat
+                        </button>
                       </div>
-                    </summary>
-                    <div className="collapse-content flex flex-row gap-2">
-                      <button
-                        onClick={() => handleChat(user.email,roommate.email)}
-                        className="w-full font-bold bg-white text-black py-2 rounded-lg hover:bg-black hover:text-white transition duration-300 flex items-center justify-center gap-2"
-                      >
-                        Direct Chat <TbSend2 className="text-xl" />
-                      </button>
                     </div>
-                  </details>
-                  </div>
-                ))
+                  ))}
+                </div>
               ) : (
-                <div className="bg-gray-200 rounded-lg">
-                <div className="p-4">
-                  <p className="font-bold">
-                    No students are currently looking for a 
-                    <span className="text-green"> roommate </span>
-                    in listings for {gender}.
+                <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                  <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    No {gender} students currently looking for roommates
+                  </h3>
+                  <p className="text-green-800">
+                    Check back later or expand your search criteria.
                   </p>
                 </div>
-              </div>
               )
             ) : (
-              <div className="bg-gray-200 rounded-lg">
-                <div className="p-4">
-                  <p className="font-bold">
-                    Only students can access the
-                    <span className="text-green"> direct chat </span>with peers who are
-                    looking for a roommate.
-                  </p>
+              <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clipRule="evenodd"></path>
+                  </svg>
                 </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Student Access Required</h3>
+                <p className="text-green-800 mb-4">
+                  Only verified students can chat with peers looking for roommates.
+                </p>
               </div>
             )
           ) : (
-            <div className="bg-gray-200 rounded-lg">
-              <div className="p-4">
-                <p className="font-bold">
-                  Please<span className="text-green"> login </span>to direct chat with
-                  peers who are looking for a roommate.
-                </p>
+            <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+              <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                </svg>
               </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Please Login</h3>
+              <p className="text-green-800 mb-4">
+                Sign in to connect with students looking for roommates.
+              </p>
+              <button 
+                onClick={() => navigate('/login')}
+                className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-sm transition-colors"
+              >
+                Login Now
+              </button>
             </div>
           )}
     </div>
