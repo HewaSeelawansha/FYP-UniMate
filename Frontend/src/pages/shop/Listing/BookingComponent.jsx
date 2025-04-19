@@ -160,14 +160,14 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
     <div className="space-y-6">
       {user ? (
         isUser ? (
-          <div className="bg-orange-50 rounded-xl p-6 shadow-sm">
+          <div className="bg-green-50 rounded-xl p-6 shadow-sm">
             {!booking ? (
               <div className="bg-white rounded-lg p-6 shadow-md">
                 <div className='mb-6'>
                   <h2 className='text-2xl font-bold text-gray-900'>
                     Make a Booking 
                   </h2>
-                  <div className="w-20 h-1 bg-orange-500 mt-2"></div>
+                  <div className="w-20 h-1 bg-green-500 mt-2"></div>
                 </div>
                 
                 <form onSubmit={handleSubmitAdd(onSubmitAdd)} className="space-y-6">
@@ -179,7 +179,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                       type='text'
                       defaultValue={user.email}
                       disabled
-                      className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-gray-50'
+                      className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50'
                     />
                   </div>
                   
@@ -189,7 +189,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                     </label>
                     <select
                       {...registerAdd('movein', { required: true })}
-                      className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent'
+                      className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent'
                       defaultValue=''
                     >
                       <option value='' disabled>Select move-in timeframe</option>
@@ -206,7 +206,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                     </label>
                     <select
                       {...registerAdd('paymethod', { required: true })}
-                      className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent'
+                      className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent'
                       defaultValue=''
                     >
                       <option value='' disabled>Select payment method</option>
@@ -222,7 +222,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                     </label>
                     <textarea
                       {...registerAdd('needs')}
-                      className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent'
+                      className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent'
                       placeholder='Any special accommodations or requests'
                       rows='3'
                     ></textarea>
@@ -230,7 +230,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
 
                   <button 
                     type="submit"
-                    className='w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-300 flex items-center justify-center gap-2'
+                    className='w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-300 flex items-center justify-center gap-2'
                   >
                     Submit Booking Request
                   </button>
@@ -244,7 +244,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                   </h2>
                   <button
                     onClick={() => toggleUpdate()}
-                    className="p-2 bg-orange-100 hover:bg-orange-200 text-orange-600 rounded-lg transition duration-300"
+                    className="p-2 bg-green-100 hover:bg-green-200 text-green-600 rounded-lg transition duration-300"
                   >
                     <MdEditSquare className="text-xl" />
                   </button>
@@ -256,7 +256,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                       disabled={!(booking.status === 'Approved')}
                       className={`w-full font-medium py-2 px-6 rounded-lg shadow-md transition duration-300 ${
                         (booking.status === 'Approved')
-                          ? 'bg-orange-500 hover:bg-orange-600 text-white cursor-pointer'
+                          ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
                     >
@@ -268,28 +268,28 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="space-y-4">
                       <div className="flex items-center">
-                        <div className="bg-orange-100 p-2 rounded-lg mr-4">
-                          <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="bg-green-100 p-2 rounded-lg mr-4">
+                          <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
                           </svg>
                         </div>
                         <div>
                           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">STATUS</h3>
-                          <p className={`text-lg font-medium ${booking.status === 'Approved' ? 'text-green-600' : 'text-orange-600'}`}>
+                          <p className={`text-lg font-medium ${booking.status === 'Approved' ? 'text-blue-600' : 'text-green-600'}`}>
                             {booking.status}
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center">
-                        <div className="bg-orange-100 p-2 rounded-lg mr-4">
-                          <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="bg-green-100 p-2 rounded-lg mr-4">
+                          <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
                           </svg>
                         </div>
                         <div>
                           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">PAYMENT</h3>
-                          <p className={`text-lg font-medium ${booking.paystatus === 'Done' ? 'text-green-600' : 'text-orange-600'}`}>
+                          <p className={`text-lg font-medium ${booking.paystatus === 'Done' ? 'text-green-600' : 'text-green-600'}`}>
                             {booking.paystatus}
                           </p>
                         </div>
@@ -299,8 +299,8 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                     <div className="space-y-4">
                       {booking.payment > 0 && (
                         <div className="flex items-center">
-                          <div className="bg-orange-100 p-2 rounded-lg mr-4">
-                            <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                          <div className="bg-green-100 p-2 rounded-lg mr-4">
+                            <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd"></path>
                             </svg>
@@ -315,8 +315,8 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                       )}
 
                       <div className="flex items-center">
-                        <div className="bg-orange-100 p-2 rounded-lg mr-4">
-                          <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="bg-green-100 p-2 rounded-lg mr-4">
+                          <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
                           </svg>
                         </div>
@@ -385,7 +385,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                         </label>
                         <select
                           {...registerUpdate('movein', { required: true })}
-                          className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent'
+                          className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent'
                           defaultValue={booking.movein}
                         >
                           <option value='Immediately'>Immediately</option>
@@ -401,7 +401,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                         </label>
                         <select
                           {...registerUpdate('paymethod', { required: true })}
-                          className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent'
+                          className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent'
                           defaultValue={booking.payvia}
                         >
                           <option value='Card'>Credit/Debit Card</option>
@@ -416,7 +416,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                         </label>
                         <textarea
                           {...registerUpdate('needs')}
-                          className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent'
+                          className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent'
                           defaultValue={booking.needs}
                           rows='3'
                         ></textarea>
@@ -425,7 +425,7 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
                       <div className="flex gap-4">
                         <button 
                           type="submit" 
-                          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-300"
+                          className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-300"
                         >
                           Save Changes
                         </button>
@@ -444,32 +444,32 @@ const BookingComponent = ({currentuser, id, price, keyMoney, owner}) => {
             )}
           </div>
         ) : (
-          <div className="bg-orange-50 border-l-4 border-orange-500 rounded-lg p-6 text-center">
-            <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+          <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 text-center">
+            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clipRule="evenodd"></path>
               </svg>
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Student Access Required</h3>
-            <p className="text-orange-800">
+            <p className="text-green-800">
               Only students can make booking requests.
             </p>
           </div>
         )
       ) : (
-        <div className="bg-orange-50 border-l-4 border-orange-500 rounded-lg p-6 text-center">
-          <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+        <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 text-center">
+          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
             </svg>
           </div>
           <h3 className="text-lg font-bold text-gray-900 mb-2">Please Login</h3>
-          <p className="text-orange-800 mb-4">
+          <p className="text-green-800 mb-4">
             Sign in to make a booking request.
           </p>
           <button 
             onClick={() => navigate('/login')}
-            className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow-sm transition-colors"
+            className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-sm transition-colors"
           >
             Login Now
           </button>
