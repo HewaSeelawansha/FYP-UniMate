@@ -26,6 +26,7 @@ import ManageBoardings from "../pages/dashboard/Admin/ManageBoardings";
 import SingleUser from "../components/SingleUser";
 import ViewListing from "../pages/dashboard/Owner/ViewListing";
 import ManageBooking from "../pages/dashboard/Owner/ManageBooking";
+import ListingFee from "../pages/dashboard/Owner/ListingFee";
 
 const router = createBrowserRouter([
     {
@@ -40,10 +41,6 @@ const router = createBrowserRouter([
             path: "/browse",
             element: <Browse/>
         },
-        // {
-        //   path: "/cart-page",
-        //   element: <CartPage/>
-        // },
         {
           path: "/payments",
           element:<PrivateRouter><Payments/></PrivateRouter>
@@ -53,8 +50,8 @@ const router = createBrowserRouter([
           element: <PrivateRouter><UpdateProfile/></PrivateRouter>
         },
         {
-          path: "/process-checkout",
-          element: <Payment/>
+          path: "/pay-boarding",
+          element: <PrivateRouter><Payment/></PrivateRouter>
         },
         {
           path: "/listing/:id",
@@ -63,6 +60,10 @@ const router = createBrowserRouter([
         {
           path: "/loading",
           element: <Loading/>
+        },
+        {
+          path: "/listing-fee",
+          element: <PrivateRouter><ListingFee/></PrivateRouter>
         },
       ],
     },
