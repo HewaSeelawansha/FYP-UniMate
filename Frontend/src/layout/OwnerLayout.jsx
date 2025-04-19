@@ -28,10 +28,10 @@ L.Icon.Default.mergeOptions({
 
 const sharedLinks = (
   <>
-    <li className='mt-3'><Link to="/chats" className="hover:bg-orange-100 rounded-lg"><IoMdChatboxes className="text-green" /> Chats</Link></li>
-    <li><Link to="/" className="hover:bg-orange-100 rounded-lg"><MdDashboard className="text-green" /> Home</Link></li>
-    <li><Link to="/menu" className="hover:bg-orange-100 rounded-lg"><FaCartShopping className="text-green" /> Listings</Link></li>
-    <li><Link to="/menu" className="hover:bg-orange-100 rounded-lg"><FaQuestionCircle className="text-green" /> 24/7 Support</Link></li>
+    <li className='mt-3'><Link to="/chats" className="hover:bg-green-100 rounded-lg"><IoMdChatboxes className="text-green" /> Chats</Link></li>
+    <li><Link to="/" className="hover:bg-green-100 rounded-lg"><MdDashboard className="text-green" /> Home</Link></li>
+    <li><Link to="/menu" className="hover:bg-green-100 rounded-lg"><FaCartShopping className="text-green" /> Listings</Link></li>
+    <li><Link to="/menu" className="hover:bg-green-100 rounded-lg"><FaQuestionCircle className="text-green" /> 24/7 Support</Link></li>
   </>
 );
 
@@ -231,7 +231,7 @@ const OwnerLayout = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your dashboard...</p>
         </div>
       </div>
@@ -243,7 +243,7 @@ const OwnerLayout = () => {
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Boarding House Status: <span className={`${boarding?.status === "Approved" ? 'text-green-600' : 'text-orange-600'}`}>
+            Boarding House Status: <span className={`${boarding?.status === "Approved" ? 'text-green-600' : 'text-yellow-600'}`}>
               {boarding?.status}
             </span>
           </h2>
@@ -255,12 +255,12 @@ const OwnerLayout = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center gap-2"
+              className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center gap-2"
               onClick={() => navigate(`/update-boarding/${boarding._id}`)}
             >
               <FaEdit /> Update Submission
             </button>
-            <Link to="/" className="btn btn-outline border-orange-600 text-orange-600 hover:bg-orange-50 px-6 py-3 rounded-lg transition duration-300">
+            <Link to="/" className="btn btn-outline border-green-600 text-green-600 hover:bg-green-50 px-6 py-3 rounded-lg transition duration-300">
               Back to Home
             </Link>
           </div>
@@ -274,21 +274,27 @@ const OwnerLayout = () => {
       {isOwner ? (
         <div className="drawer sm:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col sm:items-start sm:justify-start">
-            {/* Page content here */}
-            <div className="flex items-center justify-between mx-4">
-                <label htmlFor="my-drawer-2" className="btn bg-blue-300 rounded-full drawer-button sm:hidden">
-                <MdDashboardCustomize/>
-                </label>
-                <button className='my-2 flex items-center gap-2 btn sm:hidden rounded-full px-6 bg-green text-white'><FaRegUser />Logout</button>
-            </div>
-            <div className='mt-5 sm:mt-2 mx-4'>
-                <Outlet />
-            </div>
+        <div className="drawer-content flex flex-col sm:pl-0">
+          {/* Mobile header */}
+          <div className="flex items-center justify-between mx-4 sm:hidden">
+            <label htmlFor="my-drawer-2" className="btn bg-blue-300 rounded-full drawer-button">
+              <MdDashboardCustomize/>
+            </label>
+            <button className='my-2 flex items-center gap-2 btn rounded-full px-6 bg-green text-white'>
+              <FaRegUser />Logout
+            </button>
+          </div>
+          
+          {/* Outlet container - takes full width on mobile, adjusts for sidebar on larger screens */}
+          <div className='mt-5 sm:mt-0 mx-4 sm:ml-[calc(10px+1rem)] xl:ml-[calc(10px+2rem)] w-auto'>
+            <Outlet />
+          </div>
         </div>
+        
+        {/* Sidebar - fixed width */}
         <div className="drawer-side">
-            <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-            <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+          <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
+          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
             {/* Sidebar content here */}
             <li>
                 <Link to="/dashboard" className="flex justify-start mb-3">
@@ -297,11 +303,11 @@ const OwnerLayout = () => {
                 </Link>
             </li>
             <hr />
-            <li className='mt-3'><Link className='hover:bg-orange-100 rounded-lg' to="/owner"><MdDashboard className="text-green" /> Owner Dashboard</Link></li>
-            <li><Link className='hover:bg-orange-100 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle className="text-green" /> View Hostel</Link></li>
-            <li><Link className='hover:bg-orange-100 rounded-lg' to="/owner/add-listing"><FaPlusCircle className="text-green" /> Add Listing</Link></li>
-            <li><Link className='hover:bg-orange-100 rounded-lg' to="/owner/manage-items"><FaEdit className="text-green" /> Manage Listings</Link></li>
-            <li  className='mb-3'><Link className='hover:bg-orange-100 rounded-lg' to="/owner/manage-booking"><FaShoppingBag className="text-green" /> Manage Booking</Link></li>
+            <li className='mt-3'><Link className='hover:bg-green-100 rounded-lg' to="/owner"><MdDashboard className="text-green" /> Owner Dashboard</Link></li>
+            <li><Link className='hover:bg-green-100 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle className="text-green" /> View Hostel</Link></li>
+            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/add-listing"><FaPlusCircle className="text-green" /> Add Listing</Link></li>
+            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/manage-items"><FaEdit className="text-green" /> Manage Listings</Link></li>
+            <li  className='mb-3'><Link className='hover:bg-green-100 rounded-lg' to="/owner/manage-booking"><FaShoppingBag className="text-green" /> Manage Booking</Link></li>
             <hr/>
             {
               sharedLinks 
@@ -315,9 +321,9 @@ const OwnerLayout = () => {
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-gray-800">
-                  List Your <span className="text-orange-600">Boarding House</span>
+                  List Your <span className="text-green-600">Boarding House</span>
                 </h1>
-                <Link to="/" className="btn btn-circle btn-ghost text-gray-500 hover:text-orange-600">
+                <Link to="/" className="btn btn-circle btn-ghost text-red-500 hover:text-red-600">
                   ✕
                 </Link>
               </div>
@@ -331,7 +337,7 @@ const OwnerLayout = () => {
                       type="text"
                       defaultValue={user.email}
                       disabled
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-100"
                     />
                   </div>
 
@@ -341,7 +347,7 @@ const OwnerLayout = () => {
                       {...register('name', { required: 'Place name is required' })}
                       type="text"
                       placeholder="Boarding House Name"
-                      className={`w-full px-4 py-3 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                      className={`w-full px-4 py-3 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                     />
                     {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
                   </div>
@@ -353,7 +359,7 @@ const OwnerLayout = () => {
                     {...register('address', { required: 'Address is required' })}
                     type="text"
                     placeholder="Full Address"
-                    className={`w-full px-4 py-3 border ${errors.address ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                    className={`w-full px-4 py-3 border ${errors.address ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                   />
                   {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>}
                 </div>
@@ -363,7 +369,7 @@ const OwnerLayout = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Gender*</label>
                     <select
                       {...register('gender', { required: 'Please select gender' })}
-                      className={`w-full px-4 py-3 border ${errors.gender ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                      className={`w-full px-4 py-3 border ${errors.gender ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                     >
                       <option value="">Select Gender</option>
                       <option value="Girls">Girls Only</option>
@@ -382,7 +388,7 @@ const OwnerLayout = () => {
                       })}
                       type="number"
                       placeholder="Number of beds"
-                      className={`w-full px-4 py-3 border ${errors.beds ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                      className={`w-full px-4 py-3 border ${errors.beds ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                     />
                     {errors.beds && <p className="mt-1 text-sm text-red-600">{errors.beds.message}</p>}
                   </div>
@@ -400,7 +406,7 @@ const OwnerLayout = () => {
                       })}
                       type="tel"
                       placeholder="Contact Number"
-                      className={`w-full px-4 py-3 border ${errors.phone ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                      className={`w-full px-4 py-3 border ${errors.phone ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                     />
                     {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>}
                   </div>
@@ -425,7 +431,7 @@ const OwnerLayout = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description*</label>
                   <textarea
                     {...register('description', { required: 'Description is required' })}
-                    className={`w-full px-4 py-3 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                    className={`w-full px-4 py-3 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                     placeholder="Describe your boarding house (facilities, rules, etc.)"
                     rows="4"
                   ></textarea>
@@ -462,7 +468,7 @@ const OwnerLayout = () => {
 
                     {/* Upload area */}
                     <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                      <FaUpload className="text-orange-600 text-2xl mb-2" />
+                      <FaUpload className="text-green-600 text-2xl mb-2" />
                       <p className="text-sm text-gray-600">Click to upload images</p>
                       <p className="text-xs text-gray-500">(JPEG, PNG, etc.)</p>
                       <input
@@ -510,7 +516,7 @@ const OwnerLayout = () => {
                     <button
                       type="button"
                       onClick={handleSetLocation}
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2"
                     >
                       Confirm Location
                     </button>
@@ -522,7 +528,7 @@ const OwnerLayout = () => {
                     type="submit"
                     disabled={isSubmitting}
                     className={`w-full ${
-                      isSubmitting ? 'bg-orange-500' : 'bg-green hover:bg-orange-500'
+                      isSubmitting ? 'bg-green-500' : 'bg-green-500 hover:bg-green-600'
                     } text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2`}
                   >
                     {isSubmitting ? (
@@ -549,7 +555,7 @@ const OwnerLayout = () => {
           <div className="max-w-md text-center bg-white p-8 rounded-xl shadow-lg">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h2>
             <p className="text-gray-600 mb-6">You need to be registered as an owner to access this page.</p>
-            <Link to="/" className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-300">
+            <Link to="/" className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition duration-300">
               Back to Home
             </Link>
           </div>
