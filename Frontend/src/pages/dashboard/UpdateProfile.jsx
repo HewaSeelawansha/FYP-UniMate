@@ -163,7 +163,7 @@ const UpdateProfile = () => {
       <div className="container mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">
+          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
             Profile Settings
           </h1>
           <p className="mt-3 text-xl text-gray-600">
@@ -174,7 +174,7 @@ const UpdateProfile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Profile Card */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 col-span-1">
-            <div className="bg-gradient-to-r from-green to-green p-6 text-white">
+            <div className="bg-gradient-to-r from-green-400 to-green-500 p-6 text-white">
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
                   <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
@@ -197,7 +197,7 @@ const UpdateProfile = () => {
             <div className="p-6">
               <div className="space-y-4">
                 <div className="flex items-start">
-                  <div className="bg-green p-2 rounded-full flex-shrink-0 mt-1">
+                  <div className="bg-green-300 p-2 rounded-full flex-shrink-0 mt-1">
                     <FiCalendar className="w-5 h-5 text-green-600" />
                   </div>
                   <div className="ml-3">
@@ -212,7 +212,7 @@ const UpdateProfile = () => {
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-green p-2 rounded-full flex-shrink-0 mt-1">
+                  <div className="bg-green-300 p-2 rounded-full flex-shrink-0 mt-1">
                     <FiUser className="w-5 h-5 text-green-600" />
                   </div>
                   <div className="ml-3">
@@ -226,7 +226,7 @@ const UpdateProfile = () => {
 
           {/* Update Profile Form */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 col-span-1">
-            <div className="bg-gradient-to-r from-green to-green p-6 text-white">
+            <div className="bg-gradient-to-r from-green-400 to-green-500 p-6 text-white">
               <h2 className="text-2xl font-bold flex items-center">
                 <FiUser className="mr-2" />
                 Update Profile
@@ -260,7 +260,7 @@ const UpdateProfile = () => {
                     <div className="flex-1">
                       <label className="flex flex-col items-center px-4 py-3 bg-white rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-50 transition duration-200">
                         <div className="flex items-center space-x-2">
-                          <FiUpload className="text-green" />
+                          <FiUpload className="text-green-500" />
                           <span className="text-sm text-gray-600">Upload new photo</span>
                         </div>
                         <input
@@ -278,7 +278,7 @@ const UpdateProfile = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full bg-green hover:bg-orange-500 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2 ${
+                    className={`w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2 ${
                       isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
                     }`}
                   >
@@ -302,10 +302,12 @@ const UpdateProfile = () => {
             </div>
           </div>
 
-          {/* Roommate Preferences */}
-          {isUser? (
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 col-span-1">
-              <div className="bg-gradient-to-r from-green-500 to-teal-600 p-6 text-white">
+          
+        </div>
+        {/* Roommate Preferences */}
+        {isUser? (
+            <div className="bg-white mt-8 rounded-2xl shadow-xl overflow-hidden border border-gray-200 col-span-1">
+              <div className="bg-gradient-to-r from-green-400 to-green-500 p-6 text-white">
                 <h2 className="text-2xl font-bold flex items-center">
                   <FiUsers className="mr-2" />
                   Roommate Preferences
@@ -361,7 +363,7 @@ const UpdateProfile = () => {
                   <div>
                     <button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2"
+                      className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2"
                     >
                       <FiUsers className="text-lg" />
                       <span>Update Preferences</span>
@@ -371,7 +373,6 @@ const UpdateProfile = () => {
               </div>
             </div>
           ):(<></>)}
-        </div>
       </div>
     </div>
   );
