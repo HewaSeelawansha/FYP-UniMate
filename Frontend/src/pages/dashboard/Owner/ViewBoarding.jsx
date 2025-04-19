@@ -89,7 +89,7 @@ const ViewBoarding = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading boarding details...</p>
         </div>
       </div>
@@ -104,7 +104,7 @@ const ViewBoarding = () => {
           <p className="text-gray-600 mb-6">The boarding house you're looking for doesn't exist or may have been removed.</p>
           <button 
             onClick={handleGoBack}
-            className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2"
+            className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2"
           >
             <IoIosArrowBack /> Go Back
           </button>
@@ -121,7 +121,7 @@ const ViewBoarding = () => {
         <div className="flex justify-between items-center mb-8">
           <button
             onClick={handleGoBack}
-            className="flex items-center text-orange-600 hover:text-orange-700 transition duration-200"
+            className="flex items-center text-green-600 hover:text-green-700 transition duration-200"
           >
             <IoIosArrowBack className="mr-2" /> Back
           </button>
@@ -132,7 +132,7 @@ const ViewBoarding = () => {
         </div>
 
         {/* Image Carousel */}
-        <div className="rounded-xl overflow-hidden shadow-lg mb-8 h-64 sm:h-80 md:h-96 lg:h-[500px]">
+        <div className="rounded-xl overflow-hidden shadow-lg mb-8 h-64 sm:h-80 md:h-96 xl:h-[700px]">
           <Carousel slideInterval={5000} indicators={false}>
             {boarding.images && boarding.images.length > 0 ? (
               boarding.images.map((image, index) => (
@@ -152,15 +152,9 @@ const ViewBoarding = () => {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* Left Column - Details */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Owner Card */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Owner</h2>
-              <p className="text-gray-600">{boarding.owner}</p>
-            </div>
-
             {/* Description Card */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4">Description</h2>
@@ -179,7 +173,7 @@ const ViewBoarding = () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {boarding.amenities.map((amenity, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
                     <span className="text-gray-700">{amenity}</span>
                   </div>
                 ))}
@@ -190,7 +184,7 @@ const ViewBoarding = () => {
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Location</h2>
-                <div className="h-64 md:h-80 rounded-lg overflow-hidden border border-gray-200">
+                <div className="h-64 xl:h-80 rounded-lg overflow-hidden border border-gray-200">
                   <MapContainer
                     center={[boarding.lat, boarding.lng]}
                     zoom={15}
@@ -215,41 +209,48 @@ const ViewBoarding = () => {
           </div>
 
           {/* Right Column - Quick Info */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Quick Info Card */}
             <div className="bg-white rounded-xl shadow-md p-6 mb-4">
               <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Info</h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <FaMapMarkerAlt className="text-orange-500 mt-1" />
+                  <FaUser className="text-green-500 mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Owner</p>
+                    <p className="font-medium">{boarding.owner}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <FaMapMarkerAlt className="text-green-500 mt-1" />
                   <div>
                     <p className="text-sm text-gray-500">Address</p>
                     <p className="font-medium">{boarding.address}</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <FaPhone className="text-orange-500 mt-1" />
+                  <FaPhone className="text-green-500 mt-1" />
                   <div>
                     <p className="text-sm text-gray-500">Contact</p>
                     <p className="font-medium">{boarding.phone}</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <FaVenusMars className="text-orange-500 mt-1" />
+                  <FaVenusMars className="text-green-500 mt-1" />
                   <div>
                     <p className="text-sm text-gray-500">Gender</p>
                     <p className="font-medium">{boarding.gender}</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <FaBed className="text-orange-500 mt-1" />
+                  <FaBed className="text-green-500 mt-1" />
                   <div>
                     <p className="text-sm text-gray-500">Total Beds</p>
                     <p className="font-medium">{boarding.beds}</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <FaCalendarAlt className="text-orange-500 mt-1" />
+                  <FaCalendarAlt className="text-green-500 mt-1" />
                   <div>
                     <p className="text-sm text-gray-500">Added On</p>
                     <p className="font-medium">{new Date(boarding.createdAt).toLocaleDateString()}</p>
@@ -261,7 +262,7 @@ const ViewBoarding = () => {
             {/* Action Buttons */}
             {isAdmin  &&
               <select
-                className="w-full py-3 px-4 bg-green rounded-lg border-gray-300 focus:ring-green focus:border-green py-1"
+                className="w-full py-3 px-4 bg-green-400 rounded-lg border-gray-300 focus:ring-green-500 focus:border-green-500 py-1"
                 defaultValue={boarding.status}
                 onChange={(e) => handleBoardingStatus(boarding._id, e.target.value)}
               >
@@ -270,20 +271,19 @@ const ViewBoarding = () => {
                 <option value='Rejected'>Rejected</option>
               </select>
             }
-            {isOwner && email === user.email ? (
+            {isOwner && email === user.email &&
               <Link to={`/owner/update-boarding/${boarding._id}`}>
-                <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2">
+                <button className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2">
                   <FaEdit /> Edit Your Boarding
                 </button>
               </Link>
-            ) : (
-              <button 
-                onClick={handleGoBack}
-                className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2"
-              >
-                <FaUndoAlt /> Go Back
-              </button>
-            )}
+            }
+            <button 
+              onClick={handleGoBack}
+              className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+            >
+              <FaUndoAlt /> Go Back
+            </button>
           </div>
         </div>
       </div>

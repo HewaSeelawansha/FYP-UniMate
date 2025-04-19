@@ -4,17 +4,17 @@ import { FaRegUser, FaSearch } from 'react-icons/fa';
 import { IoMdChatboxes } from "react-icons/io";
 import Modal from './Modal';
 import Profile from './Profile';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import SearchModal from './SearchModal'; // Import the new component
+import SearchModal from './SearchModal'; 
 
 const Navbar = () => {
   const [isSticky, setSticky] = useState(false);
   const { user } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false); // State for search modal
+  const [isSearchOpen, setIsSearchOpen] = useState(false); 
+  const navigate = useNavigate();
 
-  // Handle scroll function with smooth transitions
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -31,7 +31,6 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close search when pressing ESC
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -45,8 +44,8 @@ const Navbar = () => {
 
   const navItems = (
     <>
-      <li><a href='/' className="hover:text-orange-500 transition-colors duration-200">Home</a></li>
-      <li><a href='/browse' className="hover:text-orange-500 transition-colors duration-200">Browse</a></li>
+      <li><a href='/' className="hover:text-green-500 transition-colors duration-200">Home</a></li>
+      <li><a href='/browse' className="hover:text-green-500 transition-colors duration-200">Browse</a></li>
     </>
   );
 
@@ -90,7 +89,7 @@ const Navbar = () => {
             {/* Search Button */}
             <button 
               onClick={() => setIsSearchOpen(true)}
-              className="btn btn-circle btn-ghost hover:bg-orange-50 text-gray-600 hover:text-orange-500 transition-colors duration-200 hidden md:flex"
+              className="btn btn-circle btn-ghost bg-green-300 text-gray-600 hover:text-green-500 transition-colors duration-200 relative"
               aria-label="Search"
             >
               <FaSearch className="text-lg" />
@@ -99,7 +98,7 @@ const Navbar = () => {
             {/* Chat Button */}
             <Link 
               to="/chats" 
-              className="btn btn-circle btn-ghost hover:bg-orange-50 text-gray-600 hover:text-orange-500 transition-colors duration-200 relative"
+              className="btn btn-circle btn-ghost bg-green-300 text-gray-600 hover:text-green-500 transition-colors duration-200 relative"
               aria-label="Chats"
             >
               <IoMdChatboxes className="text-2xl" />
@@ -111,7 +110,7 @@ const Navbar = () => {
             ) : (
               <button 
                 onClick={() => document.getElementById('my_modal_5').showModal()} 
-                className="btn bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 rounded-full px-6 text-white flex items-center gap-2 border-none shadow-md hover:shadow-lg transition-all duration-300"
+                className="btn bg-green-500 hover:bg-blue-500 rounded-full px-6 text-white flex items-center gap-2 border-none shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <FaRegUser /> 
                 <span className="hidden sm:inline">Login</span>

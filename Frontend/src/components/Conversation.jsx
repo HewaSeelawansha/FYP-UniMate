@@ -24,24 +24,24 @@ const Conversation = ({ data, currentUser, online, isSelected }) => {
       }
     };
 
-    const getLastMessage = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/message/last/${data._id}`);
-        if (response.ok) {
-          const message = await response.json();
-          setLastMessage(message?.text || "");
-        }
-      } catch (error) {
-        console.error("Error fetching last message:", error);
-      }
-    };
+    // const getLastMessage = async () => {
+    //   try {
+    //     const response = await fetch(`http://localhost:3000/message/last/${data._id}`);
+    //     if (response.ok) {
+    //       const message = await response.json();
+    //       setLastMessage(message?.text || "");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching last message:", error);
+    //   }
+    // };
 
     getUserData();
-    getLastMessage();
+    // getLastMessage();
   }, [data, currentUser]);
 
   return (
-    <div className={`transition-all rounded ${isSelected ? 'ring-1 ring-green/30' : ''}`}>
+    <div className={`transition-all rounded ${isSelected ? 'ring-1 ring-green-500/30' : ''}`}>
       <div className="flex items-center gap-3 p-3">
         <div className="relative">
           <div className={`absolute top-0 right-0 w-3 h-3 rounded-full border-2 border-white ${online || isCurrentUser ? 'bg-emerald-500' : 'bg-gray-400'}`}></div>

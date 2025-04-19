@@ -9,17 +9,17 @@ import ser7 from '/images/services/uniser7.png'
 
 const Services = () => {
   return (
-    <div className='section-container my-16'>
-      <div className='flex flex-col md:flex-row items-center justify-between gap-12'>
+    <div className='px-24 py-4 bg-green-500'>
+      <div className='flex flex-col text-white md:flex-row items-center justify-between gap-12'>
         {/*text*/}
         <div className='md:w-1/2'>
             <div className='text-left md:w-4/5'>
-                <p className='subtitle uppercase'>About Us</p>
+                <p className='uppercase'>About Us</p>
                 <h2 className='title'>Our Journey and Services</h2>
-                <p className='my-5 text-gray-700 leading-[30px]'>
+                <p className='my-5 text-gray-300 leading-[30px]'>
                 Rooted in a commitment to student living, we make finding the perfect boarding house effortless, offering a seamless experience that connects students with safe, affordable, and convenient accommodations.
                 </p>
-                <button className='btn bg-green text-white px-8 py-3 rounded-full'>Explore</button>
+                <button className='btn bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full'>Explore</button>
             </div>
         </div>
         {/*text*/}

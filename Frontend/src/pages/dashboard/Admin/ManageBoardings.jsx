@@ -111,7 +111,7 @@ const ManageBoardings = () => {
   return (
     <div className='w-full px-4 mx-auto py-8'>
       <h2 className='text-3xl font-bold mb-8'>
-        Manage Uploaded <span className='text-green-600'>Boarding Houses</span>
+        Manage Uploaded <span className='text-green-500'>Boarding Houses</span>
       </h2>
 
       {/* Add a summary banner at the top */}
@@ -137,7 +137,7 @@ const ManageBoardings = () => {
           return (
             <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 border border-gray-100">
               {/* Card Header */}
-              <div className="bg-gradient-to-r from-green to-green p-4 text-white">
+              <div className="bg-gradient-to-r from-green-500 to-green-400 p-4 text-white">
                 <div className="flex justify-between items-center">
                   <h3 className="font-bold text-lg">{item.name}</h3>
                   <div className="flex items-center space-x-4">
@@ -167,7 +167,7 @@ const ManageBoardings = () => {
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Image */}
                   <div className="md:w-1/4">
-                    <div className="rounded-lg overflow-hidden h-40 md:h-32 w-full">
+                    <div className="rounded-lg overflow-hidden xl:h-[250px] h-32 w-full">
                       <img
                         src={item.images[0]}
                         alt={item.name}
@@ -219,7 +219,7 @@ const ManageBoardings = () => {
                           </select>
                           <button 
                             onClick={() => handleBoardingStatus(item)} 
-                            className="bg-green hover:bg-orange-500 text-white px-3 py-1 rounded-lg flex items-center"
+                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg flex items-center"
                           >
                             <FaEdit className="mr-1" />
                             Update
@@ -232,7 +232,7 @@ const ManageBoardings = () => {
                 <div className=''>
                   <button 
                     onClick={() => toggleListings(item._id)}
-                    className="w-full justify-center bg-green mt-6 p-1 rounded-lg flex items-center text-white hover:text-black transition duration-200"
+                    className="w-full justify-center bg-green-400 mt-6 p-1 rounded-lg flex items-center text-green-900 hover:text-white transition duration-200"
                   >
                     {expandedBoarding === item._id ? (
                       <>
@@ -285,7 +285,7 @@ const ManageBoardings = () => {
                               </div>
                               <div className="flex items-center space-x-2">
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  listing.status === 'Approved' ? 'bg-orange-100 text-orange-800' :
+                                  listing.status === 'Approved' ? 'bg-green-100 text-green-800' :
                                   listing.status === 'Rejected' ? 'bg-rose-100 text-rose-800' :
                                   'bg-yellow-100 text-yellow-800'
                                 }`}>
@@ -305,7 +305,7 @@ const ManageBoardings = () => {
                                   <img 
                                     src={listing.images[0]} 
                                     alt={listing.name} 
-                                    className="w-full h-28 md:h-22 object-cover rounded-lg"
+                                    className="w-full xl:h-[250px] h-32 object-cover rounded-lg"
                                   />
                                 )}
                               </div>
@@ -362,7 +362,7 @@ const ManageBoardings = () => {
                               
                               <div className="flex items-center space-x-2">
                                 <select
-                                  className="rounded-lg border-gray-300 text-xs focus:ring-green focus:border-green py-1"
+                                  className="rounded-lg border-gray-300 text-xs focus:ring-green-500 focus:border-green-500 py-1"
                                   defaultValue={listing.status}
                                   onChange={(e) => handleListingStatus(listing._id, e.target.value)}
                                 >

@@ -125,7 +125,7 @@ const UpdateListing = () => {
   const handleGoBack = () => navigate(-1);
 
   return (
-    <div className='w-full max-w-4xl mx-auto p-4 sm:p-6'>
+    <div className='w-full mx-auto p-4 sm:p-6'>
       <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
         {/* Header */}
         <div className='p-6 border-b border-gray-200'>
@@ -347,7 +347,7 @@ const UpdateListing = () => {
               type='submit'
               disabled={isSubmitting}
               className={`w-full ${
-                isSubmitting ? 'bg-orange-500' : 'bg-green hover:bg-orange-500'
+                isSubmitting ? 'bg-greem-600' : 'bg-green-500 hover:bg-green-600'
               } text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2`}
             >
               {isSubmitting ? (

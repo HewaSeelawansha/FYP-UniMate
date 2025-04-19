@@ -1,14 +1,17 @@
 import React from 'react';
 import { FaEdit, FaTrashAlt, FaPlusCircle, FaBed, FaBath, FaRulerCombined } from 'react-icons/fa';
 import { FcViewDetails } from "react-icons/fc";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useMyListing from '../../../hooks/useMyListing';
+import { RiWechatPayLine } from "react-icons/ri";
+import { MdOutlinePayment } from "react-icons/md";
 
 const ManageListing = () => {
   const [mylist, loading, refetch] = useMyListing();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   const handleDelete = (item) => {
     Swal.fire({
@@ -42,6 +45,26 @@ const ManageListing = () => {
         }
       }
     });
+  };
+
+  const getPriceByType = (type) => {
+    switch(type) {
+      case '1-Person Boarding Room':
+      case '2-Person Shared Room':
+        return 500;
+      case '2 to 4-Person Shared Room':
+        return 1000;
+      case 'Whole House-Short Term':
+      case 'Whole House-Long Term':
+        return 2000;
+      default:
+        return 0;
+    }
+  };
+
+  const makePayment = (id, feeType) => {
+    const ListingFee = getPriceByType(feeType);
+    navigate("/listing-fee", { state: { Listing: id, Fee: ListingFee} });
   };
 
   if (loading) {
@@ -89,7 +112,7 @@ const ManageListing = () => {
           </div>
           <Link 
             to="/owner/add-listing"
-            className="btn bg-green hover:bg-orange-500 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center gap-2 mt-4 sm:mt-0"
+            className="btn bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center gap-2 mt-4 sm:mt-0"
           >
             <FaPlusCircle /> Add Listing
           </Link>
@@ -100,7 +123,7 @@ const ManageListing = () => {
           {mylist.map((item) => (
             <div key={item._id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
               {/* Listing Image */}
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-[300px] xl:h-[450px] overflow-hidden">
                 {item.images && item.images.length > 0 ? (
                   <img 
                     className="w-full h-full object-cover transition duration-300 hover:scale-105" 
@@ -114,17 +137,17 @@ const ManageListing = () => {
                 )}
 
                 {/* Status */}
-                <div className="absolute top-2 right-2 bg-emerald-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                <div className="absolute text-xs top-2 right-2 bg-emerald-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
                   <div>{item.status}</div>
                 </div>
 
                 {/* Price Tag */}
-                <div className="absolute top-11 right-2 bg-orange-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                <div className="absolute text-xs top-9 right-2 bg-orange-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
                   <div>LKR {item.price}</div>
                 </div>
 
                 {/* Payment */}
-                <div className="absolute top-20 right-2 bg-blue-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                <div className="absolute text-xs top-16 right-2 bg-blue-500 text-white px-3 py-1 rounded-lg font-bold shadow-md">
                   <div>Payment - {item.payStatus}</div>
                 </div>
                 
@@ -153,6 +176,7 @@ const ManageListing = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-between border-t pt-4">
+
                   <Link 
                     to={`/owner/view-listing/${item._id}`}
                     className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200"
@@ -161,6 +185,7 @@ const ManageListing = () => {
                     <FcViewDetails className="w-5 h-5 mr-1" />
                     <span className="text-sm">Details</span>
                   </Link>
+
                   <Link 
                     to={`/owner/update-listing/${item._id}`}
                     className="flex items-center text-orange-500 hover:text-orange-700 transition duration-200"
@@ -169,14 +194,27 @@ const ManageListing = () => {
                     <FaEdit className="w-4 h-4 mr-1" />
                     <span className="text-sm">Edit</span>
                   </Link>
-                  <button
-                    onClick={() => handleDelete(item)}
-                    className="flex items-center text-emerald-500 hover:text-emmerald-700 transition duration-200"
-                    title="Pay"
-                  >
-                    <FaTrashAlt className="w-4 h-4 mr-1" />
-                    <span className="text-sm">Pay</span>
-                  </button>
+
+                  {item.payStatus!=='Done'?(
+                    <button
+                      onClick={() => makePayment(item._id, item.type)}
+                      disabled={!(item.status === 'Approved')}
+                      className={`flex items-center ${
+                        (item.status === 'Approved')
+                          ? 'text-emerald-500 hover:text-emmerald-900 transition duration-200 cursor-pointer'
+                          : 'text-gray-500 cursor-not-allowed'
+                      }`}
+                      title="Pay"
+                    >
+                      <MdOutlinePayment className="w-4 h-4 mr-1" />
+                      <span className="text-sm">Pay</span>
+                    </button>
+                    ):(
+                    <div className='text-emerald-500 flex items-center'>
+                      <RiWechatPayLine className="w-4 h-4 mr-1" />
+                      <p className="text-sm">Paid</p>
+                    </div>
+                  )}
 
                   <button
                     onClick={() => handleDelete(item)}
@@ -186,6 +224,7 @@ const ManageListing = () => {
                     <FaTrashAlt className="w-4 h-4 mr-1" />
                     <span className="text-sm">Delete</span>
                   </button>
+                  
                 </div>
               </div>
             </div>

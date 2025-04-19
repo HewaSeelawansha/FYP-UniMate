@@ -144,7 +144,7 @@ const AddListing = () => {
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Boarding House Status: <span className="text-orange-600">{boarding?.status}</span>
+            Boarding House Status: <span className="text-green-600">{boarding?.status}</span>
           </h2>
           <p className="text-gray-600 mb-6">
             {boarding?.status === "Pending" 
@@ -154,14 +154,14 @@ const AddListing = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center gap-2"
+              className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center gap-2"
               onClick={() => navigate(`/owner/update-boarding/${boarding._id}`)}
             >
               Update Boarding House
             </button>
             <button 
               onClick={() => navigate('/')}
-              className="btn btn-outline border-orange-600 text-orange-600 hover:bg-orange-50 px-6 py-3 rounded-lg transition duration-300"
+              className="btn btn-outline border-green-600 text-green-600 hover:bg-orange-50 px-6 py-3 rounded-lg transition duration-300"
             >
               Back to Home
             </button>
@@ -179,7 +179,7 @@ const AddListing = () => {
           <p className="text-gray-600 mb-6">You need to register your boarding house before adding listings.</p>
           <button
             onClick={() => navigate('/owner/add-boarding')}
-            className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2"
+            className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2"
           >
             <FaHome /> Register Boarding House
           </button>
@@ -194,12 +194,12 @@ const AddListing = () => {
         <div className="flex items-center justify-between mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-orange-600 hover:text-orange-700 transition duration-200"
+            className="flex items-center text-green-600 hover:text-green-700 transition duration-200"
           >
             <IoIosArrowBack className="mr-2" /> Back
           </button>
           <h1 className="text-3xl font-bold text-gray-800">
-            Create New <span className="text-orange-600">Listing</span>
+            Create New <span className="text-green-500">Listing</span>
           </h1>
           <div className="w-8"></div> {/* Spacer for alignment */}
         </div>
@@ -210,39 +210,39 @@ const AddListing = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                  <FaHome className="text-orange-500 mr-2" /> Boarding Name
+                  <FaHome className="text-green-500 mr-2" /> Boarding Name
                 </label>
                 <input
                   type="text"
                   defaultValue={boarding.name}
                   disabled
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-100"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                  <FaUser className="text-orange-500 mr-2" /> Owner Email
+                  <FaUser className="text-green-500 mr-2" /> Owner Email
                 </label>
                 <input
                   type="text"
                   defaultValue={owner}
                   disabled
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-100"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                <FaInfoCircle className="text-orange-500 mr-2" /> Listing Title
+                <FaInfoCircle className="text-green-500 mr-2" /> Listing Title
               </label>
               <input
                 type="text"
                 placeholder="Will be generated after selecting type"
                 defaultValue={listingtitle}
                 disabled
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-100"
               />
             </div>
 
@@ -252,7 +252,7 @@ const AddListing = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Listing Type*</label>
                 <select
                   {...register('type', { required: 'Listing type is required' })}
-                  className={`w-full px-4 py-3 border ${errors.type ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                  className={`w-full px-4 py-3 border ${errors.type ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                   defaultValue=""
                   onChange={(e) => setLtype(e.target.value)}
                 >
@@ -273,7 +273,7 @@ const AddListing = () => {
                   type="text"
                   defaultValue={boarding.gender}
                   disabled
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-100"
                 />
               </div>
             </div>
@@ -288,7 +288,7 @@ const AddListing = () => {
                   })}
                   type="number"
                   defaultValue={boarding.beds}
-                  className={`w-full px-4 py-3 border ${errors.available ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                  className={`w-full px-4 py-3 border ${errors.available ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                 />
                 {errors.available && <p className="mt-1 text-sm text-red-600">{errors.available.message}</p>}
               </div>
@@ -302,7 +302,7 @@ const AddListing = () => {
                   })}
                   type="number"
                   placeholder="Enter monthly price"
-                  className={`w-full px-4 py-3 border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                  className={`w-full px-4 py-3 border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                 />
                 {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>}
               </div>
@@ -312,7 +312,7 @@ const AddListing = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Key Money Required?</label>
               <select
-                className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                 defaultValue=""
                 onChange={(e) => setKeyMoneyRequired(e.target.value === 'yesk')}
               >
@@ -331,7 +331,7 @@ const AddListing = () => {
                     })}
                     type="number"
                     placeholder="Enter key money amount"
-                    className={`w-full px-4 py-3 border ${errors.kmoney ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                    className={`w-full px-4 py-3 border ${errors.kmoney ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                   />
                   {errors.kmoney && <p className="mt-1 text-sm text-red-600">{errors.kmoney.message}</p>}
                 </div>
@@ -343,7 +343,7 @@ const AddListing = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Description*</label>
               <textarea
                 {...register('description', { required: 'Description is required' })}
-                className={`w-full px-4 py-3 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500`}
+                className={`w-full px-4 py-3 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
                 placeholder="Describe this listing (facilities, rules, special features etc.)"
                 rows="4"
               ></textarea>
@@ -381,7 +381,7 @@ const AddListing = () => {
 
                     {/* Upload area */}
                     <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                      <FaUpload className="text-orange-600 text-2xl mb-2" />
+                      <FaUpload className="text-green-600 text-2xl mb-2" />
                       <p className="text-sm text-gray-600">Click to upload images</p>
                       <p className="text-xs text-gray-500">(JPEG, PNG, etc.)</p>
                       <input
@@ -406,7 +406,7 @@ const AddListing = () => {
                     <input
                       type="checkbox"
                       {...register(amenity.id)}
-                      className="checkbox checkbox-sm border-gray-300 rounded text-orange-600 focus:ring-orange-500"
+                      className="checkbox checkbox-sm border-gray-300 rounded text-green-600 focus:ring-green-500"
                     />
                     <span className="text-sm text-gray-700">{amenity.label}</span>
                   </label>
@@ -420,7 +420,7 @@ const AddListing = () => {
                 type="submit"
                 disabled={isSubmitting}
                 className={`w-full ${
-                  isSubmitting ? 'bg-orange-500' : 'bg-green hover:bg-orange-500'
+                  isSubmitting ? 'bg-orange-600' : 'bg-green-500 hover:bg-green-600'
                   } text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2`}
               >
               {isSubmitting ? (

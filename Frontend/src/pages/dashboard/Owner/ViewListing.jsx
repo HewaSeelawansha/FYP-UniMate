@@ -77,7 +77,7 @@ const ViewListing = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading listing details...</p>
         </div>
       </div>
@@ -92,7 +92,7 @@ const ViewListing = () => {
           <p className="text-gray-600 mb-6">The listing you're looking for doesn't exist or may have been removed.</p>
           <button 
             onClick={handleGoBack}
-            className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+            className="btn bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
           >
             <IoIosArrowBack /> Back to Listings
           </button>
@@ -107,7 +107,7 @@ const ViewListing = () => {
         <div className="flex justify-between items-center mb-8">
           <button
             onClick={handleGoBack}
-            className="flex items-center text-orange-600 hover:text-orange-700 transition duration-200"
+            className="flex items-center text-green-500 hover:text-green-600 transition duration-200"
           >
             <IoIosArrowBack className="mr-2" /> Back
           </button>
@@ -118,7 +118,7 @@ const ViewListing = () => {
         </div>
 
         {/* Image Carousel */}
-        <div className="rounded-xl overflow-hidden shadow-lg mb-8 h-64 sm:h-80 md:h-96 lg:h-[500px]">
+        <div className="rounded-xl overflow-hidden shadow-lg mb-8 h-64 sm:h-80 md:h-96 xl:h-[700px]">
           <Carousel slideInterval={5000} indicators={false}>
             {listing.images && listing.images.length > 0 ? (
               listing.images.map((image, index) => (
@@ -144,12 +144,12 @@ const ViewListing = () => {
             {/* Basic Info Card */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <FaHome className="text-orange-500 mr-2" /> Basic Information
+                <FaHome className="text-green-500 mr-2" /> Basic Information
               </h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="bg-orange-100 p-2 rounded-full">
-                    <FaHome className="text-orange-500" />
+                  <div className="bg-green-100 p-2 rounded-full">
+                    <FaHome className="text-green-500" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Boarding House</p>
@@ -157,8 +157,8 @@ const ViewListing = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="bg-orange-100 p-2 rounded-full">
-                    <FaUser className="text-orange-500" />
+                  <div className="bg-green-100 p-2 rounded-full">
+                    <FaUser className="text-green-500" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Owner</p>
@@ -166,8 +166,8 @@ const ViewListing = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="bg-orange-100 p-2 rounded-full">
-                    <FaVenusMars className="text-orange-500" />
+                  <div className="bg-green-100 p-2 rounded-full">
+                    <FaVenusMars className="text-green-500" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Gender</p>
@@ -195,12 +195,12 @@ const ViewListing = () => {
             {/* Pricing Card */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <FaMoneyBillWave className="text-orange-500 mr-2" /> Pricing
+                <FaMoneyBillWave className="text-green-500 mr-2" /> Pricing
               </h2>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <p className="text-gray-600">Monthly Rental:</p>
-                  <p className="font-bold text-orange-600">LKR {listing.price}</p>
+                  <p className="font-bold text-green-600">LKR {listing.price}</p>
                 </div>
                 <div className="flex justify-between items-center">
                   <p className="text-gray-600">Key Money:</p>
@@ -219,7 +219,7 @@ const ViewListing = () => {
               <div className="grid grid-cols-2 gap-4">
                 {listing.amenities.map((amenity, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
                     <span className="text-gray-700">{amenity}</span>
                   </div>
                 ))}
@@ -229,12 +229,12 @@ const ViewListing = () => {
             {/* Additional Info Card */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <FaCalendarAlt className="text-orange-500 mr-2" /> Additional Information
+                <FaCalendarAlt className="text-green-500 mr-2" /> Additional Information
               </h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="bg-orange-100 p-2 rounded-full">
-                    <FaCheck className="text-orange-500" />
+                  <div className="bg-green-100 p-2 rounded-full">
+                    <FaCheck className="text-green-500" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Listing Type</p>
@@ -242,8 +242,8 @@ const ViewListing = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="bg-orange-100 p-2 rounded-full">
-                    <FaCalendarAlt className="text-orange-500" />
+                  <div className="bg-green-100 p-2 rounded-full">
+                    <FaCalendarAlt className="text-green-500" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Created On</p>
@@ -260,14 +260,14 @@ const ViewListing = () => {
           {isOwner &&
             <Link 
               to={`/owner/update-listing/${listing._id}`}
-              className="flex-1 btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+              className="flex-1 btn bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center justify-center gap-2"
             >
               <FaEdit /> Edit Listing
             </Link>
           }
           {isAdmin &&
             <select
-              className="flex-1 border-none focus:ring-green focus:border-green bg-green text-white rounded-lg gap-2"
+              className="flex-1 border-none focus:ring-green-500 focus:border-green-500 bg-green-400 text-white rounded-lg gap-2"
               defaultValue={listing.status}
               onChange={(e) => handleListingStatus(listing._id, e.target.value)}
             >

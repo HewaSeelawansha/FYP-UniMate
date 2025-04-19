@@ -83,7 +83,7 @@ const Users = () => {
         {users.map((user, index) => (
           <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
             {/* Card Header */}
-            <div className="bg-gradient-to-r from-green to-green p-4 text-white">
+            <div className="bg-gradient-to-r from-green-500 to-green-400 p-4 text-white">
               <div className="flex justify-between items-center">
                 <h3 className="font-bold text-lg flex items-center">
                   <FaUser className="mr-2" />

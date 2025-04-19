@@ -17,7 +17,7 @@ header{
 }
 
 .subtitle{
-    @apply text-green uppercase tracking-wide font-medium text-lg;
+    @apply text-myprimary uppercase tracking-wide font-medium text-lg;
 }
 
 .title{

@@ -4,7 +4,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
-      <div className="container mx-auto px-4">
+      <div className="px-24 mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div>
             <h3 className="text-xl font-bold mb-4">UniMate</h3>
@@ -60,7 +60,7 @@ const Footer = () => {
               />
               <button 
                 type="submit" 
-                className="bg-green hover:bg-orange-500 px-4 py-2 rounded-r-lg transition-colors"
+                className="bg-green-500 hover:bg-orange-500 px-4 py-2 rounded-r-lg transition-colors"
               >
                 Subscribe
               </button>

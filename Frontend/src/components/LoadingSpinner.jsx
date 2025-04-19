@@ -7,7 +7,7 @@ const Loading = () => {
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
-            className="w-4 h-4 bg-gradient-to-r from-orange-400 to-green rounded-full"
+            className="w-4 h-4 bg-gradient-to-r from-green-500 to-green-600 rounded-full"
             animate={{
               scale: [1, 1.5, 1],
               opacity: [0.6, 1, 0.6]

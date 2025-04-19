@@ -8,7 +8,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
   const [userData, setUserData] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const scroll = useRef();
 
@@ -112,13 +111,13 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
             />
-            <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${userData?.email !== currentUser ? 'bg-emerald-500' : 'bg-gray-400'}`}></span>
+            {/* <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${userData?.email !== currentUser ? 'bg-emerald-500' : 'bg-gray-400'}`}></span> */}
           </div>
           <div className="ml-3">
             <h4 className="font-semibold text-gray-800">{userData?.name || "Unknown User"}</h4>
             <p className="text-xs text-gray-500">
               {userData?.email !== currentUser ? 
-                (isTyping ? 'typing...' : 'online') : 
+                ('Say Hello!') : 
                 'you'}
             </p>
           </div>

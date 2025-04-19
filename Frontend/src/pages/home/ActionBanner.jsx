@@ -1,6 +1,7 @@
-import React from 'react';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const CallToAction = () => {
+const ActionBanner = () => {
   return (
     <section className="py-16 bg-green-500 text-white">
       <div className="container mx-auto px-4 text-center">
@@ -9,16 +10,16 @@ const CallToAction = () => {
           Join thousands of students who found their perfect accommodation through our platform
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <button className="bg-white text-green-500 hover:bg-gray-100 px-8 py-3 rounded-full font-bold transition-colors duration-300">
+          <Link to='/browse' className="bg-white text-green-500 hover:bg-gray-100 px-8 py-3 rounded-full font-bold transition-colors duration-300">
             Browse Listings
-          </button>
-          <button className="bg-transparent border-2 border-white hover:bg-white/10 px-8 py-3 rounded-full font-bold transition-colors duration-300">
+          </Link>
+          <Link to='/owner' className="bg-transparent border-2 border-white hover:bg-white/10 px-8 py-3 rounded-full font-bold transition-colors duration-300">
             List Your Property
-          </button>
+          </Link>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default CallToAction;
+export default ActionBanner

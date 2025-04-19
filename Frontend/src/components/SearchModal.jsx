@@ -69,7 +69,7 @@ const SearchModal = ({ isOpen, onClose }) => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -20, opacity: 0 }}
             transition={{ type: 'spring', damping: 25 }}
-            className="relative w-full max-w-2xl mx-4"
+            className="relative w-full max-w-4xl mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
