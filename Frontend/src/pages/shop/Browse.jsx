@@ -6,11 +6,11 @@ import axios from 'axios';
 
 const Browse = () => {
   const [filteredItems, setFilteredItems] = useState([]);
-const [totalListings, setTotalListings] = useState(0);
+  const [totalListings, setTotalListings] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortOptions, setSortOptions] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Keep this as 6 or change to 10 as needed
+  const [itemsPerPage] = useState(8); 
   const [searchQuery, setSearchQuery] = useState('');
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -90,7 +90,7 @@ const [totalListings, setTotalListings] = useState(0);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative bg-orange-100 pb-24 pt-32">
+      <div className="relative bg-green-200 pb-24 pt-32">
         <div className="absolute inset-0 bg-[url('/path/to/pattern.svg')] opacity-10"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="container mx-auto text-center">
@@ -100,7 +100,7 @@ const [totalListings, setTotalListings] = useState(0);
               transition={{ duration: 0.6 }}
               className="text-4xl md:text-5xl font-bold mb-6 text-gray-900"
             >
-              Find Your <span className="text-green-600">Perfect</span> Student Home
+              Find Your <span className="text-green-500">Perfect</span> Student Home
             </motion.h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8">
               Discover comfortable, affordable accommodations tailored for student life
@@ -152,7 +152,7 @@ const [totalListings, setTotalListings] = useState(0);
                   onClick={() => filterItems(category.id)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedCategory === category.id
-                      ? 'bg-green text-white'
+                      ? 'bg-green-500 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -172,7 +172,7 @@ const [totalListings, setTotalListings] = useState(0);
                   id="sort"
                   onChange={(e) => handleSortChange(e.target.value)}
                   value={sortOptions}
-                  className="bg-white px-3 py-2 text-sm font-medium focus:outline-none"
+                  className="bg-green-300 px-3 py-2 text-sm font-medium focus:outline-none"
                   disabled={isLoading}
                 >
                   <option value="">Sort by</option>
@@ -208,7 +208,7 @@ const [totalListings, setTotalListings] = useState(0);
                       }}
                       className={`px-3 py-2 rounded-full text-sm font-medium transition-colors ${
                         selectedCategory === category.id
-                          ? 'bg-green text-white'
+                          ? 'bg-green-500 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
@@ -247,7 +247,7 @@ const [totalListings, setTotalListings] = useState(0);
         {!isLoading && !error && (
           <div className="mb-6 flex justify-between items-center">
             <p className="text-gray-600">
-              Showing <span className="font-semibold">{filteredItems.length}</span> properties
+              Showing <span className="font-semibold">{filteredItems.length}</span> of <span className="font-semibold">{totalListings}</span>  properties
             </p>
             {(searchQuery || selectedCategory !== "all") && (
               <button
@@ -297,7 +297,7 @@ const [totalListings, setTotalListings] = useState(0);
         {/* Pagination */}
       {!isLoading && !error && totalListings > itemsPerPage && (
         <div className="flex justify-center my-12">
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center gap-2">
             {/* <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
@@ -314,8 +314,8 @@ const [totalListings, setTotalListings] = useState(0);
                   onClick={() => setCurrentPage(index + 1)}
                   className={`w-10 h-10 flex items-center justify-center rounded-full font-medium transition-colors ${
                     currentPage === index + 1
-                      ? 'bg-green text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                      ? 'bg-green-500 text-white'
+                      : 'bg-gray-300 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   {index + 1}
