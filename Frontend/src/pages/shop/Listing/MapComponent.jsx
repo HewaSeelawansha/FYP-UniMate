@@ -7,6 +7,7 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
+// Configure default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
@@ -19,6 +20,8 @@ const MapComponent = ({ lati, lngi, name }) => {
     const [route, setRoute] = useState([]);
     const [distance, setDistance] = useState(null);
     const [duration, setDuration] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [mapKey, setMapKey] = useState(Date.now()); // Key to force remount
   
     const NSBMLocation = [6.821380, 80.041691];
   
@@ -30,7 +33,7 @@ const MapComponent = ({ lati, lngi, name }) => {
                 requestAnimationFrame(() => {
                     map.invalidateSize();
                 });
-            }, 5000);
+            }, 2500);
         }, [map]);
     
         return null;
@@ -60,23 +63,29 @@ const MapComponent = ({ lati, lngi, name }) => {
                 draggable 
                 eventHandlers={eventHandlers}
             >
-                <Popup>Your Location</Popup>
+                <Popup className="font-medium">Your Location</Popup>
             </Marker>
         );
     };
   
     const getUserLocation = () => {
+      setLoading(true);
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
             setUserLocation([latitude, longitude]);
             fetchRoute([latitude, longitude], [lati, lngi]);
+            setLoading(false);
           },
-          (error) => console.error("Error getting user location:", error)
+          (error) => {
+            console.error("Error getting user location:", error);
+            setLoading(false);
+          }
         );
       } else {
         console.error("Geolocation is not supported by this browser.");
+        setLoading(false);
       }
     };
   
@@ -106,87 +115,132 @@ const MapComponent = ({ lati, lngi, name }) => {
       }
     };
 
-    self.addEventListener('fetch', (event) => {
-        if (event.preloadResponse) {
-            event.respondWith(
-                (async () => {
-                    const preloadResponse = await event.preloadResponse;
-                    if (preloadResponse) {
-                        return preloadResponse;
-                    }
-                    return fetch(event.request);
-                })()
-            );
-        } else {
-            event.respondWith(fetch(event.request));
-        }
-    });
-    
+    // Function to refresh the map
+    const refreshMap = () => {
+      setMapKey(Date.now()); // This will force the MapContainer to remount
+      if (userLocation) {
+        fetchRoute(userLocation, [lati, lngi]); // Refetch the route
+      }
+    };
   
     return (
-      <div className="bg-blue-300 p-4 rounded-lg" >
-        <div style={{ height: "500px", position: "relative" }}>
-          {lati && lngi ? (
-            <MapContainer
-            center={[lati, lngi]}
-            zoom={15}
-            style={{ height: "100%", width: "100%" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Marker position={[lati, lngi]}>
-              <Popup>
-                {name} <br /> {name}
-              </Popup>
-            </Marker>
-            <DraggableMarker />
-            {route.length > 0 && <Polyline positions={route} color="blue" />}
-            <MapResizer /> 
-          </MapContainer>
-          ) : (
-            <div className="text-center py-20">Loading map...</div>
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-900">Location Map</h2>
+            <button
+              onClick={refreshMap}
+              className="flex items-center justify-center font-medium py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors"
+              title="Refresh Map"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <div className="rounded-xl overflow-hidden shadow-md" style={{ height: "500px", position: "relative" }}>
+            {lati && lngi ? (
+              <MapContainer
+                key={mapKey} // This key will force remount when changed
+                center={[lati, lngi]}
+                zoom={15}
+                style={{ height: "100%", width: "100%", zIndex: 0 }}
+                className="rounded-lg"
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <Marker position={[lati, lngi]}>
+                  <Popup className="font-medium">
+                    <span className="font-bold">{name}</span> <br /> 
+                    Property Location
+                  </Popup>
+                </Marker>
+                <DraggableMarker />
+                {route.length > 0 && <Polyline positions={route} color="blue" weight={4} />}
+                <MapResizer /> 
+              </MapContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading map data...</p>
+                </div>
+              </div>
+            )}
+          </div>
+    
+          {distance && duration && (
+            <div className="mt-6 bg-green-50 p-4 rounded-lg">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <p className="text-sm font-medium text-gray-500">Distance</p>
+                  <p className="text-xl font-bold text-green-600">{distance} km</p>
+                </div>
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <p className="text-sm font-medium text-gray-500">Estimated Time</p>
+                  <p className="text-xl font-bold text-green-600">{duration} min</p>
+                </div>
+              </div>
+            </div>
+          )}
+    
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <button
+              onClick={getUserLocation}
+              disabled={loading}
+              className={`flex items-center justify-center font-medium py-3 px-4 rounded-lg transition-colors ${
+                loading ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600 text-white'
+              }`}
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Locating...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  From Your Location
+                </>
+              )}
+            </button>
+    
+            <button
+              onClick={getNSBMLocation}
+              className="flex items-center justify-center font-medium py-3 px-4 bg-gray-800 hover:bg-gray-900 text-white rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              </svg>
+              From NSBM
+            </button>
+          </div>
+    
+          {userLocation && (
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&origin=${userLocation[0]},${userLocation[1]}&destination=${lati},${lngi}&travelmode=driving`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center font-medium py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors mt-4"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+              </svg>
+              Open in Google Maps
+            </a>
           )}
         </div>
-  
-        {distance && duration && (
-          <div className="mt-4 text-center">
-            <p className="text-lg font-bold">
-              Distance: <span className="text-blue-700">{distance} km</span>
-            </p>
-            <p className="text-lg font-bold">
-              Duration: <span className="text-blue-700">{duration} minutes</span>
-            </p>
-          </div>
-        )}
-  
-        <button
-          onClick={getUserLocation}
-          className="w-full font-bold bg-green text-white px-4 py-2 rounded-lg hover:bg-black hover:text-green transition duration-300 mt-4"
-        >
-          Get Directions from Your Location
-        </button>
-  
-        <button
-          onClick={getNSBMLocation}
-          className="w-full font-bold bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-emerald-500 transition duration-300 mt-4"
-        >
-          Get Directions from NSBM
-        </button>
-  
-        {userLocation && (
-          <a
-            href={`https://www.google.com/maps/dir/?api=1&origin=${userLocation[0]},${userLocation[1]}&destination=${lati},${lngi}&travelmode=driving`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full text-center font-bold bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-black hover:text-blue-500 transition duration-300 mt-4"
-          >
-            Start Navigation in Google Maps
-          </a>
-        )}
       </div>
     );
   };
   
-export default MapComponent
+export default MapComponent;
