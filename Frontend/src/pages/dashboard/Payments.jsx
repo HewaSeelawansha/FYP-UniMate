@@ -82,7 +82,7 @@ const Payments = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-            Your <span className="text-orange-600">Payment History</span>
+            Your <span className="text-green-600">Payment History</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             View all your completed transactions and booking details
@@ -95,7 +95,7 @@ const Payments = () => {
             {orders.map((order, index) => (
               <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 {/* Payment Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-orange-100 px-6 py-4 border-b border-gray-200">
+                <div className="bg-gradient-to-r from-green-50 to-green-100 px-6 py-4 border-b border-gray-200">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center mb-2 sm:mb-0">
                       <FaCheckCircle className="text-green-500 mr-2" />
@@ -130,7 +130,7 @@ const Payments = () => {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Amount Paid:</span>
-                          <span className="font-bold text-orange-600">
+                          <span className="font-bold text-green-600">
                             {formatCurrency(order.price)}
                           </span>
                         </div>
@@ -215,7 +215,7 @@ const Payments = () => {
                   <div className="mt-6 flex justify-end">
                     <button 
                       onClick={() => handleChat(user.email, order.listing.owner)} 
-                      className="flex items-center text-orange-600 hover:text-orange-700 font-medium"
+                      className="flex items-center text-green-600 hover:text-green-700 font-medium"
                     >
                       Contact Owner <IoIosArrowForward className="ml-1" />
                     </button>
@@ -233,8 +233,8 @@ const Payments = () => {
                 You haven't made any payments yet. Your payment history will appear here.
               </p>
               <Link 
-                to="/" 
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700"
+                to="/browse" 
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
               >
                 Browse Listings
               </Link>
