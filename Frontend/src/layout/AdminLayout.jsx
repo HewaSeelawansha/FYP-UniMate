@@ -64,18 +64,19 @@ const AdminLayout = () => {
     </ul>
   </div>
 </div>
- : (loading ? <Login/> : <div className="h-screen flex justify-center items-center"><Link to="/"><button className="btn bg-green text-white rounded-lg">Back to Home</button></Link></div>)
-        }
-          
-          {/*: (loading ? <Modal /> :
-            <div className="h-screen flex justify-center items-center">
-                <Link to="/">
-                <button className="btn bg-green text-white">Back to Home</button>
-                </Link>
-            </div>
-            )}*/}
-          
-          
+ : (
+  <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
+    <div className="max-w-md text-center bg-white p-8 rounded-xl shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h2>
+      <p className="text-gray-600 mb-6">Only admins can access the admin's dashboard.</p>
+      <Link to="/" className="btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition duration-300">
+        Back to Home
+      </Link>
+    </div>
+  </div>
+)}
+  
+ )  
     </div>
   )
 }
