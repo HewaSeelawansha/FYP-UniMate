@@ -78,11 +78,11 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="navbar-center hidden lg:flex">
+          {/* <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1 gap-2">
               {navItems}
             </ul>
-          </div>
+          </div> */}
 
           {/* Right Side Icons and Buttons */}
           <div className="navbar-end gap-3">
