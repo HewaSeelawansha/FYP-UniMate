@@ -6,6 +6,7 @@ import { FcViewDetails } from "react-icons/fc";
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import useAxiosSecure from '../../../hooks/useAxiosSecure'
+import { IoIosArrowBack } from 'react-icons/io';
 
 const ManageBoardings = () => {
   const [boarding, boardingLoading, refetchBoarding] = useBoarding();
@@ -86,10 +87,10 @@ const ManageBoardings = () => {
 
   if (boardingLoading || listingsLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[300px]">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading boarding houses...</p>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -110,9 +111,19 @@ const ManageBoardings = () => {
   
   return (
     <div className='w-full px-4 mx-auto py-8'>
-      <h2 className='text-3xl font-bold mb-8'>
+      {/* Header */}
+      <div className="flex xl:flex-row flex-col items-center justify-between mb-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="xl:mb-0 my-2 flex items-center text-green-600 hover:text-green-700 transition duration-200"
+        >
+          <IoIosArrowBack className="mr-2" /> Back
+        </button>
+        <h1 className="mx-2 text-3xl font-bold text-gray-800">
         Manage Uploaded <span className='text-green-500'>Boarding Houses</span>
-      </h2>
+        </h1>
+        <div className="w-8"></div> {/* Spacer for alignment */}
+      </div>
 
       {/* Add a summary banner at the top */}
       <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
@@ -166,8 +177,8 @@ const ManageBoardings = () => {
               <div className="p-6">
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Image */}
-                  <div className="md:w-1/4">
-                    <div className="rounded-lg overflow-hidden xl:h-[250px] h-32 w-full">
+                  <div className="md:w-1/10">
+                    <div className="rounded-lg overflow-hidden h-32 w-full">
                       <img
                         src={item.images[0]}
                         alt={item.name}
@@ -300,12 +311,12 @@ const ManageBoardings = () => {
                             {/* Second Row - Image and Details */}
                             <div className="flex flex-col md:flex-row gap-4 mb-3">
                               {/* Left Side - Image */}
-                              <div className="md:w-1/4">
+                              <div className="md:w-1/10">
                                 {listing.images?.length > 0 && (
                                   <img 
                                     src={listing.images[0]} 
                                     alt={listing.name} 
-                                    className="w-full xl:h-[250px] h-32 object-cover rounded-lg"
+                                    className="w-full h-28 object-cover rounded-lg"
                                   />
                                 )}
                               </div>
