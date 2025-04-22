@@ -7,6 +7,7 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useMyListing from '../../../hooks/useMyListing';
 import { RiWechatPayLine } from "react-icons/ri";
 import { MdOutlinePayment } from "react-icons/md";
+import { IoIosArrowBack } from 'react-icons/io';
 
 const ManageListing = () => {
   const [mylist, loading, refetch] = useMyListing();
@@ -69,10 +70,10 @@ const ManageListing = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[300px]">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your listings...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -101,29 +102,25 @@ const ManageListing = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-              Manage <span className="text-green">Listings</span>
-            </h1>
-            <p className="text-gray-600 mt-2">
-              View, edit, or delete your current listings
-            </p>
-          </div>
-          <Link 
-            to="/owner/add-listing"
-            className="btn bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center gap-2 mt-4 sm:mt-0"
+        <div className="flex xl:flex-row flex-col items-center justify-between mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="xl:mb-0 my-2 flex items-center text-green-600 hover:text-green-700 transition duration-200"
           >
-            <FaPlusCircle /> Add Listing
-          </Link>
+            <IoIosArrowBack className="mr-2" /> Back
+          </button>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Manage <span className="text-green-500">Listings</span>
+          </h1>
+          <div className="w-8"></div> {/* Spacer for alignment */}
         </div>
 
         {/* Listings Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {mylist.map((item) => (
             <div key={item._id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
               {/* Listing Image */}
-              <div className="relative h-[300px] xl:h-[450px] overflow-hidden">
+              <div className="relative h-[300px] overflow-hidden">
                 {item.images && item.images.length > 0 ? (
                   <img 
                     className="w-full h-full object-cover transition duration-300 hover:scale-105" 
@@ -183,7 +180,7 @@ const ManageListing = () => {
                     title="View Details"
                   >
                     <FcViewDetails className="w-5 h-5 mr-1" />
-                    <span className="text-sm">Details</span>
+                    <span className="text-md">Details</span>
                   </Link>
 
                   <Link 
@@ -192,7 +189,7 @@ const ManageListing = () => {
                     title="Edit"
                   >
                     <FaEdit className="w-4 h-4 mr-1" />
-                    <span className="text-sm">Edit</span>
+                    <span className="text-md">Edit</span>
                   </Link>
 
                   {item.payStatus!=='Done'?(
@@ -207,12 +204,12 @@ const ManageListing = () => {
                       title="Pay"
                     >
                       <MdOutlinePayment className="w-4 h-4 mr-1" />
-                      <span className="text-sm">Pay</span>
+                      <span className="text-md">Pay</span>
                     </button>
                     ):(
                     <div className='text-emerald-500 flex items-center'>
                       <RiWechatPayLine className="w-4 h-4 mr-1" />
-                      <p className="text-sm">Paid</p>
+                      <p className="text-md">Paid</p>
                     </div>
                   )}
 
@@ -222,7 +219,7 @@ const ManageListing = () => {
                     title="Delete"
                   >
                     <FaTrashAlt className="w-4 h-4 mr-1" />
-                    <span className="text-sm">Delete</span>
+                    <span className="text-md">Delete</span>
                   </button>
                   
                 </div>
