@@ -14,6 +14,7 @@ import 'leaflet-geosearch/dist/geosearch.css';
 import useAuth from '../../../hooks/useAuth';
 import useOwner from '../../../hooks/useOwner';
 import { FaMapLocationDot } from 'react-icons/fa6';
+import { IoIosArrowBack } from 'react-icons/io';
 
 // NSBM location coordinates
 const NSBMLocation = [6.821380, 80.041691];
@@ -227,21 +228,23 @@ const UpdateBoarding = () => {
 
   return (
     <div className='w-full mx-auto p-4 sm:p-6'>
-      <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
+      <div className='overflow-hidden'>
         {/* Header */}
-        <div className='p-6 border-b border-gray-200 flex justify-between items-center'>
-          <h2 className='text-2xl sm:text-3xl font-bold text-gray-800'>
+        <div className="flex xl:flex-row flex-col items-center justify-between mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="xl:mb-0 my-2 flex items-center text-green-600 hover:text-green-700 transition duration-200"
+          >
+            <IoIosArrowBack className="mr-2" /> Back
+          </button>
+          <h1 className="mx-2 text-3xl font-bold text-gray-800">
             Update <span className='text-green-500'>{item.name}</span>
-          </h2>
-          {!isOwner && (
-            <Link to="/owner" className='text-gray-500 hover:text-gray-700'>
-              <span className='text-2xl'>×</span>
-            </Link>
-          )}
+          </h1>
+          <div className="w-8"></div> {/* Spacer for alignment */}
         </div>
 
         {/* Image Carousel */}
-        <div className='p-4'>
+        <div className=''>
           <div className='rounded-lg overflow-hidden bg-gray-100 xl:h-[700px] sm:h-80 md:h-96'>
             <Carousel slideInterval={5000}>
               {item.images.length > 0 ? (
@@ -263,7 +266,7 @@ const UpdateBoarding = () => {
         </div>
 
         {/* Update Form */}
-        <div className='p-6'>
+        <div className='py-6'>
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               {/* Owner Email */}
