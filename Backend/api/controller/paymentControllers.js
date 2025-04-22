@@ -2,6 +2,7 @@ const Payment = require("../models/Payments");
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const Booking = require("../models/booking");
+const Listing = require("../models/listing")
 
 // post a new menu item
 const postPaymentItem = async (req, res) => {
@@ -50,7 +51,27 @@ const getPayements = async (req, res) => {
     }
 }
 
+const getPaymentsByListing = async (req, res) => {
+    const email = req.params.email;
+    try {
+        const listings = await Listing.find({ owner: email }).exec();
+        if (!listings || listings.length === 0) {
+            return res.status(404).json({ message: 'No listings found for this email' });
+        }
+        const listingIds = listings.map(listing => listing._id);
+        const payments = await Payment.find({ listing: { $in: listingIds } })
+            .sort({ createdAt: -1 })
+            .populate('booking') 
+            .populate('listing')
+            .exec();
+        res.status(200).json(payments);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 module.exports = {
     postPaymentItem,
-    getPayements
+    getPayements,
+    getPaymentsByListing
 }
