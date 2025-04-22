@@ -37,12 +37,8 @@ const ViewBoarding = () => {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/boarding/owner/${email}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch boarding: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setBoarding(data);
+        const response = await axiosSecure.get(`/boarding/owner/${email}`);
+        setBoarding(response.data);
       } catch (error) {
         console.error("Error fetching boarding:", error);
       } finally {
@@ -118,15 +114,15 @@ const ViewBoarding = () => {
       <div className="mx-auto">
         {/* Header Section */}
 
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex xl:flex-row flex-col justify-between items-center mb-8">
           <button
             onClick={handleGoBack}
-            className="flex items-center text-green-600 hover:text-green-700 transition duration-200"
+            className="xl:mb-0 my-2 flex items-center text-green-600 hover:text-green-700 transition duration-200"
           >
             <IoIosArrowBack className="mr-2" /> Back
           </button>
           <h1 className="text-3xl font-bold text-gray-800">
-            {boarding.name}
+            {boarding.name}<span className='text-green-500'> Boarding</span>
           </h1>
           <div className="w-8"></div> {/* Spacer for alignment */}
         </div>
