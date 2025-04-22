@@ -35,7 +35,7 @@ const Profile = ({ user }) => {
             {/* Sidebar content here */}
             <li><a href='/update-profile'>Profile</a></li>
             <li><Link to='/payments'>Your Payments</Link></li>
-            <li><a>Settings</a></li>
+            <li><a href='/browse'>Browse</a></li>
             <li><Link to='/dashboard'>Admin Dashboard</Link></li>
             <li><Link to='/owner'>Post an Ad</Link></li>
             <li><a onClick={handleLogout}>Logout</a></li>
