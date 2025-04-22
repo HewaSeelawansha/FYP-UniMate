@@ -7,6 +7,7 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAuth from '../../../hooks/useAuth';
 import useMyListing from '../../../hooks/useMyListing';
 import { TbSend2 } from 'react-icons/tb';
+import { IoIosArrowBack } from 'react-icons/io';
 
 const ManageBooking = () => {
   const [mylist, listingLoading] = useMyListing();
@@ -53,16 +54,12 @@ const ManageBooking = () => {
         showConfirmButton: true,
       });
     }
-};
+  };
 
   const fetchBooking = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/booking/owner/${user.email}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch bookings`);
-      }
-      const data = await response.json();
-      setBookings(data.bookings); 
+      const response = await axiosSecure.get(`/booking/owner/${user.email}`);
+      setBookings(response.data.bookings); 
     } catch (error) {
       console.error("Error fetching bookings:", error);
     } finally {
@@ -127,31 +124,34 @@ const ManageBooking = () => {
 
   if (loading || listingLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[300px]">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading bookings...</p>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-6 lg:px-8">
       <div className="w-full mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-          <div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div className=''>
+            <button
+              onClick={() => navigate(-1)}
+              className="mb-4 flex items-center text-green-600 hover:text-green-700 transition duration-200"
+            >
+              <IoIosArrowBack className="mr-2" /> Back
+            </button>
             <h1 className="text-3xl font-bold text-gray-800">
               Manage <span className="text-green-500">Bookings</span>
             </h1>
-            <p className="text-gray-600 mt-2">
-              View and manage all booking requests
-            </p>
           </div>
           
           {/* Filter */}
-          <div className="flex items-center space-x-2 mx-6 mt-4 sm:mt-0">
+          <div className="flex items-center space-x-2 mx-6 mt-4 md:mt-0">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaFilter className="text-green-500" />
@@ -178,13 +178,13 @@ const ManageBooking = () => {
             {filteredItems.map((item, index) => (
               <div key={index} className="mb-4 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 border border-gray-100">
                 {/* Booking Header */}
-                <div className="bg-green-500 p-4 text-white">
+                <div className="bg-green-200 p-4 text-black">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-lg">Booking #{index + 1}</h3>
+                    <h3 className="font-semibold text-lg">Booking #{index + 1}</h3>
                     <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                      item.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                      item.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                      'bg-yellow-100 text-yellow-800'
+                      item.status === 'Approved' ? 'bg-green-300 text-green-800' :
+                      item.status === 'Rejected' ? 'bg-red-300 text-red-800' :
+                      'bg-yellow-300 text-yellow-800'
                     }`}>
                       {item.status}
                     </span>
@@ -245,10 +245,10 @@ const ManageBooking = () => {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex justify-between items-center pt-4 border-t">
+                  <div className="flex font-semibold justify-between items-center pt-4 border-t">
                     <Link 
                       to={`/owner/view-listing/${item.listing._id}`}
-                      className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 text-sm"
+                      className="flex items-center text-blue-600 hover:text-blue-800 transition duration-200 text-md"
                       title="View Details"
                     >
                       <FcViewDetails className="w-4 h-4 mr-1" />
@@ -257,11 +257,11 @@ const ManageBooking = () => {
 
                     <button 
                         onClick={() => handleChat(user.email, item.email)}
-                        className="text-white bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-lg transition duration-200 text-sm flex items-center"
+                        className="text-orange-500 hover:text-orange-600 px-3 py-2 rounded-lg transition duration-200 text-md flex items-center"
                         title="Update Status"
                       >
                         <TbSend2 className="mr-2" />
-                        Direct Chat
+                        Chat
                     </button>
                     
                     <div className="flex items-center space-x-2">
