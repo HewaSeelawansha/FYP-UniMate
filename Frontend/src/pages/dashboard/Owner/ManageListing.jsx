@@ -203,12 +203,12 @@ const ManageListing = () => {
                       }`}
                       title="Pay"
                     >
-                      <MdOutlinePayment className="w-4 h-4 mr-1" />
+                      <MdOutlinePayment className="w-5 h-5 mr-1" />
                       <span className="text-md">Pay</span>
                     </button>
                     ):(
                     <div className='text-emerald-500 flex items-center'>
-                      <RiWechatPayLine className="w-4 h-4 mr-1" />
+                      <RiWechatPayLine className="w-5 h-5 mr-1" />
                       <p className="text-md">Paid</p>
                     </div>
                   )}
