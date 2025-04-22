@@ -52,10 +52,11 @@ const Navbar = () => {
   return (
     <>
       <header className={`mx-auto fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? 'backdrop-blur-sm bg-white/90' : 'bg-transparent'}`}>
-        <div className={`navbar xl:px-24 px-4 ${isSticky ? "shadow-lg bg-white/90 transition-all duration-500" : ""}`}>
+        <div className={`xl:px-24 px-4 ${isSticky ? "shadow-lg bg-white/90 transition-all duration-500" : ""}`}>
+          <div className='navbar container mx-auto'>
           {/* Logo and Mobile Menu */}
           <div className="navbar-start">
-            <div className="dropdown">
+            {/* <div className="dropdown">
               <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden hover:bg-orange-50">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +72,7 @@ const Navbar = () => {
                 className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-white rounded-box w-52 border border-gray-100">
                 {navItems}
               </ul>
-            </div>
+            </div> */}
             <Link to='/' className="flex items-center">
               <img src={logo} alt="Logo" className="h-10 md:h-12 transition-all duration-300 hover:scale-105" />
             </Link>
@@ -89,7 +90,7 @@ const Navbar = () => {
             {/* Search Button */}
             <button 
               onClick={() => setIsSearchOpen(true)}
-              className="btn btn-circle btn-ghost bg-green-300 text-gray-600 hover:text-green-500 transition-colors duration-200 relative"
+              className="btn btn-circle btn-ghost bg-green-400 text-blue-700 hover:bg-blue-500 hover:text-green-300 transition-colors duration-200 relative"
               aria-label="Search"
             >
               <FaSearch className="text-lg" />
@@ -98,7 +99,7 @@ const Navbar = () => {
             {/* Chat Button */}
             <Link 
               to="/chats" 
-              className="btn btn-circle btn-ghost bg-green-300 text-gray-600 hover:text-green-500 transition-colors duration-200 relative"
+              className="btn btn-circle btn-ghost bg-green-400 text-blue-700 hover:bg-blue-500 hover:text-green-300 transition-colors duration-200 relative"
               aria-label="Chats"
             >
               <IoMdChatboxes className="text-2xl" />
@@ -118,6 +119,7 @@ const Navbar = () => {
             )}
             
             <Modal />
+          </div>
           </div>
         </div>
       </header>
