@@ -25,14 +25,10 @@ const AddListing = () => {
   const listingtitle = ltype && boarding?.gender ? `${ltype} for ${boarding?.gender}` : "";
 
   useEffect(() => {
-    const fetchListing = async () => {
+    const fetchBoarding = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/boarding/owner/${owner}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch boarding: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setBoarding(data); 
+        const response = await axiosSecure.get(`/boarding/owner/${owner}`);
+        setBoarding(response.data); 
       } catch (error) {
         console.error("Error fetching boarding:", error);
       } finally {
@@ -40,7 +36,7 @@ const AddListing = () => {
       }
     };
   
-    fetchListing();
+    fetchBoarding();
   }, [owner]);
 
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -132,8 +128,8 @@ const AddListing = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading boarding details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -191,10 +187,10 @@ const AddListing = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex xl:flex-row flex-col items-center justify-between mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-green-600 hover:text-green-700 transition duration-200"
+            className="xl:mb-0 my-2 flex items-center text-green-600 hover:text-green-700 transition duration-200"
           >
             <IoIosArrowBack className="mr-2" /> Back
           </button>
@@ -420,7 +416,7 @@ const AddListing = () => {
                 type="submit"
                 disabled={isSubmitting}
                 className={`w-full ${
-                  isSubmitting ? 'bg-orange-600' : 'bg-green-500 hover:bg-green-600'
+                  isSubmitting ? 'bg-green-600' : 'bg-green-500 hover:bg-green-600'
                   } text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2`}
               >
               {isSubmitting ? (
