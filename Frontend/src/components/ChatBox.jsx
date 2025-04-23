@@ -3,6 +3,7 @@ import InputEmoji from "react-input-emoji";
 import { format } from "timeago.js";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiPaperclip, FiMic, FiSend } from "react-icons/fi";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
   const [userData, setUserData] = useState(null);
@@ -10,6 +11,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const scroll = useRef();
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
@@ -27,15 +29,13 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
         // Fetch user data and messages
         const fetchData = async () => {
             try {
-                const email = chat?.members?.find((email) => email !== currentUser);
-                const userResponse = await fetch(`http://localhost:3000/users/${email || currentUser}`);
-                const userData = await userResponse.json();
-                
-                const messagesResponse = await fetch(`http://localhost:3000/message/${chat._id}`);
-                const messagesData = await messagesResponse.json();
-                
-                setUserData(userData);
-                setMessages(messagesData);
+              const email = chat?.members?.find((email) => email !== currentUser);
+              const [userResponse, messagesResponse] = await Promise.all([
+                axiosSecure.get(`/users/${email || currentUser}`),
+                axiosSecure.get(`/message/${chat._id}`)
+              ]);
+              setUserData(userResponse.data);
+              setMessages(messagesResponse.data);
             } catch (error) {
                 console.error("Error loading chat data:", error);
             } finally {
@@ -45,21 +45,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
         
         fetchData();
     }
-}, [chat, currentUser]);
-
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/message/${chat._id}`);
-        const user = await response.json();
-        setMessages(user);
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      }
-    };
-
-    if (chat !== null) fetchMessages();
-  }, [chat]);
+}, [chat, currentUser, axiosSecure]);
 
   const handleChange = (newMessage) => {
     setNewMessage(newMessage);
@@ -80,19 +66,9 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
     setSendMessage({...message, receiverId});
 
     try {
-      const response = await fetch("http://localhost:3000/message/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
-
-      if (!response.ok) throw new Error("Failed to send message");
-
-      const data = await response.json();
-      if (data && data.text) {
-        setMessages([...messages, data]);
+      const response = await axiosSecure.post("/message/", message);
+      if (response.data && response.data.text) {
+        setMessages([...messages, response.data]);
         setNewMessage("");
       }
     } catch (error) {
@@ -137,7 +113,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
           >
             <div
               className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-3 rounded-2xl ${message?.senderId === currentUser
-                ? 'bg-gradient-to-r from-green-600 to-green-500 text-white rounded-br-none'
+                ? 'bg-gradient-to-r from-green-400 to-green-500 text-black rounded-br-none'
                 : 'bg-white text-gray-800 shadow rounded-bl-none border border-gray-100'
               }`}
             >
