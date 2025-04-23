@@ -188,7 +188,7 @@ const ManageBoardings = () => {
                   </div>
 
                   {/* Details */}
-                  <div className="md:w-3/4">
+                  <div className="md:w-full">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="flex items-center">
                         <FaPhone className="text-green-500 mr-2" />
@@ -243,7 +243,7 @@ const ManageBoardings = () => {
                 <div className=''>
                   <button 
                     onClick={() => toggleListings(item._id)}
-                    className="w-full justify-center bg-green-400 mt-6 p-1 rounded-lg flex items-center text-green-900 hover:text-white transition duration-200"
+                    className="w-full font-semibold justify-center bg-green-500 mt-6 p-1 rounded-lg flex items-center text-white hover:bg-green-600 transition duration-200"
                   >
                     {expandedBoarding === item._id ? (
                       <>
