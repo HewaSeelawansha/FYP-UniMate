@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { MdDashboard, MdDashboardCustomize } from "react-icons/md";
 import { FaEdit, FaPlusCircle, FaQuestionCircle, FaRegUser, FaShoppingBag, FaUpload } from "react-icons/fa";
-import { IoMdChatboxes } from "react-icons/io";
+import { IoIosArrowBack, IoMdChatboxes } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
 import logo from "/logon.png";
 import { useForm } from 'react-hook-form';
@@ -28,10 +28,10 @@ L.Icon.Default.mergeOptions({
 
 const sharedLinks = (
   <>
-    <li className='mt-3'><Link to="/chats" className="hover:bg-green-100 rounded-lg"><IoMdChatboxes className="text-green" /> Chats</Link></li>
-    <li><Link to="/" className="hover:bg-green-100 rounded-lg"><MdDashboard className="text-green" /> Home</Link></li>
-    <li><Link to="/menu" className="hover:bg-green-100 rounded-lg"><FaCartShopping className="text-green" /> Listings</Link></li>
-    <li><Link to="/menu" className="hover:bg-green-100 rounded-lg"><FaQuestionCircle className="text-green" /> 24/7 Support</Link></li>
+    <li className='mt-3'><Link to="/chats" className="hover:bg-green-100 rounded-lg"><IoMdChatboxes className="text-green-700" /> Chats</Link></li>
+    <li><Link to="/" className="hover:bg-green-100 rounded-lg"><MdDashboard className="text-green-900" /> Home</Link></li>
+    <li><Link to="/browse" className="hover:bg-green-100 rounded-lg"><FaCartShopping className="text-green-900" /> Browse</Link></li>
+    <li><Link to="/" className="hover:bg-green-100 rounded-lg"><FaQuestionCircle className="text-green-900" /> 24/7 Support</Link></li>
   </>
 );
 
@@ -62,10 +62,8 @@ const OwnerLayout = () => {
 
   const fetchListing = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/boarding/owner/${user.email}`);
-      if (!response.ok) throw new Error(`Failed to fetch boarding: ${response.statusText}`);
-      const data = await response.json();
-      setBoarding(data); 
+      const response = await axiosSecure.get(`/boarding/owner/${user.email}`);
+      setBoarding(response.data); 
     } catch (error) {
       console.error("Error fetching boarding:", error);
     } finally {
@@ -232,7 +230,7 @@ const OwnerLayout = () => {
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -280,7 +278,7 @@ const OwnerLayout = () => {
             <label htmlFor="my-drawer-2" className="btn bg-blue-300 rounded-full drawer-button">
               <MdDashboardCustomize/>
             </label>
-            <button className='my-2 flex items-center gap-2 btn rounded-full px-6 bg-green text-white'>
+            <button className='my-2 flex items-center gap-2 btn rounded-full px-6 bg-green-500 text-white'>
               <FaRegUser />Logout
             </button>
           </div>
@@ -303,11 +301,12 @@ const OwnerLayout = () => {
                 </Link>
             </li>
             <hr />
-            <li className='mt-3'><Link className='hover:bg-green-100 rounded-lg' to="/owner"><MdDashboard className="text-green" /> Owner Dashboard</Link></li>
-            <li><Link className='hover:bg-green-100 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle className="text-green" /> View Hostel</Link></li>
-            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/add-listing"><FaPlusCircle className="text-green" /> Add Listing</Link></li>
-            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/manage-items"><FaEdit className="text-green" /> Manage Listings</Link></li>
-            <li  className='mb-3'><Link className='hover:bg-green-100 rounded-lg' to="/owner/manage-booking"><FaShoppingBag className="text-green" /> Manage Booking</Link></li>
+            <li className='mt-3'><Link className='hover:bg-green-100 rounded-lg' to="/owner"><MdDashboard className="text-green-900" /> Owner Dashboard</Link></li>
+            <li><Link className='hover:bg-green-100 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle className="text-green-900" /> View Hostel</Link></li>
+            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/add-listing"><FaPlusCircle className="text-green-900" /> Add Listing</Link></li>
+            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/manage-items"><FaEdit className="text-green-900" /> Manage Listings</Link></li>
+            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/manage-booking"><FaShoppingBag className="text-green-900" /> Manage Booking</Link></li>
+            <li  className='mb-3'><Link className='hover:bg-green-100 rounded-lg' to="/owner/recent-payments"><FaShoppingBag className="text-green-900" /> Rental & Key Money</Link></li>
             <hr/>
             {
               sharedLinks 
@@ -319,14 +318,28 @@ const OwnerLayout = () => {
         <div className="max-w-4xl mx-auto p-4 sm:p-6">
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
+
+            <div className="flex xl:flex-row flex-col items-center justify-between mb-8">
+              <button
+                onClick={() => navigate(-1)}
+                className="xl:mb-0 my-2 flex items-center text-green-600 hover:text-green-700 transition duration-200"
+              >
+                <IoIosArrowBack className="mr-2" /> Back
+              </button>
+              <h1 className="text-3xl font-bold text-gray-800">
+                List Your <span className="text-green-600">Boarding House</span>
+              </h1>
+              <div className="w-8"></div> {/* Spacer for alignment */}
+            </div>
+
+              {/* <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-gray-800">
                   List Your <span className="text-green-600">Boarding House</span>
                 </h1>
-                <Link to="/" className="btn btn-circle btn-ghost text-red-500 hover:text-red-600">
+                <Link to="/" className="btn btn-circle btn-ghost text-red-600 hover:text-red-700">
                   ✕
                 </Link>
-              </div>
+              </div> */}
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
