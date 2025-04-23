@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch, FaTimes, FaSpinner } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import useAxiosPublic from "../hooks/useAxiosPublic"
 
 const SearchModal = ({ isOpen, onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -10,6 +10,7 @@ const SearchModal = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
+  const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
     if (isOpen) {
@@ -37,8 +38,8 @@ const SearchModal = ({ isOpen, onClose }) => {
     setError(null);
     
     try {
-      const response = await axios.get(
-        `http://localhost:3000/listing/search?q=${encodeURIComponent(query)}&minimal=true&limit=5`
+      const response = await axiosPublic.get(
+        `/listing/search?q=${encodeURIComponent(query)}&minimal=true&limit=5`
       );
       // Handle both response formats (array or object with listings property)
       const searchResults = Array.isArray(response.data) 
