@@ -6,6 +6,7 @@ import Conversation from '../../components/Conversation';
 import ChatBox from '../../components/ChatBox';
 import { io } from 'socket.io-client';
 import useAuth from '../../hooks/useAuth';
+import useAxiosSecure from '../../hooks/useAxiosSecure'
 
 const Chat = () => {
     const {user} = useAuth();
@@ -18,13 +19,13 @@ const Chat = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const chatIdParam = searchParams.get('chatId');
+    const axiosSecure = useAxiosSecure();
 
     useEffect(() => {
         const getChats = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/chat/${user.email}`)
-                const data = await response.json();
-                setChats(data);
+                const response = await axiosSecure.get(`/chat/${user.email}`)
+                setChats(response.data);
 
                 if (chatIdParam) {
                     const targetChat = data.find(chat => chat._id === chatIdParam);
