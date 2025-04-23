@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import useAxiosSecure from '../hooks/useAxiosSecure'
 
 const Conversation = ({ data, currentUser, online, isSelected }) => {
   const [userData, setUserData] = useState(null);
   const [isCurrentUser, setIsCurrentUser] = useState(false);
   const [lastMessage, setLastMessage] = useState("");
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     const email = data?.members?.find((email) => email !== currentUser);
@@ -15,10 +17,8 @@ const Conversation = ({ data, currentUser, online, isSelected }) => {
 
     const getUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/users/${email || currentUser}`);
-        if (!response.ok) throw new Error("Failed to fetch user data");
-        const user = await response.json();
-        setUserData(user);
+        const response = await axiosSecure.get(`/users/${email || currentUser}`);
+        setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
