@@ -57,7 +57,7 @@ const singleBoarding = async (req, res) => {
 // update an existing boarding
 const updateBoarding = async (req, res) => {
   const boardingId = req.params.id;
-  const { name, address, lng, lat, distance, phone, gender, description, images, amenities, beds, status, owner } = req.body;
+  const { name, address, lng, lat, distance, phone, gender, description, images, amenities, beds, status } = req.body;
 
   try {
     const currentBoarding = await Boarding.findById(boardingId);
