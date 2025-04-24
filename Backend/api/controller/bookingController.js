@@ -29,7 +29,7 @@ const getBookingsByOwner = async (req, res) => {
               select: 'owner title location price', // Include necessary listing details
               match: { owner: ownerEmail }
           })
-          .exec();
+          .sort({ createdAt: -1, updatedAt: -1 }).exec();
       
       const filteredBookings = bookings.filter(booking => booking.listing);
       
