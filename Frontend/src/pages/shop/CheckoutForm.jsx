@@ -17,17 +17,31 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
   const [clientSecret, setClientSecret] = useState("");
   const [processing, setProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentType, setPaymentType] = useState(keyMoney > 0 ? 'both' : 'rental'); // Default to 'rental' if no key money
+  const [totalAmount, setTotalAmount] = useState(keyMoney > 0 ? price + keyMoney : price);
 
+  // Update total amount when payment type changes
   useEffect(() => {
-    if (typeof price !== 'number' || price < 1) {
-      console.log("Price is not a number or less than 1");
+    if (paymentType === 'rental') {
+      setTotalAmount(price);
+    } else if (paymentType === 'keyMoney') {
+      setTotalAmount(keyMoney);
+    } else {
+      setTotalAmount(price + keyMoney);
+    }
+  }, [paymentType, price, keyMoney]);
+
+  // Create payment intent when total amount changes
+  useEffect(() => {
+    if (typeof totalAmount !== 'number' || totalAmount < 1) {
+      console.log("Amount is not a number or less than 1");
       return;
     }
-    axiosSecure.post('/create-payment-intent', { price })
+    axiosSecure.post('/create-payment-intent', { price: totalAmount })
       .then(res => {
         setClientSecret(res.data.clientSecret);
       });
-  }, [price, axiosSecure]);
+  }, [totalAmount, axiosSecure]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -71,21 +85,49 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
     }
 
     if (paymentIntent.status === 'succeeded') {
-      const paymentInfo = {
-        transactionId: paymentIntent.id,
-        booking: booking,
-        listing: listing,
-        email: user.email,
-        price,
-        paid: "Rental",
-        status: "Done"
-      };
+      // Create an array of payments to process
+      const paymentsToProcess = [];
+      
+      if (paymentType === 'rental' || paymentType === 'both') {
+        paymentsToProcess.push({
+          transactionId: paymentIntent.id,
+          booking: booking,
+          listing: listing,
+          email: user.email,
+          price: price,
+          paid: "Rental",
+          status: "Done"
+        });
+      }
+      
+      if ((paymentType === 'keyMoney' || paymentType === 'both') && keyMoney > 0) {
+        paymentsToProcess.push({
+          transactionId: paymentIntent.id,
+          booking: booking,
+          listing: listing,
+          email: user.email,
+          price: keyMoney,
+          paid: "Key Money",
+          status: "Done"
+        });
+      }
 
-      await axiosSecure.post('/payments', paymentInfo);
-      setPaymentSuccess(true);
-      setTimeout(() => {
-        navigate('/payments');
-      }, 2000);
+      // Process all payments
+      try {
+        await Promise.all(
+          paymentsToProcess.map(payment => 
+            axiosSecure.post('/payments', payment)
+          )
+        );
+        
+        setPaymentSuccess(true);
+        setTimeout(() => {
+          navigate('/payments');
+        }, 2000);
+      } catch (error) {
+        console.error("Error saving payments:", error);
+        setCardError("Payment succeeded but failed to save records. Please contact support.");
+      }
     }
     setProcessing(false);
   };
@@ -97,7 +139,7 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
           <FaCheckCircle className="text-green-500 text-6xl mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h2>
           <p className="text-gray-600 mb-6">Your booking has been confirmed. Redirecting to payments...</p>
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500 mx-auto"></div>
         </div>
       </div>
     );
@@ -108,7 +150,7 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center text-orange-600 hover:text-orange-700 mb-6 transition duration-200"
+          className="flex items-center text-green-500 hover:text-green-600 mb-6 transition duration-200"
         >
           <IoIosArrowBack className="mr-2" /> Back to booking
         </button>
@@ -116,16 +158,64 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="md:flex">
             {/* Payment Summary */}
-            <div className="md:w-1/2 p-6 md:p-8 bg-gradient-to-br from-orange-50 to-orange-100">
+            <div className="md:w-1/2 p-6 md:p-8 bg-emerald-100">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Booking Summary</h2>
               
-              <div className="space-y-4">
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-gray-600">Monthly Rental:</span>
-                  <span className="font-semibold">LKR {price.toFixed(2)}</span>
+              {/* Payment Type Selection */}
+              {keyMoney > 0 ? (
+                <div className="mb-6">
+                  <h3 className="font-medium text-gray-700 mb-3">Select Payment Type</h3>
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-3">
+                      <input
+                        type="radio"
+                        className="form-radio text-green-600"
+                        checked={paymentType === 'both'}
+                        onChange={() => setPaymentType('both')}
+                      />
+                      <span>Pay Both (Rental + Key Money)</span>
+                    </label>
+                    
+                    <label className="flex items-center space-x-3">
+                      <input
+                        type="radio"
+                        className="form-radio text-green-600"
+                        checked={paymentType === 'rental'}
+                        onChange={() => setPaymentType('rental')}
+                      />
+                      <span>Pay Rental Only</span>
+                    </label>
+                    
+                    <label className="flex items-center space-x-3">
+                      <input
+                        type="radio"
+                        className="form-radio text-green-600"
+                        checked={paymentType === 'keyMoney'}
+                        onChange={() => setPaymentType('keyMoney')}
+                      />
+                      <span>Pay Key Money Only</span>
+                    </label>
+                  </div>
                 </div>
+              ) : (
+                <div className="mb-6">
+                  <h3 className="font-medium text-gray-700 mb-3">Payment Type</h3>
+                  <div className="p-3 bg-gray-50 rounded-lg border">
+                    <p className="text-gray-800">Monthly Rental Only</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Breakdown */}
+              <div className="space-y-4">
+                {paymentType !== 'keyMoney' && (
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="text-gray-600">Monthly Rental:</span>
+                    <span className="font-semibold">LKR {price.toFixed(2)}</span>
+                  </div>
+                )}
                 
-                {keyMoney > 0 && (
+                {paymentType !== 'rental' && keyMoney > 0 && (
                   <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">Key Money:</span>
                     <span className="font-semibold">LKR {keyMoney.toFixed(2)}</span>
@@ -134,8 +224,8 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
                 
                 <div className="flex justify-between pt-2">
                   <span className="text-lg font-medium">Total Amount:</span>
-                  <span className="text-xl font-bold text-orange-600">
-                    LKR {(price + (keyMoney || 0)).toFixed(2)}
+                  <span className="text-xl font-bold text-green-600">
+                    LKR {totalAmount.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -200,7 +290,7 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
                   type="submit"
                   disabled={!stripe || processing}
                   className={`w-full py-3 px-4 rounded-lg font-medium text-white transition duration-200 ${
-                    processing ? 'bg-orange-400' : 'bg-orange-600 hover:bg-orange-700'
+                    processing ? 'bg-green-400' : 'bg-green-500 hover:bg-green-600'
                   } flex items-center justify-center`}
                 >
                   {processing ? (
@@ -212,7 +302,7 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
                       Processing...
                     </>
                   ) : (
-                    `Pay LKR ${(price + (keyMoney || 0)).toFixed(2)}`
+                    `Pay LKR ${totalAmount.toFixed(2)}`
                   )}
                 </button>
               </form>
