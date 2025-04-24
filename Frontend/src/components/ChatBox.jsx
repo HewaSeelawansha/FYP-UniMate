@@ -113,12 +113,12 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
           >
             <div
               className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-3 rounded-2xl ${message?.senderId === currentUser
-                ? 'bg-gradient-to-r from-green-400 to-green-500 text-black rounded-br-none'
-                : 'bg-white text-gray-800 shadow rounded-bl-none border border-gray-100'
+                ? 'bg-green-400 shadow-lg text-black rounded-br-none'
+                : 'bg-white text-black shadow-lg rounded-bl-none border border-gray-100'
               }`}
             >
               <p className="text-sm">{message?.text}</p>
-              <p className={`text-xs mt-1 ${message?.senderId === currentUser ? 'text-gray-900 font-semibold' : 'font-semibold text-gray-500'}`}>
+              <p className={`text-xs mt-1 ${message?.senderId === currentUser ? 'text-gray-700 font-semibold' : 'font-semibold text-gray-500'}`}>
                 {message?.createdAt ? format(message.createdAt) : "Just now"}
               </p>
             </div>
