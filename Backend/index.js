@@ -47,19 +47,23 @@ app.use('/booking', bookingRoutes);
 //stripe routes
 app.post("/create-payment-intent", async (req, res) => {
   const { price } = req.body;
-  const amount = price*100;
+  const amount = Math.round(price * 100); // Stripe expects amounts in cents/pence for LKR
 
-  // Create a PaymentIntent with the order amount and currency
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: amount,
-    currency: "usd", 
-    
-    payment_method_types: ["card"],
-  });
+  try {
+    // Create a PaymentIntent with LKR as currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: "lkr", // Changed from "usd" to "lkr"
+      payment_method_types: ["card"],
+    });
 
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error("Error creating payment intent:", error);
+    res.status(500).send({ error: error.message });
+  }
 });
 
 app.get('/', (req, res) => {
