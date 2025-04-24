@@ -28,10 +28,10 @@ L.Icon.Default.mergeOptions({
 
 const sharedLinks = (
   <>
-    <li className='mt-3'><Link to="/chats" className="hover:bg-green-100 rounded-lg"><IoMdChatboxes className="text-green-700" /> Chats</Link></li>
-    <li><Link to="/" className="hover:bg-green-100 rounded-lg"><MdDashboard className="text-green-900" /> Home</Link></li>
-    <li><Link to="/browse" className="hover:bg-green-100 rounded-lg"><FaCartShopping className="text-green-900" /> Browse</Link></li>
-    <li><Link to="/" className="hover:bg-green-100 rounded-lg"><FaQuestionCircle className="text-green-900" /> 24/7 Support</Link></li>
+    <li className='mt-3'><Link to="/chats" className="hover:bg-blue-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
+    <li><Link to="/" className="hover:bg-blue-200 rounded-lg"><MdDashboard /> Home</Link></li>
+    <li><Link to="/browse" className="hover:bg-blue-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
+    <li><Link to="/" className="hover:bg-blue-200 rounded-lg"><FaQuestionCircle /> 24/7 Support</Link></li>
   </>
 );
 
@@ -236,7 +236,7 @@ const OwnerLayout = () => {
     );
   }
 
-  if (boarding && boarding?.status !== "Approved") {
+  if (!isOwner && boarding && boarding?.status !== "Approved") {
     return (
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
         <div className="text-center">
@@ -247,7 +247,7 @@ const OwnerLayout = () => {
           </h2>
           <p className="text-gray-600 mb-6">
             {boarding?.status === "Pending" 
-              ? "Your submission is under review. We'll notify you once approved."
+              ? "Your submission is under review."
               : "Please update your boarding house details for approval."}
           </p>
           
@@ -301,12 +301,12 @@ const OwnerLayout = () => {
                 </Link>
             </li>
             <hr />
-            <li className='mt-3'><Link className='hover:bg-green-100 rounded-lg' to="/owner"><MdDashboard className="text-green-900" /> Owner Dashboard</Link></li>
-            <li><Link className='hover:bg-green-100 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle className="text-green-900" /> View Hostel</Link></li>
-            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/add-listing"><FaPlusCircle className="text-green-900" /> Add Listing</Link></li>
-            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/manage-items"><FaEdit className="text-green-900" /> Manage Listings</Link></li>
-            <li><Link className='hover:bg-green-100 rounded-lg' to="/owner/manage-booking"><FaShoppingBag className="text-green-900" /> Manage Booking</Link></li>
-            <li  className='mb-3'><Link className='hover:bg-green-100 rounded-lg' to="/owner/recent-payments"><FaShoppingBag className="text-green-900" /> Rental & Key Money</Link></li>
+            <li className='mt-3'><Link className='hover:bg-blue-200 rounded-lg' to="/owner"><MdDashboard /> Owner Dashboard</Link></li>
+            <li><Link className='hover:bg-blue-200 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle /> View Hostel</Link></li>
+            <li><Link className='hover:bg-blue-200 rounded-lg' to="/owner/add-listing"><FaPlusCircle /> Add Listing</Link></li>
+            <li><Link className='hover:bg-blue-200 rounded-lg' to="/owner/manage-items"><FaEdit /> Manage Listings</Link></li>
+            <li><Link className='hover:bg-blue-200 rounded-lg' to="/owner/manage-booking"><FaShoppingBag /> Manage Booking</Link></li>
+            <li  className='mb-3'><Link className='hover:bg-blue-200 rounded-lg' to="/owner/recent-payments"><FaShoppingBag /> Rental & Key Money</Link></li>
             <hr/>
             {
               sharedLinks 
