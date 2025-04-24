@@ -18,7 +18,7 @@ const Profile = ({ user }) => {
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
             {/* Page content here */}
-            <label htmlFor="my-drawer-4" className="drawer-button bg-green-400 hover:bg-blue-500 btn btn-ghost btn-circle avatar">
+            <label htmlFor="my-drawer-4" className="drawer-button bg-green-500 hover:bg-blue-500 btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
                 {
                     user.photoURL ? <img
