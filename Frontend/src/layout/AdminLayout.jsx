@@ -11,12 +11,12 @@ import { IoMdChatboxes } from "react-icons/io";
 
 const sharedLinks = (
   <>
-    <li className='mt-3'><Link to="/chats" className="hover:bg-green-100 rounded-lg"><IoMdChatboxes className="text-green-900" /> Chats</Link></li>
-    <li><Link to="/" className="hover:bg-green-100 rounded-lg"><MdDashboard className="text-green-900" /> Home</Link></li>
-    <li><Link to="/browse" className="hover:bg-green-100 rounded-lg"><FaCartShopping className="text-green-900" /> Browse</Link></li>
-    <li><Link to="/" className="hover:bg-green-100 rounded-lg"><FaQuestionCircle className="text-green-900" /> 24/7 Support</Link></li>
+    <li className='mt-3'><Link to="/chats" className="hover:bg-blue-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
+    <li><Link to="/" className="hover:bg-blue-200 rounded-lg"><MdDashboard /> Home</Link></li>
+    <li><Link to="/browse" className="hover:bg-blue-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
+    <li><Link to="/" className="hover:bg-blue-200 rounded-lg"><FaQuestionCircle /> 24/7 Support</Link></li>
   </>
-)
+);
 
 const AdminLayout = () => {
   const {loading} = useAuth()
@@ -56,9 +56,9 @@ const AdminLayout = () => {
                   </Link>
                 </li>
                 <hr />
-                <li className='mt-3'><Link className='hover:bg-green-100 rounded-lg' to="/dashboard"><MdDashboard /> Dashboard</Link></li>
-                <li><Link className='hover:bg-green-100 rounded-lg' to="/dashboard/manage-boarding"><FaPlusCircle /> Manage Hostel</Link></li>
-                <li className='mb-3'><Link className='hover:bg-green-100 rounded-lg' to="/dashboard/users"><FaUser /> All Users</Link></li>
+                <li className='mt-3'><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard"><MdDashboard /> Dashboard</Link></li>
+                <li><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/manage-boarding"><FaPlusCircle /> Manage Hostel</Link></li>
+                <li className='mb-3'><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/users"><FaUser /> All Users</Link></li>
                 <hr/>
                 {sharedLinks}
               </ul>
