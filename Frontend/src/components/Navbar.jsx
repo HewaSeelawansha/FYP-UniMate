@@ -90,7 +90,7 @@ const Navbar = () => {
             {/* Search Button */}
             <button 
               onClick={() => setIsSearchOpen(true)}
-              className="btn btn-circle btn-ghost bg-green-400 text-blue-700 hover:bg-blue-500 hover:text-green-300 transition-colors duration-200 relative"
+              className="btn btn-circle btn-ghost bg-green-500 hover:bg-blue-500 text-white transition-colors duration-200 relative"
               aria-label="Search"
             >
               <FaSearch className="text-lg" />
@@ -99,7 +99,7 @@ const Navbar = () => {
             {/* Chat Button */}
             <Link 
               to="/chats" 
-              className="btn btn-circle btn-ghost bg-green-400 text-blue-700 hover:bg-blue-500 hover:text-green-300 transition-colors duration-200 relative"
+              className="btn btn-circle btn-ghost bg-green-500 hover:bg-blue-500 text-white transition-colors duration-200 relative"
               aria-label="Chats"
             >
               <IoMdChatboxes className="text-2xl" />
@@ -111,7 +111,7 @@ const Navbar = () => {
             ) : (
               <button 
                 onClick={() => document.getElementById('my_modal_5').showModal()} 
-                className="btn bg-green-500 hover:bg-blue-500 rounded-full px-6 text-white flex items-center gap-2 border-none shadow-md hover:shadow-lg transition-all duration-300"
+                className="btn text-white hover:bg-blue-500 bg-green-500 rounded-full px-6 text-white flex items-center gap-2 border-none shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <FaRegUser /> 
                 <span className="hidden sm:inline">Login</span>
