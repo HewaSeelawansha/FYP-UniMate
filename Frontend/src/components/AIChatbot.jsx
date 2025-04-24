@@ -100,7 +100,7 @@ const AIChatbot = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 right-6 z-50"
+            className="fixed right-6 bottom-24 z-50"
           >
             <motion.div 
               className="bg-white rounded-xl shadow-xl flex flex-col w-80 h-96"
