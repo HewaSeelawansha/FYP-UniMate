@@ -181,8 +181,8 @@ const Payments = () => {
                           <span className="font-medium">{order.listing?.type}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">For:</span>
-                          <span className="font-medium">{order.listing?.gender}</span>
+                          <span className="text-gray-600">Payment For:</span>
+                          <span className="font-medium">{order.paid}</span>
                         </div>
                       </div>
                     </div>
