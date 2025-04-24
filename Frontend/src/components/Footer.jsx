@@ -4,7 +4,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
-      <div className="container mx-auto">
+      <div className="px-4 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div>
             <h3 className="text-xl font-bold mb-4">UniMate</h3>
