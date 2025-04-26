@@ -124,13 +124,13 @@ const MapComponent = ({ lati, lngi, name }) => {
     };
   
     return (
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="p-6">
+      <div className="overflow-hidden">
+        <div className="pb-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-900">Location Map</h2>
             <button
               onClick={refreshMap}
-              className="flex items-center justify-center font-medium py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors"
+              className="flex items-center justify-center font-medium py-2 px-3 bg-green-100 hover:bg-green-200 text-gray-800 rounded-lg transition-colors"
               title="Refresh Map"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,13 +173,13 @@ const MapComponent = ({ lati, lngi, name }) => {
           </div>
     
           {distance && duration && (
-            <div className="mt-6 bg-green-50 p-4 rounded-lg">
+            <div className="mt-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div className="bg-white p-3 rounded-lg shadow-lg">
                   <p className="text-sm font-medium text-gray-500">Distance</p>
                   <p className="text-xl font-bold text-green-600">{distance} km</p>
                 </div>
-                <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div className="bg-white p-3 rounded-lg shadow-lg">
                   <p className="text-sm font-medium text-gray-500">Estimated Time</p>
                   <p className="text-xl font-bold text-green-600">{duration} min</p>
                 </div>
