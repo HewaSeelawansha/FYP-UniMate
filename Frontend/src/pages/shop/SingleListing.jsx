@@ -11,6 +11,7 @@ import { RiHotelFill } from "react-icons/ri";
 import Swal from 'sweetalert2';
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ReviewComponent from "./Listing/ReviewComponent";
 import MapComponent from "./Listing/MapComponent";
 import BoardingComponent from "./Listing/BoardingComponent";
@@ -18,6 +19,7 @@ import RoommateComponent from "./Listing/RoommateComponent";
 import BookingComponent from "./Listing/BookingComponent";
 import useListings from "../../hooks/useListings";
 import { FcViewDetails } from "react-icons/fc";
+import { IoIosArrowBack } from 'react-icons/io';
 
 const SingleListing = () => {
   const [listings, listingsLoading, refetchListings] = useListings();
@@ -27,18 +29,15 @@ const SingleListing = () => {
   const [boarding, setBoarding] = useState(null);
   const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecure();
+  const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
   const [person, setPerson] = useState(null);
 
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/listing/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch listing");
-        }
-        const data = await response.json();
-        setListing(data);
+        const response = await axiosPublic.get(`/listing/${id}`);
+        setListing(response.data);
       } catch (error) {
         console.error("Error fetching listing:", error);
       } finally {
@@ -53,12 +52,8 @@ const SingleListing = () => {
     const fetchBoarding = async () => {
       if (!listing?.owner) return;
       try {
-        const response = await fetch(`http://localhost:3000/boarding/owner/${listing?.owner}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch boarding: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setBoarding(data); 
+        const response = await axiosPublic.get(`/boarding/owner/${listing?.owner}`);
+        setBoarding(response.data); 
       } catch (error) {
         console.error("Error fetching boarding:", error);
       } finally {
@@ -110,12 +105,8 @@ const SingleListing = () => {
     const fetchPerson = async () => {
       if (!listing?.owner) return;
       try {
-        const response = await fetch(`http://localhost:3000/users/${listing?.owner}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setPerson(data);
+        const response = await axiosPublic.get(`/users/${listing?.owner}`);
+        setPerson(response.data);
       } catch (error) {
         console.error('Error fetching user:', error);
       } finally {
@@ -125,7 +116,7 @@ const SingleListing = () => {
     fetchPerson();
   }, [listing?.owner]);
 
-  const boardingListings = listings.filter(list => list.owner === listing?.owner && list._id !== listing._id);
+  const boardingListings = listings.filter(list => listing && list.status==='Approved' && list.payStatus==='Done' && list.owner === listing.owner && list._id !== listing._id);
 
   if (loading) {
     return (
@@ -150,12 +141,22 @@ const SingleListing = () => {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
       {/* Header Section */}
       <div className="mb-8 text-center">
-        <h1 className="text-5xl md:text-4xl font-bold text-gray-900 mb-2">
-          <span className="text-gray-800">{listing.name}</span>
-          <span className="text-green-500"> - {listing.boarding}</span>
-        </h1>
+        <div className="flex xl:flex-row flex-col items-center justify-between mb-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="xl:mb-0 mb-2 flex items-center text-xl text-green-500 hover:text-green-600 transition duration-200"
+          >
+            <IoIosArrowBack className="mr-2" /> Back
+          </button>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <span className="text-gray-800">{listing.name}</span>
+            <span className="text-green-500"> - {listing.boarding}</span>
+          </h1>
+          <div className="w-8"></div>
+        </div>
         <div className="w-24 h-1 bg-green-500 mx-auto mt-4 rounded-full"></div>
       </div>
+
 
       {/* Image Carousel */}
       <div className="rounded-xl shadow-xl overflow-hidden mb-12 h-[300px] md:h-[500px] xl:h-[770px]">
@@ -183,8 +184,10 @@ const SingleListing = () => {
             )}
           </Carousel>
         ) : (
-          <div className="bg-gray-100 h-full flex items-center justify-center">
-            <span className="text-gray-400">Loading images...</span>
+          <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+            <p className="text-green-800">
+              There is an issue loading the images.
+            </p>
           </div>
         )}
       </div>
@@ -195,7 +198,7 @@ const SingleListing = () => {
           {/* Details Tab */}
           <Tabs.Item active title="Details" icon={TbListDetails}>
             <div className="p-6 md:p-8">
-
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Details</h3>
               <div className="mb-8">
                 <h3 className="text-lg font-semibold text-gray-900"><span className="font-bold text-green-500">{listing.distance} Km</span> Away From NSBM Green University</h3>
               </div>
@@ -208,8 +211,8 @@ const SingleListing = () => {
                       <RiHotelFill className="text-green-500 text-xl" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-500">BOARDING HOUSE</h3>
-                      <p className="text-lg font-medium text-gray-900">{listing.boarding}</p>
+                      <h3 className="text-sm font-semibold text-gray-500">AVAILABLE BEDS</h3>
+                      <p className="text-lg font-medium text-gray-900">{listing.available}</p>
                     </div>
                   </div>
                   
@@ -218,8 +221,8 @@ const SingleListing = () => {
                       <HiUserCircle className="text-green-500 text-xl" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-500">OWNER</h3>
-                      <p className="text-lg font-medium text-gray-900">{listing.owner}</p>
+                      <h3 className="text-sm font-semibold text-gray-500">RATINGS</h3>
+                      <p className="text-lg font-medium text-gray-900">{listing.rating<=0? 'No Reviews Yet' :listing.rating+'/5'}</p>
                     </div>
                   </div>
                   
@@ -288,8 +291,8 @@ const SingleListing = () => {
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Available Amenities</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {listing.amenities.map((amenity, index) => (
-                  <div key={index} className="flex items-center bg-gray-50 p-4 rounded-lg hover:bg-green-50 transition-colors">
-                    <div className="bg-green-100 p-2 rounded-full mr-3">
+                  <div key={index} className="flex items-center bg-green-100 p-4 rounded-lg hover:bg-green-50 transition-colors">
+                    <div className="bg-green-300 p-2 rounded-full mr-3">
                       <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                       </svg>
@@ -307,8 +310,8 @@ const SingleListing = () => {
               {listing?.owner ? (
                 <BoardingComponent owner={listing.owner} />
               ) : (
-                <div className="bg-green-100 border-l-4 border-green-500">
-                  <p className="text-green-800 font-medium">
+                <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                  <p className="text-green-800">
                     There is an issue loading the boarding house information.
                   </p>
                 </div>
@@ -318,104 +321,106 @@ const SingleListing = () => {
 
           {/* More Lisitng Tab */}
           <Tabs.Item title="More Listings" icon={RiHotelFill}>
-  <div className="p-6 md:p-8">
-    <h3 className="text-2xl font-bold text-gray-900 mb-6">More Listings From <span className="text-green-500">{listing.boarding}</span></h3>
-    
-    {boardingListings.length > 0 ? (
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {boardingListings.map((listingItem, idx) => (
-          <div 
-            key={idx} 
-            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
-          >
-            {/* Listing Image */}
-            <div className="h-48 overflow-hidden">
-              {listingItem.images?.length > 0 ? (
-                <img 
-                  src={listingItem.images[0]} 
-                  alt={listingItem.name} 
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                />
+            <div className="p-6 md:p-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">More Listings From <span className="text-green-500">{listing.boarding}</span></h3>
+              
+              {boardingListings.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {boardingListings.map((listingItem, idx) => (
+                    <div 
+                      key={idx} 
+                      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                    >
+                      {/* Listing Image */}
+                      <div className="h-48 overflow-hidden">
+                        {listingItem.images?.length > 0 ? (
+                          <img 
+                            src={listingItem.images[0]} 
+                            alt={listingItem.name} 
+                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                            <RiHotelFill className="text-gray-400 text-4xl" />
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Listing Details */}
+                      <div className="p-5">
+                        <div className="flex justify-between items-start mb-3">
+                          <h3 className="text-lg font-bold text-gray-900 truncate">
+                            {listingItem.name}
+                          </h3>
+                          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                            {listingItem.type}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center text-gray-600 mb-2">
+                          <RiHotelFill className="mr-2 text-green-500" />
+                          <span>{listingItem.boarding}</span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <span className="text-sm text-gray-500">Price: </span>
+                            <span className="font-bold text-green-600">Rs. {listingItem.price?.toLocaleString()}/mo</span>
+                          </div>
+                          <div>
+                            <span className="text-sm text-gray-500">Key Money: </span>
+                            <span className={listingItem.keyMoney === 0 ? "text-blue-500" : "text-orange-500"}>
+                              {listingItem.keyMoney === 0 ? 'None' : `Rs. ${listingItem.keyMoney}`}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {/* Amenities */}
+                        {listingItem.amenities?.length > 0 && (
+                          <div className="mb-4">
+                            <h4 className="text-sm font-semibold text-gray-700 mb-1">Amenities</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {listingItem.amenities.slice(0, 3).map((amenity, aIdx) => (
+                                <span 
+                                  key={aIdx} 
+                                  className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-lg"
+                                >
+                                  {amenity}
+                                </span>
+                              ))}
+                              {listingItem.amenities.length > 3 && (
+                                <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-lg">
+                                  +{listingItem.amenities.length - 3} more
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        
+                        <Link
+                          to={`/listing/${listingItem._id}`}
+                          className="w-full mt-2 inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200"
+                        >
+                          <TbListDetails className="mr-2" />
+                          View Details
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                  <RiHotelFill className="text-gray-400 text-4xl" />
-                </div>
-              )}
-            </div>
-            
-            {/* Listing Details */}
-            <div className="p-5">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-lg font-bold text-gray-900 truncate">
-                  {listingItem.name}
-                </h3>
-                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                  {listingItem.type}
-                </span>
-              </div>
-              
-              <div className="flex items-center text-gray-600 mb-2">
-                <RiHotelFill className="mr-2 text-green-500" />
-                <span>{listingItem.boarding}</span>
-              </div>
-              
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <span className="text-sm text-gray-500">Price: </span>
-                  <span className="font-bold text-green-600">Rs. {listingItem.price?.toLocaleString()}/mo</span>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-500">Key Money: </span>
-                  <span className={listingItem.keyMoney === 0 ? "text-blue-500" : "text-orange-500"}>
-                    {listingItem.keyMoney === 0 ? 'None' : `Rs. ${listingItem.keyMoney}`}
-                  </span>
-                </div>
-              </div>
-              
-              {/* Amenities */}
-              {listingItem.amenities?.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-1">Amenities</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {listingItem.amenities.slice(0, 3).map((amenity, aIdx) => (
-                      <span 
-                        key={aIdx} 
-                        className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-lg"
-                      >
-                        {amenity}
-                      </span>
-                    ))}
-                    {listingItem.amenities.length > 3 && (
-                      <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-lg">
-                        +{listingItem.amenities.length - 3} more
-                      </span>
-                    )}
+                <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                  <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                    <RiHotelFill className="w-8 h-8 text-green-500" />
                   </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">No Other Listings Found</h3>
+                  <p className="text-green-800 mb-4">
+                    This boarding house doesn't have any other listings available at the moment.
+                  </p>
                 </div>
               )}
-              
-              <Link
-                to={`/listing/${listingItem._id}`}
-                className="w-full mt-2 inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200"
-              >
-                <TbListDetails className="mr-2" />
-                View Details
-              </Link>
             </div>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div className="text-center py-10">
-        <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-          <RiHotelFill className="mx-auto text-5xl text-gray-400 mb-4" />
-          <h3 className="text-xl font-bold text-gray-800 mb-2">No Other Listings Found</h3>
-          <p className="text-gray-600">This boarding house doesn't have any other listings available at the moment.</p>
-        </div>
-      </div>
-    )}
-  </div>
-</Tabs.Item>
+          </Tabs.Item>
 
           {/* Owner Tab */}
           <Tabs.Item title="Owner" icon={HiUserCircle}>
@@ -423,7 +428,7 @@ const SingleListing = () => {
               {person ? (
                 <div className="bg-white rounded-xl shadow-md overflow-hidden">
                   <div className="md:flex">
-                    <div className="md:w-1/3 bg-gradient-to-br from-green-200 to-green-300 p-8 flex flex-col items-center justify-center">
+                    <div className="md:w-1/3 bg-gradient-to-br from-green-300 to-green-200 p-8 flex flex-col items-center justify-center">
                       <div className="relative">
                         <img 
                           src={person?.photoURL || 'https://i.ibb.co/tPJnyqL1/btmn.jpg'} 
@@ -437,7 +442,7 @@ const SingleListing = () => {
                         </div>
                       </div>
                       <h3 className="text-xl font-bold text-gray-900 mt-4">{person?.name}</h3>
-                      <p className="text-green-600 mt-1">Property Owner</p>
+                      <p className="text-green-700 font-semibold mt-1">Property Owner</p>
                     </div>
                     <div className="md:w-2/3 p-8">
                       <div className="space-y-6">
@@ -494,8 +499,8 @@ const SingleListing = () => {
                   </div>
                 </div>
               ) : (
-                <div className="bg-green-100 border-l-4 border-green-500 p-4">
-                  <p className="text-green-800 font-medium">
+                <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                  <p className="text-green-800">
                     There is an issue loading the owner information.
                   </p>
                 </div>
@@ -507,10 +512,13 @@ const SingleListing = () => {
           <Tabs.Item title="Reviews" icon={BsStars}>
             <div className="p-6 md:p-8">
               {listing._id ? (
-                <ReviewComponent listing={listing._id} />
+                <ReviewComponent 
+                  id={listing._id} 
+                  listing={listing._id} 
+                />
               ) : (
-                <div className="bg-green-100 border-l-4 border-green-500 p-4">
-                  <p className="text-green-800 font-medium">
+                <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                  <p className="text-green-800">
                     There is an issue loading the reviews.
                   </p>
                 </div>
@@ -524,8 +532,8 @@ const SingleListing = () => {
               {boarding?.lat && boarding?.lng ? (
                 <MapComponent lati={boarding.lat} lngi={boarding.lng} name={listing.owner} />
               ) : (
-                <div className="bg-green-100 border-l-4 border-green-500 p-4">
-                  <p className="text-green-800 font-medium">
+                <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                  <p className="text-green-800">
                     There is an issue loading the map.
                   </p>
                 </div>
@@ -538,67 +546,58 @@ const SingleListing = () => {
             <div className="p-6 md:p-8">
               {user ? (
                 user.email !== listing.owner ? (
-                  <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                    <div className="p-6 md:p-8 flex flex-col md:flex-row items-center">
-                      <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                        <div className="relative">
+
+                  <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg border-l-4 border-green-500">
+                      <div className="p-4 md:p-6 flex items-center">
+                        <div className="flex-shrink-0 mr-4 relative">
                           <img 
-                            src={person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'} 
+                            src={person?.photoURL || 'https://i.ibb.co/nNWV4psx/1x76aqpar8181.webp'}
                             alt="User Avatar" 
-                            className="w-20 h-20 rounded-full object-cover border-4 border-green-100"
+                            className="w-14 h-14 rounded-full object-cover border-4 border-green-100"
                           />
-                          <div className="absolute -bottom-2 -right-2 bg-green-500 rounded-full p-1">
-                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1">
+                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd"></path>
                             </svg>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex-grow text-center md:text-left">
-                        <h3 className="text-xl font-bold text-gray-900">{person?.name}</h3>
-                        <p className="text-gray-600 mt-1">Property Owner</p>
-                      </div>
-                      <div className="mt-4 md:mt-0">
-                        <button 
+                        <div className="flex-grow">
+                          <h3 className="text-lg font-bold text-gray-900">{person?.name}</h3>
+                          <p className="text-gray-600 text-sm">Property Owner</p>
+                        </div>
+                        <button
                           onClick={() => handleChat(user.email, listing.owner)}
-                          className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-md transition-colors flex items-center"
+                          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-full shadow-sm transition-colors flex items-center"
                         >
                           <FaBuildingUser className="mr-2" />
-                          Start Chat
+                          Chat
                         </button>
                       </div>
                     </div>
-                  </div>
                 ) : (
-                  <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-                    <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                    <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
                       <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clipRule="evenodd"></path>
+                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                       </svg>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2">This is your listing</h3>
-                    <p className="text-gray-600">
+                    <p className="text-green-800 mb-4">
                       You're viewing your own property. Explore other listings to connect with their owners.
                     </p>
                   </div>
                 )
               ) : (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                  <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
                     <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                     </svg>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">Please login to chat</h3>
-                  <p className="text-gray-600 mb-4">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">Please Login</h3>
+                  <p className="text-green-800 mb-4">
                     Sign in to your account to start a conversation with the property owner.
                   </p>
-                  <button 
-                    onClick={() => navigate('/login')}
-                    className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-md transition-colors"
-                  >
-                    Login Now
-                  </button>
                 </div>
               )}
             </div>
@@ -610,8 +609,8 @@ const SingleListing = () => {
               {listing.owner ? (
                 <RoommateComponent gender={listing.owner} />
               ) : (
-                <div className="bg-green-100 border-l-4 border-green-500 p-4">
-                  <p className="text-green-800 font-medium">
+                <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                  <p className="text-green-800">
                     There is an issue loading roommate information.
                   </p>
                 </div>
@@ -631,23 +630,17 @@ const SingleListing = () => {
                   owner={listing.owner} 
                 />
               ) : (
-                <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-center">
-                  <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                    <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path>
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">Ready to book?</h3>
-                  <p className="text-gray-600 mb-4">
-                    Please login to proceed with your booking and secure this property.
-                  </p>
-                  <button 
-                    onClick={() => navigate('/login')}
-                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow-md transition-colors"
-                  >
-                    Login to Book
-                  </button>
+              <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
+                <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                  </svg>
                 </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Please Login</h3>
+                <p className="text-green-800 mb-4">
+                  Sign in to make a booking request.
+                </p>
+              </div>
               )}
             </div>
           </Tabs.Item>
