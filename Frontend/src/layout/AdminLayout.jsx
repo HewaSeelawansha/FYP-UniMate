@@ -58,6 +58,8 @@ const AdminLayout = () => {
                 <hr />
                 <li className='mt-3'><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard"><MdDashboard /> Dashboard</Link></li>
                 <li><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/manage-boarding"><FaPlusCircle /> Manage Hostel</Link></li>
+                <li className=''><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/bookings"><FaPlusCircle /> Bookings</Link></li>
+                <li className=''><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/transactions"><FaPlusCircle /> Transactions</Link></li>
                 <li className='mb-3'><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/users"><FaUser /> All Users</Link></li>
                 <hr/>
                 {sharedLinks}
