@@ -4,6 +4,21 @@ const ObjectId = mongoose.Types.ObjectId;
 const Booking = require("../models/booking");
 const Listing = require("../models/listing")
 
+// get all payments
+const getAllPayments = async (req, res) => {
+    try{
+        const payments = await Payment.find({})
+        .sort({createdAt: -1})
+        .populate('booking') 
+        .populate('listing') 
+        .exec();
+        
+        res.status(200).json(payments);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
 // post a new menu item
 const postPaymentItem = async (req, res) => {
     const payment = req.body;
@@ -32,8 +47,8 @@ const postPaymentItem = async (req, res) => {
 };
 
 // get all payment requests
-const getPayements = async (req, res) => {
-    const email = req.query.email;
+const getPayementsStudent = async (req, res) => {
+    const email = req.params.email;
     const query = {email: email};
     try{
         const decodedEmail = req.decoded.email;
@@ -72,6 +87,7 @@ const getPaymentsByListing = async (req, res) => {
 
 module.exports = {
     postPaymentItem,
-    getPayements,
-    getPaymentsByListing
+    getPayementsStudent,
+    getPaymentsByListing,
+    getAllPayments
 }
