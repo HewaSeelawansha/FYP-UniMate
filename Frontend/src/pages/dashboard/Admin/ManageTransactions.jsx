@@ -179,14 +179,14 @@ const ManageTransactions = () => {
         </div>
 
         {/* Add a summary banner at the top */}
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
+        <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-6 rounded-r-lg">
           <div className="flex items-center">
-            <FaExclamationCircle className="text-blue-500 mr-3 text-xl" />
+            <FaExclamationCircle className="text-emerald-500 mr-3 text-xl" />
             <div>
-              <p className="font-semibold text-blue-800">
-                Total Payments: Received total <span className='text-yellow-500'> {payments.length} payments</span> recently.
+              <p className="font-semibold text-emerald-800">
+                Total Payments: Received total {payments.length} payments recently.
               </p>
-              <p className="text-sm text-blue-600">
+              <p className="text-sm text-emerald-600">
                 View your recently received payments for your listings below
               </p>
             </div>
