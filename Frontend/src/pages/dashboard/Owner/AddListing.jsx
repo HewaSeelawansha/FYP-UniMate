@@ -156,10 +156,10 @@ const AddListing = () => {
               Update Boarding House
             </button>
             <button 
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/owner')}
               className="btn btn-outline border-green-600 text-green-600 hover:bg-orange-50 px-6 py-3 rounded-lg transition duration-300"
             >
-              Back to Home
+              Back to Dashboard
             </button>
           </div>
         </div>
