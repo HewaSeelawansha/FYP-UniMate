@@ -1,4 +1,5 @@
 const Booking = require("../models/booking");
+const Listing = require("../models/listing");
 
 // get bookings by listing id
 const getBookigsByEmail = async (req, res) => {
@@ -15,6 +16,20 @@ const getBookigsByEmail = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// get all bookings for admin
+const getAllBookings = async (req, res) => {
+  try{
+      const bookings = await Booking.find({})
+      .sort({createdAt: -1})
+      .populate('listing') 
+      .exec();
+      
+      res.status(200).json(bookings);
+  } catch (error) {
+      res.status(500).json({message: error.message});
+  }
+}
 
 // get bookings by listing id
 const getBookingsByOwner = async (req, res) => {
@@ -86,12 +101,12 @@ const postBooking = async (req, res) => {
 // update an existing booking
 const updateBooking = async (req, res) => {
     const bookingId = req.params.id;
-    const { movein, payvia, needs } = req.body;
+    const { movein, payvia, needs, status } = req.body;
 
     try {
       const updatedStatus = await Booking.findByIdAndUpdate(
         bookingId,
-        { movein, payvia, needs },
+        { movein, payvia, needs, status },
         { new: true, runValidators: true }
       );
   
@@ -106,23 +121,61 @@ const updateBooking = async (req, res) => {
 };
 
 // update the status of the booking
-const updateStatus= async (req, res) => {
-    const bookingId = req.params.id;
-    const { status } = req.body;
+// const updateStatus= async (req, res) => {
+//     const bookingId = req.params.id;
+//     const { status } = req.body;
   
-    try {
-      const updatedStatus = await Booking.findByIdAndUpdate(
-        bookingId,
-        { status },
+//     try {
+//       const updatedStatus = await Booking.findByIdAndUpdate(
+//         bookingId,
+//         { status },
+//         { new: true, runValidators: true }
+//       );
+//       if (!updatedStatus) {
+//         return res.status(404).json({ message: 'Booking not found!' });
+//       }
+//       res.status(200).json(updatedStatus);
+//     } catch (error) {
+//       res.status(500).json({ message: error.message });
+//     }
+// };
+
+const updateStatus = async (req, res) => {
+  const bookingId = req.params.id;
+  const { status } = req.body;
+
+  try {
+    // First update the booking status
+    const updatedStatus = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status },
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedStatus) {
+      return res.status(404).json({ message: 'Booking not found!' });
+    }
+
+    // If status is being updated to 'Approved', decrement available count
+    if (status === 'Approved') {
+      const listingId = updatedStatus.listing;
+      
+      // Find the listing and decrement available count by 1
+      const updatedListing = await Listing.findByIdAndUpdate(
+        listingId,
+        { $inc: { available: -1 } }, // Decrement by 1
         { new: true, runValidators: true }
       );
-      if (!updatedStatus) {
-        return res.status(404).json({ message: 'Booking not found!' });
+
+      if (!updatedListing) {
+        return res.status(404).json({ message: 'Listing not found!' });
       }
-      res.status(200).json(updatedStatus);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
     }
+
+    res.status(200).json(updatedStatus);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const deleteBooking = async (req, res) => {
@@ -145,5 +198,6 @@ module.exports = {
     getBookingsByOwner,
     updateBooking,
     updateStatus,
-    deleteBooking
+    deleteBooking,
+    getAllBookings
 }
