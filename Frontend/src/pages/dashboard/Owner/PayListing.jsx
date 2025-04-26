@@ -91,7 +91,7 @@ const PayListing = ({ listing, price }) => {
           <FaCheckCircle className="text-green-500 text-6xl mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h2>
           <p className="text-gray-600 mb-6">Your listing is live now. Redirecting to manage listings...</p>
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500 mx-auto"></div>
         </div>
       </div>
     );
@@ -102,7 +102,7 @@ const PayListing = ({ listing, price }) => {
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center text-orange-600 hover:text-orange-700 mb-6 transition duration-200"
+          className="flex items-center text-green-500 hover:text-green-600 mb-6 transition duration-200"
         >
           <IoIosArrowBack className="mr-2" /> Back to listings
         </button>
@@ -110,7 +110,7 @@ const PayListing = ({ listing, price }) => {
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="md:flex">
             {/* Payment Summary */}
-            <div className="md:w-1/2 p-6 md:p-8 bg-gradient-to-br from-orange-50 to-orange-100">
+            <div className="md:w-1/2 p-6 md:p-8 bg-emerald-100">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Listing Fee Summary</h2>
               
               <div className="space-y-4">
@@ -121,7 +121,7 @@ const PayListing = ({ listing, price }) => {
                 
                 <div className="flex justify-between pt-2">
                   <span className="text-lg font-medium">Total Amount:</span>
-                  <span className="text-xl font-bold text-orange-600">
+                  <span className="text-xl font-bold text-green-600">
                     LKR {price.toFixed(2)}
                   </span>
                 </div>
@@ -187,7 +187,7 @@ const PayListing = ({ listing, price }) => {
                   type="submit"
                   disabled={!stripe || processing}
                   className={`w-full py-3 px-4 rounded-lg font-medium text-white transition duration-200 ${
-                    processing ? 'bg-orange-400' : 'bg-orange-600 hover:bg-orange-700'
+                    processing ? 'bg-green-400' : 'bg-green-500 hover:bg-green-600'
                   } flex items-center justify-center`}
                 >
                   {processing ? (
