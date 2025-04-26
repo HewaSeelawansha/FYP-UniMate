@@ -1,13 +1,16 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query';
-import { FaTrashAlt, FaUsers, FaEnvelope, FaUser, FaCalendarAlt } from 'react-icons/fa';
+import { FaTrashAlt, FaUsers, FaEnvelope, FaUser, FaCalendarAlt, FaExclamationCircle } from 'react-icons/fa';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FcViewDetails } from 'react-icons/fc';
 import Swal from 'sweetalert2';
+import { IoIosArrowBack } from 'react-icons/io';
 
 const Users = () => {
+  const navigate = useNavigate();
   const axiosSecure = useAxiosSecure()
+
   const { refetch, data: users = [], isLoading } = useQuery({
     queryKey: ['users'], 
     queryFn: async () => {
@@ -41,10 +44,10 @@ const Users = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[300px]">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading users...</p>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -65,21 +68,36 @@ const Users = () => {
 
   return (
     <div className='w-full px-4 mx-auto py-8'>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-        <div>
-          <h2 className='text-2xl font-bold'>
-            Manage <span className='text-green-600'>Users</span>
-          </h2>
-          <p className="text-gray-600 mt-2">
-            View and manage all system users
-          </p>
-        </div>
-        <div className="bg-green text-white px-4 ml-10 py-2 rounded-lg mt-4 sm:mt-0">
-          <span className="font-semibold">Total Users: {users.length}</span>
+      {/* Header */}
+      <div className="flex xl:flex-row flex-col items-center justify-between mb-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="xl:mb-0 my-2 flex items-center text-green-600 hover:text-green-700 transition duration-200"
+        >
+          <IoIosArrowBack className="mr-2" /> Back
+        </button>
+        <h1 className="mx-2 text-3xl font-bold text-gray-800">
+        Manage <span className='text-green-600'>Users</span>
+        </h1>
+        <div className="w-8"></div> 
+      </div>
+
+      {/* Add a summary banner at the top */}
+      <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-6 rounded-r-lg">
+        <div className="flex items-center">
+          <FaExclamationCircle className="text-emerald-500 mr-3 text-xl" />
+          <div>
+            <p className="font-semibold text-emerald-800">
+              Total Users: {users.filter(u => u.role === 'user').length} students & {users.filter(u => u.role === 'owner').length} owners in the UniMate platform.
+            </p>
+            <p className="text-sm text-emerald-600">
+              Review and update the status of pending listings below
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {users.map((user, index) => (
           <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
             {/* Card Header */}
