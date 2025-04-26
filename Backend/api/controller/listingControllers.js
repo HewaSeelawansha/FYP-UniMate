@@ -1,4 +1,5 @@
 const Listing = require("../models/listing");
+const Boarding = require("../models/boarding")
 
 // get all listings
 const getAllListings = async (req, res) => {
@@ -50,12 +51,12 @@ const singleListing = async (req, res) => {
 // update an existing listing
 const updateListing = async (req, res) => {
     const listingId = req.params.id;
-    const { name, description, type, images, amenities, price, keyMoney, available } = req.body;
+    const { name, description, type, images, amenities, price, keyMoney, available, status } = req.body;
   
     try {
       const updatedListing = await Listing.findByIdAndUpdate(
         listingId,
-        { name, description, type, images, amenities, price, keyMoney, available },
+        { name, description, type, images, amenities, price, keyMoney, available, status },
         { new: true, runValidators: true }
       );
   
@@ -121,17 +122,37 @@ const updateListing = async (req, res) => {
   };
 
   // search an existing listing
+// const searchListing = async (req, res) => {
+//     try {
+//         const { q, type, sort, page = 1, limit = 10 } = req.query;
+        
+//         // Build base query
+//         const query = { 
+//           available: { $gte: 0 },
+//           status: 'Approved',
+//           payStatus: 'Done'
+//         };
+
 const searchListing = async (req, res) => {
     try {
         const { q, type, sort, page = 1, limit = 10 } = req.query;
         
-        // Build base query
+        // First get all accepted boarding houses
+        const acceptedBoardings = await Boarding.find(
+            { status: 'Approved' },
+            { owner: 1 } // Only return the owner field
+        );
+
+        // Extract the owner emails from accepted boardings
+        const acceptedOwners = acceptedBoardings.map(b => b.owner);
+
+        // Build base query - now including owner filter
         const query = { 
           available: { $gte: 0 },
           status: 'Approved',
-          payStatus: 'Done'
+          payStatus: 'Done',
+          owner: { $in: acceptedOwners } // Only listings owned by accepted boarding owners
         };
-        
         // Search functionality (for Navbar)
         if (q) {
           query.$or = [
