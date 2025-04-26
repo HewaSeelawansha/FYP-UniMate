@@ -21,28 +21,34 @@ const AmenitiesSpotlight = () => {
     ];
   
     return (
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+
+          {/* <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Student-Centric Amenities</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Everything you need for comfortable academic living
             </p>
+          </div> */}
+
+          <div className='text-left'>
+            <p className='text-xl font-semibold uppercase text-green-500'>Student-Centric Amenities</p>
+            <h2 className='title md:w-[550px]'>Everything you need for comfortable living</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
             {amenities.map((item, index) => (
               <div 
                 key={index}
-                className="bg-gray-50 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group"
+                className="border border-green-500 bg-white shadow-md rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300 group"
               >
-                <div className="h-48 bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center text-6xl">
+                <div className="h-48 bg-emerald-100 flex items-center justify-center text-6xl">
                   {item.icon}
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                   <p className="text-gray-600 mb-4">{item.desc}</p>
-                  <button className="text-green-600 font-medium flex items-center group-hover:underline">
+                  <button className="text-green-500 font-medium flex items-center group-hover:underline">
                     View listings
                     <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
