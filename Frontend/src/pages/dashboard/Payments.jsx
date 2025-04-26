@@ -12,10 +12,10 @@ const Payments = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
 
-  const { data: orders = [] } = useQuery({
-    queryKey: ['orders', user?.email],
+  const { data: payments = [] } = useQuery({
+    queryKey: ['payments', user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/payments?email=${user?.email}`);
+      const res = await axiosSecure.get(`/payments/${user?.email}`);
       return res.data;
     },
   });
@@ -84,9 +84,9 @@ const Payments = () => {
         </div>
 
         {/* Payment Cards */}
-        {orders.length > 0 ? (
+        {payments.length > 0 ? (
           <div className="space-y-6">
-            {orders.map((order, index) => (
+            {payments.map((payment, index) => (
               <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 {/* Payment Header */}
                 <div className="bg-green-400 px-6 py-4 border-b border-gray-200">
@@ -94,12 +94,12 @@ const Payments = () => {
                     <div className="flex items-center mb-2 sm:mb-0">
                       <FaCheckCircle className="text-green-700 text-lg mr-2" />
                       <span className="font-medium text-gray-800">
-                        Payment #{index + 1} - {order.status}
+                        Payment #{index + 1} - {payment.status}
                       </span>
                     </div>
                     <div className="text-sm text-gray-700">
                       <FaCalendarAlt className="inline mr-1" />
-                      {formatDate(order.createdAt)}
+                      {formatDate(payment.createdAt)}
                     </div>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ const Payments = () => {
                       <div className="space-y-3">
                         <div className="flex justify-between">
                           <span className="text-gray-600">ID:</span>
-                          <span className="font-medium">{order.transactionId}</span>
+                          <span className="font-medium">{payment.transactionId}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Payment Method:</span>
@@ -125,7 +125,7 @@ const Payments = () => {
                         <div className="flex justify-between">
                           <span className="text-gray-600">Amount Paid:</span>
                           <span className="font-bold text-green-600">
-                            {formatCurrency(order.price)}
+                            {formatCurrency(payment.price)}
                           </span>
                         </div>
                       </div>
@@ -138,29 +138,29 @@ const Payments = () => {
                       </h3>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Move-in Date:</span>
+                          <span className="text-gray-600">Booking ID:</span>
                           <span className="font-medium">
-                            {order.booking?.movein || 'Not specified'}
+                            {payment.booking?._id || 'Booking Not Found'}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Payment Status:</span>
                           <span className={`font-medium ${
-                            order.booking?.paystatus === 'Done' 
+                            payment.booking?.paystatus === 'Done' 
                               ? 'text-green-500' 
                               : 'text-yellow-500'
                           }`}>
-                            {order.booking?.paystatus}
+                            {payment.booking?.paystatus || 'Booking Not Found'}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Booking Status:</span>
                           <span className={`font-medium ${
-                            order.booking?.status === 'Approved' 
+                            payment.booking?.status === 'Approved' 
                               ? 'text-green-500' 
                               : 'text-yellow-500'
                           }`}>
-                            {order.booking?.status}
+                            {payment.booking?.status || 'Booking Not Found'}
                           </span>
                         </div>
                       </div>
@@ -174,26 +174,26 @@ const Payments = () => {
                       <div className="space-y-3">
                         <div className="flex justify-between">
                           <span className="text-gray-600">Boarding:</span>
-                          <span className="font-medium">{order.listing?.boarding}</span>
+                          <span className="font-medium">{payment.listing?.boarding}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Room Type:</span>
-                          <span className="font-medium">{order.listing?.type}</span>
+                          <span className="font-medium">{payment.listing?.type}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Payment For:</span>
-                          <span className="font-medium">{order.paid}</span>
+                          <span className="font-medium">{payment.paid}</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Amenities */}
-                  {order.listing?.amenities?.length > 0 && (
+                  
+                  {/* {payment.listing?.amenities?.length > 0 && (
                     <div className="mt-6">
                       <h4 className="text-md font-medium text-gray-700 mb-2">Amenities Included:</h4>
                       <div className="flex flex-wrap gap-2">
-                        {order.listing.amenities.map((amenity, idx) => (
+                        {payment.listing.amenities.map((amenity, idx) => (
                           <span 
                             key={idx} 
                             className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-700"
@@ -203,12 +203,12 @@ const Payments = () => {
                         ))}
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Action Button */}
                   <div className="mt-6 flex justify-end">
                     <button 
-                      onClick={() => handleChat(user.email, order.listing.owner)} 
+                      onClick={() => handleChat(user.email, payment.listing.owner)} 
                       className="flex items-center text-green-600 hover:text-green-700 font-medium"
                     >
                       Contact Owner <IoIosArrowForward className="ml-1" />
