@@ -8,13 +8,12 @@ import useAxiosPublic from "../hooks/useAxiosPublic";
 import useAuth from "../hooks/useAuth";
 
 const Login = () => {
-  const [errorMessage, seterrorMessage] = useState("");
-  const {login, signUpWithGmail} = useAuth();
+  const [errorMessage, setErrorMessage] = useState("");
+  const {login, signUpWithGmail, logOut} = useAuth();
   const axiosPublic = useAxiosPublic();
-
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
 
   //react hook form
   const {
@@ -23,33 +22,46 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    const email = data.email;
-    const password = data.password;
-    login(email, password)
-      .then((result) => {
-        // Signed in
-        const user = result.user;
-        const userInfor = {
-          name: data.name,
-          email: data.email,
-          photoURL: data.photoURL
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setErrorMessage("");
+    
+    try {
+        const { user } = await login(data.email, data.password);
+        
+        // Check verification without completing login
+        if (!user.emailVerified) {
+            await logOut(); // Ensure user stays logged out
+            setErrorMessage(
+                "Email not verified." +
+                "Please check your inbox and verify your email before logging in."
+            );
+            setIsLoading(false);
+            return;
+        }
+        
+        // Only proceed if email is verified
+        const userInfo = {
+            name: data.name,
+            email: data.email,
+            photoURL: data.photoURL,
         };
-        axiosPublic.post("/users", userInfor)
-          .then((response) => {
-            alert("Signin successful!");
-            navigate(from, { replace: true });
-          });
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        seterrorMessage("Please provide valid email & password!");
-      });
-      reset()
+        
+        await axiosPublic.post("/users", userInfo);
+        
+        alert("Login successful!");
+        navigate('/');
+    } catch (error) {
+        if (error.response && error.response.status === 302) {
+          navigate('/');
+        }
+        console.error("Login error:", error);
+        setErrorMessage("Invalid email or password");
+    } finally {
+        setIsLoading(false);
+    }
+};
 
-  };
-
-  // login with google
   // login with google
   const handleRegister = () => {
     signUpWithGmail()
@@ -111,13 +123,9 @@ const Login = () => {
             </div>
 
             {/* show errors */}
-            {errorMessage ? (
-              <p className="text-red text-xs italic">
-                Provide a correct username & password.
-              </p>
-            ) : (
-              ""
-            )}
+            {
+              errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+            }
 
             {/* submit btn */}
             <div className="form-control mt-4">
