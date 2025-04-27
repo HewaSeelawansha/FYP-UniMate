@@ -16,7 +16,7 @@ const Cards = ({ item }) => {
     <div className="card bg-white rounded-xl shadow-lg overflow-hidden w-[300px] h-[420px] relative border border-gray-200">
       {/* Heart Icon */}
       <div
-        className={`absolute right-2 top-2 p-2 rounded-lg bg-green-400 ${
+        className={`absolute right-2 top-2 p-2 rounded-lg hover:scale-105 bg-emerald-400 ${
           isHeartFilled ? "text-blue-600" : "text-white"
         } transition duration-300 cursor-pointer`}
         onClick={handleHeartClick}
@@ -56,7 +56,7 @@ const Cards = ({ item }) => {
 
       {/* Full-Width View Button */}
       <button
-        className="w-full bg-green-500 text-white py-3 text-lg font-medium hover:bg-blue-500 transition duration-300"
+        className="w-full bg-emerald-500 text-white py-3 text-lg font-medium hover:bg-emerald-600 transition duration-300"
         onClick={() => navigate(`/listing/${_id}`)}
       >
         View
