@@ -134,98 +134,113 @@ const updateListing = async (req, res) => {
 //         };
 
 const searchListing = async (req, res) => {
-    try {
-        const { q, type, sort, page = 1, limit = 10 } = req.query;
-        
-        // First get all accepted boarding houses
-        const acceptedBoardings = await Boarding.find(
-            { status: 'Approved' },
-            { owner: 1 } // Only return the owner field
-        );
+  try {
+      const { q, type, sort, page = 1, limit = 10, gender, keyMoney } = req.query;
+      
+      // First get all accepted boarding houses
+      const acceptedBoardings = await Boarding.find(
+          { status: 'Approved' },
+          { owner: 1 } // Only return the owner field
+      );
 
-        // Extract the owner emails from accepted boardings
-        const acceptedOwners = acceptedBoardings.map(b => b.owner);
+      // Extract the owner emails from accepted boardings
+      const acceptedOwners = acceptedBoardings.map(b => b.owner);
 
-        // Build base query - now including owner filter
-        const query = { 
-          available: { $gte: 0 },
-          status: 'Approved',
-          payStatus: 'Done',
-          owner: { $in: acceptedOwners } // Only listings owned by accepted boarding owners
-        };
-        // Search functionality (for Navbar)
-        if (q) {
-          query.$or = [
-            { name: { $regex: q, $options: 'i' } },
-            { location: { $regex: q, $options: 'i' } },
-            { type: { $regex: q, $options: 'i' } },
-            { description: { $regex: q, $options: 'i' } },
-            { boarding: { $regex: q, $options: 'i' } },
-            { amenities: { $regex: q, $options: 'i' } }
-          ];
-        }
-        
-        // Additional filters (for Browse page)
-        if (type && type !== 'all') {
-          query.type = type;
-        }
-    
-        // Sorting (for Browse page)
-        let sortOption = { createdAt: -1 }; // Default
-        if (sort) {
-          const sortMap = {
-            'newly': { createdAt: -1 },
-            'A-Z': { name: 1 },
-            'Z-A': { name: -1 },
-            'low-high': { price: 1 },
-            'high-low': { price: -1 },
-            'd-l2h': { distance: 1 },
-            'd-h2l': { distance: -1 }
-          };
-          sortOption = sortMap[sort] || sortOption;
-        }
-        
-        // Execute query
-        let results;
-        let total;
-        
-        if (limit) {
-          // Paginated response
-          results = await Listing.find(query)
-            .sort(sortOption)
-            .skip((page - 1) * limit)
-            .limit(parseInt(limit));
-          total = await Listing.countDocuments(query);
-        } else {
-          // Unlimited response - get all matching documents
-          results = await Listing.find(query).sort(sortOption);
-          total = results.length;
-        }
-    
-        // Different response formats
-        if (req.query.minimal) {
-          // For Navbar - simple array of results
-          res.json(results);
-        } else {
-          // For Browse page
-          const response = {
-            listings: results,
-            total,
-          };
-          
-          // Only include pagination info if limit was specified
-          if (limit) {
-            response.page = parseInt(page);
-            response.pages = Math.ceil(total / limit);
-          }
-          
-          res.json(response);
-        }
-    
-      } catch (error) {
-        console.error('Search error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+      // Build base query - now including owner filter
+      const query = { 
+        available: { $gte: 0 },
+        status: 'Approved',
+        payStatus: 'Done',
+        owner: { $in: acceptedOwners } // Only listings owned by accepted boarding owners
+      };
+      
+      // Search functionality (for Navbar)
+      if (q) {
+        query.$or = [
+          { name: { $regex: q, $options: 'i' } },
+          { location: { $regex: q, $options: 'i' } },
+          { type: { $regex: q, $options: 'i' } },
+          { description: { $regex: q, $options: 'i' } },
+          { boarding: { $regex: q, $options: 'i' } },
+          { amenities: { $regex: q, $options: 'i' } }
+        ];
       }
+      
+      // Additional filters (for Browse page)
+      if (type && type !== 'all') {
+        query.type = type;
+      }
+      
+      // Gender filter
+      if (gender && gender !== 'all') {
+        query.gender = gender;
+      }
+      
+      // Key Money filter
+      if (keyMoney && keyMoney !== 'all') {
+        if (keyMoney === 'with') {
+          query.keyMoney = { $gt: 0 };
+        } else if (keyMoney === 'without') {
+          query.keyMoney = 0;
+        }
+      }
+  
+      // Sorting (for Browse page)
+      let sortOption = { createdAt: -1 }; // Default
+      if (sort) {
+        const sortMap = {
+          'newly': { createdAt: -1 },
+          'A-Z': { name: 1 },
+          'Z-A': { name: -1 },
+          'low-high': { price: 1 },
+          'high-low': { price: -1 },
+          'd-l2h': { distance: 1 },
+          'd-h2l': { distance: -1 }
+        };
+        sortOption = sortMap[sort] || sortOption;
+      }
+      
+      // Execute query
+      let results;
+      let total;
+      
+      if (limit) {
+        // Paginated response
+        results = await Listing.find(query)
+          .sort(sortOption)
+          .skip((page - 1) * limit)
+          .limit(parseInt(limit));
+        total = await Listing.countDocuments(query);
+      } else {
+        // Unlimited response - get all matching documents
+        results = await Listing.find(query).sort(sortOption);
+        total = results.length;
+      }
+  
+      // Different response formats
+      if (req.query.minimal) {
+        // For Navbar - simple array of results
+        res.json(results);
+      } else {
+        // For Browse page
+        const response = {
+          listings: results,
+          total,
+        };
+        
+        // Only include pagination info if limit was specified
+        if (limit) {
+          response.page = parseInt(page);
+          response.pages = Math.ceil(total / limit);
+        }
+        
+        res.json(response);
+      }
+  
+    } catch (error) {
+      console.error('Search error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
 };
 
 module.exports = {
