@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import logo from '/logon.png';
+import logo from '/logounimate.png';
 import { FaRegUser, FaSearch } from 'react-icons/fa';
 import { IoMdChatboxes } from "react-icons/io";
 import Modal from './Modal';
@@ -42,13 +42,6 @@ const Navbar = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const navItems = (
-    <>
-      <li><a href='/' className="hover:text-green-500 transition-colors duration-200">Home</a></li>
-      <li><a href='/browse' className="hover:text-green-500 transition-colors duration-200">Browse</a></li>
-    </>
-  );
-
   return (
     <>
       <header className={`mx-auto fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? 'backdrop-blur-sm bg-white/90' : 'bg-transparent'}`}>
@@ -56,41 +49,17 @@ const Navbar = () => {
           <div className='navbar container mx-auto'>
           {/* Logo and Mobile Menu */}
           <div className="navbar-start">
-            {/* <div className="dropdown">
-              <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden hover:bg-orange-50">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-gray-700"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
-                </svg>
-              </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-white rounded-box w-52 border border-gray-100">
-                {navItems}
-              </ul>
-            </div> */}
             <Link to='/' className="flex items-center">
-              <img src={logo} alt="Logo" className="h-10 md:h-12 transition-all duration-300 hover:scale-105" />
+              <img src={logo} alt="Logo" className="h-10 md:h-12 transition-all duration-300 hover:scale-110" />
             </Link>
           </div>
-
-          {/* Desktop Navigation */}
-          {/* <div className="navbar-center hidden lg:flex">
-            <ul className="menu menu-horizontal px-1 gap-2">
-              {navItems}
-            </ul>
-          </div> */}
 
           {/* Right Side Icons and Buttons */}
           <div className="navbar-end gap-3">
             {/* Search Button */}
             <button 
               onClick={() => setIsSearchOpen(true)}
-              className="btn btn-circle btn-ghost bg-green-500 hover:bg-blue-500 text-white transition-colors duration-200 relative"
+              className="btn btn-circle btn-ghost bg-emerald-500 text-white hover:bg-emerald-600 transition-colors duration-200 relative"
               aria-label="Search"
             >
               <FaSearch className="text-lg" />
@@ -99,7 +68,7 @@ const Navbar = () => {
             {/* Chat Button */}
             <Link 
               to="/chats" 
-              className="btn btn-circle btn-ghost bg-green-500 hover:bg-blue-500 text-white transition-colors duration-200 relative"
+              className="btn btn-circle btn-ghost bg-emerald-500 hover:bg-emerald-600 text-white transition-colors duration-200 relative"
               aria-label="Chats"
             >
               <IoMdChatboxes className="text-2xl" />
@@ -111,7 +80,7 @@ const Navbar = () => {
             ) : (
               <button 
                 onClick={() => document.getElementById('my_modal_5').showModal()} 
-                className="btn text-white hover:bg-blue-500 bg-green-500 rounded-full px-6 text-white flex items-center gap-2 border-none shadow-md hover:shadow-lg transition-all duration-300"
+                className="btn text-white hover:bg-emerald-600 bg-emerald-500 rounded-full px-6 text-white flex items-center gap-2 border-none shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <FaRegUser /> 
                 <span className="hidden sm:inline">Login</span>
