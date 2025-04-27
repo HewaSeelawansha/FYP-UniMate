@@ -86,12 +86,12 @@ const AIChatbot = () => {
       {/* Floating Chat Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg z-50 hover:bg-green-600 transition-colors"
+        className="fixed bottom-6 right-6 bg-emerald-500 text-white p-4 rounded-full shadow-lg z-50 hover:bg-emerald-600 transition-colors"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         aria-label="Open AI Chat"
       >
-        <FaRobot className="text-xl" />
+        <FaRobot className="text-xl xl:text-3xl" />
       </motion.button>
 
       <AnimatePresence>
@@ -103,7 +103,7 @@ const AIChatbot = () => {
             className="fixed right-6 bottom-24 z-50"
           >
             <motion.div 
-              className="bg-white rounded-xl shadow-xl flex flex-col w-80 h-96"
+              className="bg-white rounded-xl shadow-xl flex flex-col xl:w-[500px] xl:h-[700px] w-[400px] h-[500px]"
               layout
             >
               {/* Chat Header */}
