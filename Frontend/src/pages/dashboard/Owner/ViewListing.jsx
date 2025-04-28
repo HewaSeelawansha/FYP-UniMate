@@ -20,12 +20,8 @@ const ViewListing = () => {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/listing/${id}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch listing: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setListing(data); 
+        const response = await axiosSecure.get(`/listing/${id}`);
+        setListing(response.data); 
       } catch (error) {
         console.error("Error fetching listing:", error);
       } finally {
