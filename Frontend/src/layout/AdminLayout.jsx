@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { MdDashboard, MdDashboardCustomize } from "react-icons/md";
 import {FaEdit,FaLocationArrow,FaPlusCircle,FaQuestionCircle,FaRegUser,FaShoppingBag,FaUser,} from "react-icons/fa";
@@ -8,19 +8,20 @@ import Login from '../components/Login';
 import useAdmin from '../hooks/useAdmin';
 import useAuth from '../hooks/useAuth';
 import { IoMdChatboxes } from "react-icons/io";
-
-const sharedLinks = (
-  <>
-    <li className='mt-3'><Link to="/chats" className="hover:bg-blue-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
-    <li><Link to="/" className="hover:bg-blue-200 rounded-lg"><MdDashboard /> Home</Link></li>
-    <li><Link to="/browse" className="hover:bg-blue-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
-    <li><Link to="/" className="hover:bg-blue-200 rounded-lg"><FaQuestionCircle /> 24/7 Support</Link></li>
-  </>
-);
+import { AuthContext } from '../contexts/AuthProvider';
+import { TbLogout2 } from "react-icons/tb";
 
 const AdminLayout = () => {
   const {loading} = useAuth()
+  const {logOut} = useContext(AuthContext)
   const [isAdmin, isAdminLoading] = useAdmin()
+  const handleLogout = () => {
+    logOut().then(() => {
+      navigate('/');
+    }).catch((error) => {
+      // An error happened.
+    });
+  }
   return (
     <div>
         {
@@ -62,7 +63,10 @@ const AdminLayout = () => {
                 <li className=''><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/transactions"><FaPlusCircle /> Transactions</Link></li>
                 <li className='mb-3'><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/users"><FaUser /> All Users</Link></li>
                 <hr/>
-                {sharedLinks}
+                <li className='mt-3'><Link to="/chats" className="hover:bg-green-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
+                <li><Link to="/" className="hover:bg-green-200 rounded-lg"><MdDashboard /> Home</Link></li>
+                <li><Link to="/browse" className="hover:bg-green-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
+                <li><a className="hover:bg-red-200 rounded-lg" onClick={handleLogout}><TbLogout2/> Logout</a></li>
               </ul>
             </div>
 
