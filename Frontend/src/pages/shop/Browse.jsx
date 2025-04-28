@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Cards from '../../components/Cards';
-import { FaFilter, FaSearch, FaTimes, FaChevronDown, FaChevronUp, FaSpinner } from 'react-icons/fa';
+import { FaFilter, FaSearch, FaTimes, FaSpinner } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
+import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
 const Browse = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [totalListings, setTotalListings] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedGender, setSelectedGender] = useState("all");
+  const [selectedKeyMoney, setSelectedKeyMoney] = useState("all");
   const [sortOptions, setSortOptions] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8); 
@@ -15,13 +18,14 @@ const Browse = () => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const axiosPublc = useAxiosPublic(); 
 
   // Fetch data with search and filters
   const fetchListings = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      let url = `http://localhost:3000/listing/search?page=${currentPage}&limit=${itemsPerPage}`;
+      let url = `/listing/search?page=${currentPage}&limit=${itemsPerPage}`;
       
       // Add search query if exists
       if (searchQuery) {
@@ -33,14 +37,24 @@ const Browse = () => {
         url += `&type=${encodeURIComponent(selectedCategory)}`;
       }
       
+      // Add gender filter if not "all"
+      if (selectedGender !== "all") {
+        url += `&gender=${encodeURIComponent(selectedGender)}`;
+      }
+      
+      // Add key money filter if not "all"
+      if (selectedKeyMoney !== "all") {
+        url += `&keyMoney=${encodeURIComponent(selectedKeyMoney)}`;
+      }
+      
       // Add sorting if selected
       if (sortOptions) {
         url += `&sort=${sortOptions}`;
       }
 
-      const response = await axios.get(url);
-      setFilteredItems(response.data.listings || response.data); // Handle both formats
-      setTotalListings(response.data.total || response.data.length); // Get total count
+      const response = await axiosPublc.get(url);
+      setFilteredItems(response.data.listings || response.data);
+      setTotalListings(response.data.total || response.data.length);
     } catch (err) {
       console.error("Error fetching listings:", err);
       setError("Failed to load listings. Please try again.");
@@ -54,11 +68,11 @@ const Browse = () => {
   // Fetch data when filters, search or page changes
   useEffect(() => {
     fetchListings();
-  }, [currentPage, searchQuery, selectedCategory, sortOptions]);
+  }, [currentPage, searchQuery, selectedCategory, selectedGender, selectedKeyMoney, sortOptions]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   const filterItems = (type) => {
@@ -66,8 +80,20 @@ const Browse = () => {
     setCurrentPage(1);
   };
 
+  const filterGender = (gender) => {
+    setSelectedGender(gender);
+    setCurrentPage(1);
+  };
+
+  const filterKeyMoney = (keyMoney) => {
+    setSelectedKeyMoney(keyMoney);
+    setCurrentPage(1);
+  };
+
   const showAll = () => {
     setSelectedCategory("all");
+    setSelectedGender("all");
+    setSelectedKeyMoney("all");
     setSearchQuery('');
     setCurrentPage(1);
   };
@@ -87,11 +113,25 @@ const Browse = () => {
     { id: "Whole House-Long Term", name: "Whole House-LT" }
   ];
 
+  // Gender options
+  const genderOptions = [
+    { id: "all", name: "All Genders" },
+    { id: "Girls", name: "Girls Only" },
+    { id: "Boys", name: "Boys Only" },
+    { id: "Unisex", name: "Unisex" }
+  ];
+
+  // Key Money options
+  const keyMoneyOptions = [
+    { id: "all", name: "Key Money" },
+    { id: "with", name: "With Key Money" },
+    { id: "without", name: "Without Key Money" }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-2">
       {/* Hero Section */}
       <div className="relative bg-green-200 pb-24 pt-32">
-        <div className="absolute inset-0 bg-[url('/path/to/pattern.svg')] opacity-10"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="container mx-auto text-center">
             <motion.h1 
@@ -141,7 +181,7 @@ const Browse = () => {
               className="md:hidden flex items-center justify-between w-full px-4 py-3 bg-gray-100 rounded-lg"
             >
               <span className="font-medium">Filters</span>
-              {isFiltersOpen ? <FaChevronUp /> : <FaChevronDown />}
+              {isFiltersOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
             </button>
 
             {/* Category Filters - Desktop */}
@@ -152,19 +192,49 @@ const Browse = () => {
                   onClick={() => filterItems(category.id)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedCategory === category.id
-                      ? 'bg-green-500 text-white'
+                      ? 'bg-green-400 text-white font-semibold'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   {category.name}
                 </button>
               ))}
+              
+              {/* Gender Filter - Desktop */}
+              <div className="relative">
+                <select
+                  onChange={(e) => filterGender(e.target.value)}
+                  value={selectedGender}
+                  className="appearance-none px-4 py-2 pr-8 rounded-full border-none text-sm font-medium bg-green-200 text-gray-700 hover:bg-green-300 focus:outline-none"
+                >
+                  {genderOptions.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Key Money Filter - Desktop */}
+              <div className="relative">
+                <select
+                  onChange={(e) => filterKeyMoney(e.target.value)}
+                  value={selectedKeyMoney}
+                  className="appearance-none px-4 py-2 pr-8 rounded-full border-none text-sm font-medium bg-green-200 text-gray-700 hover:bg-green-300 focus:outline-none"
+                >
+                  {keyMoneyOptions.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Sorting */}
             <div className="flex items-center gap-3">
-              <div className="flex border border-gray-300 items-center bg-gray-100 rounded-lg overflow-hidden">
-                <div className="px-3 py-3 bg-gray-800 text-white">
+              <div className="flex border-none items-center bg-gray-100 rounded-full overflow-hidden focus:outline-none">
+                <div className="pl-3 pr-2 py-3 border-none bg-gray-800 text-white">
                   <FaFilter className="text-sm" />
                 </div>
                 <select
@@ -172,7 +242,7 @@ const Browse = () => {
                   id="sort"
                   onChange={(e) => handleSortChange(e.target.value)}
                   value={sortOptions}
-                  className="bg-green-300 px-3 py-2 text-sm font-medium focus:outline-none"
+                  className="appearance-none bg-green-200 border border-none px-3 py-2 text-sm font-medium focus:outline-none"
                   disabled={isLoading}
                 >
                   <option value="">Sort by</option>
@@ -215,6 +285,42 @@ const Browse = () => {
                       {category.name}
                     </button>
                   ))}
+                  
+                  {/* Gender Filter - Mobile */}
+                  {genderOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => {
+                        filterGender(option.id);
+                        setIsFiltersOpen(false);
+                      }}
+                      className={`px-3 py-2 rounded-full text-sm font-medium transition-colors ${
+                        selectedGender === option.id
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {option.name}
+                    </button>
+                  ))}
+                  
+                  {/* Key Money Filter - Mobile */}
+                  {keyMoneyOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => {
+                        filterKeyMoney(option.id);
+                        setIsFiltersOpen(false);
+                      }}
+                      className={`px-3 py-2 rounded-full text-sm font-medium transition-colors ${
+                        selectedKeyMoney === option.id
+                          ? 'bg-purple-500 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {option.name}
+                    </button>
+                  ))}
                 </div>
               </motion.div>
             )}
@@ -247,9 +353,9 @@ const Browse = () => {
         {!isLoading && !error && (
           <div className="mb-6 flex justify-between items-center">
             <p className="text-gray-600">
-              Showing <span className="font-semibold">{filteredItems.length}</span> of <span className="font-semibold">{totalListings}</span>  properties
+              Showing <span className="font-semibold">{filteredItems.length}</span> of <span className="font-semibold">{totalListings}</span> properties
             </p>
-            {(searchQuery || selectedCategory !== "all") && (
+            {(searchQuery || selectedCategory !== "all" || selectedGender !== "all" || selectedKeyMoney !== "all") && (
               <button
                 onClick={showAll}
                 className="flex items-center text-sm text-gray-500 hover:text-gray-700"
@@ -295,45 +401,27 @@ const Browse = () => {
         )}
 
         {/* Pagination */}
-      {!isLoading && !error && totalListings > itemsPerPage && (
-        <div className="flex justify-center my-12">
-          <nav className="flex items-center gap-2">
-            {/* <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="w-10 h-10 flex items-center justify-center rounded-full font-medium bg-green text-gray-700 hover:bg-gray-100 disabled:opacity-50"
-            >
-              //&lt;
-              Prev
-            </button> */}
-            
-            {Array.from({ length: Math.ceil(totalListings / itemsPerPage) }).map(
-              (_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={`w-10 h-10 flex items-center justify-center rounded-full font-medium transition-colors ${
-                    currentPage === index + 1
-                      ? 'bg-green-500 text-white'
-                      : 'bg-gray-300 text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              )
-            )}
-            
-            {/* <button
-              onClick={() => setCurrentPage(prev => prev + 1)}
-              disabled={currentPage === Math.ceil(totalListings / itemsPerPage)}
-              className="w-10 h-10 flex items-center justify-center rounded-full font-medium bg-green text-gray-700 hover:bg-gray-100 disabled:opacity-50"
-            >
-              Next
-              //&gt;
-            </button> */}
-          </nav>
-        </div>
-      )}
+        {!isLoading && !error && totalListings > itemsPerPage && (
+          <div className="flex justify-center my-12">
+            <nav className="flex items-center gap-2">
+              {Array.from({ length: Math.ceil(totalListings / itemsPerPage) }).map(
+                (_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={`w-10 h-10 flex items-center justify-center rounded-full font-medium transition-colors ${
+                      currentPage === index + 1
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gray-300 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                )
+              )}
+            </nav>
+          </div>
+        )}
       </div>
     </div>
   );
