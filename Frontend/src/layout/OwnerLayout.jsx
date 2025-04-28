@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { MdDashboard, MdDashboardCustomize } from "react-icons/md";
 import { FaEdit, FaPlusCircle, FaQuestionCircle, FaRegUser, FaShoppingBag, FaUpload } from "react-icons/fa";
@@ -17,6 +17,8 @@ import L from 'leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
+import { TbLogout2 } from "react-icons/tb";
+import { AuthContext } from '../contexts/AuthProvider';
 
 // Configure default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -25,15 +27,6 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
-
-const sharedLinks = (
-  <>
-    <li className='mt-3'><Link to="/chats" className="hover:bg-blue-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
-    <li><Link to="/" className="hover:bg-blue-200 rounded-lg"><MdDashboard /> Home</Link></li>
-    <li><Link to="/browse" className="hover:bg-blue-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
-    <li><Link to="/" className="hover:bg-blue-200 rounded-lg"><FaQuestionCircle /> 24/7 Support</Link></li>
-  </>
-);
 
 const OwnerLayout = () => {
   const { user } = useAuth();
@@ -49,6 +42,7 @@ const OwnerLayout = () => {
   const [isUser, isUserLoading] = useUser();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {logOut} = useContext(AuthContext)
 
   const NSBMLocation = [6.821380, 80.041691];
 
@@ -59,6 +53,14 @@ const OwnerLayout = () => {
     { id: 'parking', label: 'Parking' },
     { id: 'gym', label: 'Gym' }
   ];
+
+  const handleLogout = () => {
+    navigate('/').then(() => {
+      logOut();
+    }).catch((error) => {
+      // An error happened.
+    });
+  }
 
   const fetchListing = async () => {
     try {
@@ -295,26 +297,27 @@ const OwnerLayout = () => {
           <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
             {/* Sidebar content here */}
             <li>
-                <Link to="/dashboard" className="flex justify-start mb-3">
+                <Link to="/owner" className="flex justify-start mb-3">
                 <img src={logo} alt="" className="w-[150px]" />
                 <span className="badge badge-primary">Owner</span>
                 </Link>
             </li>
             <hr />
-            <li className='mt-3'><Link className='hover:bg-blue-200 rounded-lg' to="/owner"><MdDashboard /> Owner Dashboard</Link></li>
-            <li><Link className='hover:bg-blue-200 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle /> View Hostel</Link></li>
-            <li><Link className='hover:bg-blue-200 rounded-lg' to="/owner/add-listing"><FaPlusCircle /> Add Listing</Link></li>
-            <li><Link className='hover:bg-blue-200 rounded-lg' to="/owner/manage-items"><FaEdit /> Manage Listings</Link></li>
-            <li><Link className='hover:bg-blue-200 rounded-lg' to="/owner/manage-booking"><FaShoppingBag /> Manage Booking</Link></li>
-            <li  className='mb-3'><Link className='hover:bg-blue-200 rounded-lg' to="/owner/recent-payments"><FaShoppingBag /> Rental & Key Money</Link></li>
+            <li className='mt-3'><Link className='hover:bg-green-200 rounded-lg' to="/owner"><MdDashboard /> Owner Dashboard</Link></li>
+            <li><Link className='hover:bg-green-200 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle /> View Hostel</Link></li>
+            <li><Link className='hover:bg-green-200 rounded-lg' to="/owner/add-listing"><FaPlusCircle /> Add Listing</Link></li>
+            <li><Link className='hover:bg-green-200 rounded-lg' to="/owner/manage-items"><FaEdit /> Manage Listings</Link></li>
+            <li><Link className='hover:bg-green-200 rounded-lg' to="/owner/manage-booking"><FaShoppingBag /> Manage Booking</Link></li>
+            <li  className='mb-3'><Link className='hover:bg-green-200 rounded-lg' to="/owner/recent-payments"><FaShoppingBag /> Rental & Key Money</Link></li>
             <hr/>
-            {
-              sharedLinks 
-            }
+            <li className='mt-3'><Link to="/chats" className="hover:bg-green-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
+            <li><Link to="/" className="hover:bg-green-200 rounded-lg"><MdDashboard /> Home</Link></li>
+            <li><Link to="/browse" className="hover:bg-green-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
+            <li><a className="hover:bg-red-200 rounded-lg" onClick={handleLogout}><TbLogout2/> Logout</a></li>
             </ul>
         </div>
         </div>
-      ) : isUser ? (
+      ) : user&&isUser ? (
         <div className="max-w-4xl mx-auto p-4 sm:p-6">
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="p-6">
