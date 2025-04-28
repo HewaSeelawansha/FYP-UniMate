@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { AuthContext } from "../contexts/AuthProvider";
 import { Link, useNavigate } from 'react-router-dom';
 
-const Profile = ({ user }) => {
+const Profile = ({ user, role  }) => {
   const navigate = useNavigate();
   const {logOut} = useContext(AuthContext)
   const handleLogout = () => {
@@ -12,13 +12,14 @@ const Profile = ({ user }) => {
       // An error happened.
     });
   }
+
   return (
     <div>
       <div className="drawer drawer-end z-50">
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
             {/* Page content here */}
-            <label htmlFor="my-drawer-4" className="drawer-button bg-green-500 hover:bg-blue-500 btn btn-ghost btn-circle avatar">
+            <label htmlFor="my-drawer-4" className="drawer-button bg-emerald-500 hover:bg-emerald-600 btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
                 {
                     user.photoURL ? <img
@@ -34,10 +35,11 @@ const Profile = ({ user }) => {
             <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
             {/* Sidebar content here */}
             <li><a href='/update-profile'>Profile</a></li>
-            <li><Link to='/payments'>Your Payments</Link></li>
-            <li><a href='/browse'>Browse</a></li>
-            <li><Link to='/dashboard'>Admin Dashboard</Link></li>
-            <li><Link to='/owner'>Post an Ad</Link></li>
+            {role==='user'?<li><Link to='/bookings'>Your Bookings</Link></li>:<></>}
+            {role==='user'?<li><Link to='/payments'>Your Payments</Link></li>:<></>}
+            <li><a href='/browse'>Browse Listings</a></li>
+            {role==='admin'?<li><Link to='/dashboard'>Admin Dashboard</Link></li>:<></>}
+            {role !== 'admin' && (<li><Link to='/owner'>{role === 'user' ? 'Register as owner' : role === 'owner' ? 'Owner Dashboard' : ''}</Link></li>)}
             <li><a onClick={handleLogout}>Logout</a></li>
             </ul>
         </div>
