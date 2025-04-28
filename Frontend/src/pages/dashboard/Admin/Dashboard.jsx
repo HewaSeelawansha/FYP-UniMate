@@ -47,7 +47,7 @@ const AdminDashboard = () => {
   const { data: listings = [] } = useQuery({
     queryKey: ['listings'],
     queryFn: async () => {
-      const res = await axiosSecure.get('/listings');
+      const res = await axiosSecure.get('/listing');
       return res.data;
     }
   });
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
           {/* Users Card */}
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
             <div className="flex items-center justify-between">
