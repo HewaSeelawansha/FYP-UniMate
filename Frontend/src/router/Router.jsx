@@ -14,9 +14,10 @@ import Payment from "../pages/shop/Payment";
 import Payments from "../pages/dashboard/Payments";
 import Chat from "../pages/chat/Chat";
 import SingleListing from "../pages/shop/SingleListing";
-import AddBoarding from "../pages/dashboard/Owner/AddBoarding";
+// import AddBoarding from "../pages/dashboard/Owner/AddBoarding";
 import AddListing from "../pages/dashboard/Owner/AddListing";
 import UpdateListing from "../pages/dashboard/Owner/UpdateListing";
+import RecentPayments from "../pages/dashboard/Owner/RecentPayments";
 import ManageListing from "../pages/dashboard/Owner/ManageListing";
 import AdminLayout from "../layout/AdminLayout";
 import ViewBoarding from "../pages/dashboard/Owner/ViewBoarding";
@@ -27,6 +28,9 @@ import SingleUser from "../components/SingleUser";
 import ViewListing from "../pages/dashboard/Owner/ViewListing";
 import ManageBooking from "../pages/dashboard/Owner/ManageBooking";
 import ListingFee from "../pages/dashboard/Owner/ListingFee";
+import ManageTransactions from "../pages/dashboard/Admin/ManageTransactions";
+import ViewBookings from "../pages/dashboard/Admin/ViewBookings";
+import Bookings from "../pages/dashboard/Bookings";
 
 const router = createBrowserRouter([
     {
@@ -44,6 +48,10 @@ const router = createBrowserRouter([
         {
           path: "/payments",
           element:<PrivateRouter><Payments/></PrivateRouter>
+        },
+        {
+          path: "/bookings",
+          element:<PrivateRouter><Bookings/></PrivateRouter>
         },
         {
           path: "/update-profile",
@@ -97,6 +105,14 @@ const router = createBrowserRouter([
           element: <Users/>
         },
         {
+          path: 'transactions',
+          element: <ManageTransactions/>
+        },
+        {
+          path: 'bookings',
+          element: <ViewBookings/>
+        },
+        {
           path: 'manage-boarding',
           element: <ManageBoardings/>
         },
@@ -130,10 +146,10 @@ const router = createBrowserRouter([
           path: 'add-listing',
           element: <AddListing/>
         },
-        {
-          path: 'add-boarding',
-          element: <AddBoarding/>
-        },
+        // {
+        //   path: 'add-boarding',
+        //   element: <AddBoarding/>
+        // },
         {
           path: 'view-boarding/:email',
           element: <ViewBoarding/>
@@ -159,7 +175,11 @@ const router = createBrowserRouter([
           path: "update-listing/:id",
           element: <UpdateListing/>,
           loader: ({params}) => fetch(`http://localhost:3000/listing/${params.id}`)
-        }
+        },
+        {
+          path: 'recent-payments',
+          element: <RecentPayments/>
+        },
       ],
     }
   ],
