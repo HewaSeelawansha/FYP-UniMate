@@ -4,14 +4,15 @@ import useAxiosSecure from './useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 
 const useOwner = () => {
-    const {user} = useAuth();
+    const {user, loading} = useAuth();
     const axiosSecure = useAxiosSecure();
     const { refetch, data: isOwner, isPending: isOwnerLoading} = useQuery({
         queryKey: [user?.email, 'isOwner'],
         queryFn: async () => {
             const res = await axiosSecure.get(`users/owner/${user?.email}`)
             return res.data?.owner;
-        }
+        },
+        enabled: !loading && !!user?.email
     })
     return [isOwner, isOwnerLoading]
 }
