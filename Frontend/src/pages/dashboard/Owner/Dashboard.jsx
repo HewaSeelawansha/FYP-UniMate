@@ -6,6 +6,8 @@ import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
+import useMyListing from '../../../hooks/useMyListing';
+import { useQuery } from '@tanstack/react-query';
 
 const OwnerDashboard = () => {
   const { user } = useAuth();
@@ -14,64 +16,57 @@ const OwnerDashboard = () => {
   const [recentPayments, setRecentPayments] = useState([]);
   const [recentListings, setRecentListings] = useState([]);
   const axiosSecure = useAxiosSecure();
+  const [bookings, setBookings] = useState([]);
+  const [listings, loadingListing] = useMyListing();-
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchAllDashboardData = async () => {
       try {
-        const [bookingsRes, listingsRes, paymentsRes] = await Promise.all([
-          axiosSecure.get(`/booking/owner/${user.email}`),
-          axiosSecure.get(`/listing/owner?email=${user?.email}`),
+        const [bookingRes, paymentRes] = await Promise.all([
+          axiosSecure.get(`/booking/owner/${user?.email}`),
           axiosSecure.get(`/payments/owner/${user?.email}`)
         ]);
-
-        const bookings = bookingsRes.data.bookings || [];
-        const listings = listingsRes.data || [];
-        const payments = paymentsRes.data || [];
-
-        // Calculate stats
-        const totalEarnings = payments.reduce((sum, payment) => sum + (payment.price || 0), 0);
-        const pendingPayments = bookings.filter(b => b.paystatus === 'Not Yet').length;
+  
+        const bookings = bookingRes.data.bookings;
+        const payments = paymentRes.data;
+  
+        const totalEarnings = payments.reduce((sum, p) => sum + (p.price || 0), 0);
+        const pendingPayments = listings.filter(b => b.payStatus !== 'Done').length;
         const approvedListings = listings.filter(l => l.status === 'Approved').length;
         const pendingListings = listings.filter(l => l.status === 'Pending').length;
-        const totalListings = listings.length;
-
-        // Get recent bookings (last 5)
-        const sortedPayments = [...payments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        const recentPayments = sortedPayments.slice(0, 5);
-
-        // Get recent listings (last 3)
-        const sortedListings = [...listings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        const recentListings = sortedListings.slice(0, 3);
-
+  
+        const sortedPayments = [...payments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+        const sortedListings = [...listings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
+  
         setStats({
           totalEarnings,
           pendingPayments,
           approvedListings,
           pendingListings,
-          totalListings,
+          totalListings: listings.length,
           totalBookings: bookings.length
         });
-
-        setRecentPayments(recentPayments);
-        setRecentListings(recentListings);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+  
+        setRecentPayments(sortedPayments);
+        setRecentListings(sortedListings);
+      } catch (err) {
+        console.error(err);
         Swal.fire({
-          position: 'center',
           icon: 'error',
-          title: 'Failed to load dashboard data',
+          title: 'Dashboard load failed',
           showConfirmButton: false,
           timer: 1500
         });
+      } finally {
         setLoading(false);
       }
     };
+  
+    if (user?.email && listings.length) fetchAllDashboardData();
+  }, [user?.email, listings]);
+  
 
-    fetchDashboardData();
-  }, [user.email, axiosSecure]);
-
-  if (loading) {
+  if (loading || loadingListing) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
@@ -122,7 +117,7 @@ const OwnerDashboard = () => {
           <div className="bg-white rounded-xl shadow-md p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Pending Payments</p>
+                <p className="text-sm text-gray-500">Listings to Pay</p>
                 <p className="text-2xl font-bold text-gray-800">{stats.pendingPayments}</p>
               </div>
               <div className="p-3 rounded-full bg-yellow-100 text-yellow-600">
@@ -159,7 +154,7 @@ const OwnerDashboard = () => {
             <div className="space-y-4">
               {recentPayments.length > 0 ? (
                 recentPayments.map((pay) => (
-                  <div key={pay._id} className="flex items-center justify-between p-4 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                  <div key={pay._id} className="bg-blue-50 flex items-center justify-between p-4 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
                     <div>
                       <p className="font-medium text-gray-800">{pay.email}</p>
                       <p className="text-sm text-gray-500 flex items-center gap-1">
@@ -195,7 +190,7 @@ const OwnerDashboard = () => {
             <div className="space-y-4">
               {recentListings.length > 0 ? (
                 recentListings.map((listing) => (
-                  <div key={listing._id} className="p-4 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                  <div key={listing._id} className="bg-blue-50 p-4 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
                     <div className="flex items-start space-x-3">
                       {listing.images?.length > 0 ? (
                         <img 
@@ -285,11 +280,12 @@ const OwnerDashboard = () => {
           <h2 className="text-xl font-bold text-gray-800 mb-6">Listing Fees Summary</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-blue-100">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Listing</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount Paid</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Listing Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                 </tr>
@@ -315,6 +311,13 @@ const OwnerDashboard = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{listing.type}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        listing.status === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {listing.status || 'Pending'}
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">Rs. {getPriceByType(listing.type)?.toLocaleString()}</div>
