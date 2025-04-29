@@ -50,7 +50,7 @@ const Cards = ({ item }) => {
 
         {/* Price */}
         <h5 className="font-bold text-lg text-blue-600 mb-2">
-          ${price}
+          LKR {price?.toLocaleString()}/month
         </h5>
       </div>
 
