@@ -89,7 +89,7 @@ const Payments = () => {
             {payments.map((payment, index) => (
               <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 {/* Payment Header */}
-                <div className="bg-green-400 px-6 py-4 border-b border-gray-200">
+                <div className="bg-green-200 border-l-4 border-green-500 px-6 py-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center mb-2 sm:mb-0">
                       <FaCheckCircle className="text-green-700 text-lg mr-2" />
