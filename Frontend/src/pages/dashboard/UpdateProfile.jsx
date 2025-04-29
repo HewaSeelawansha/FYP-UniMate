@@ -170,7 +170,7 @@ const UpdateProfile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Profile Card */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 col-span-1">
-            <div className="bg-gradient-to-r from-green-400 to-green-500 p-6 text-white">
+            <div className="bg-green-300 p-6 text-green-800">
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
                   <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
@@ -187,7 +187,7 @@ const UpdateProfile = () => {
                   )}
                 </div>
                 <h2 className="text-2xl font-bold text-center">{person?.name}</h2>
-                <p className="text-green-100 mt-1">{user.email}</p>
+                <p className="text-green-700 mt-1">{user.email}</p>
               </div>
             </div>
             <div className="p-6">
@@ -222,7 +222,7 @@ const UpdateProfile = () => {
 
           {/* Update Profile Form */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 col-span-1">
-            <div className="bg-gradient-to-r from-green-400 to-green-500 p-6 text-white">
+            <div className="bg-green-300 p-6 text-green-800">
               <h2 className="text-2xl font-bold flex items-center">
                 <FiUser className="mr-2" />
                 Update Profile
@@ -256,7 +256,7 @@ const UpdateProfile = () => {
                     <div className="flex-1">
                       <label className="flex flex-col items-center px-4 py-3 bg-white rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-50 transition duration-200">
                         <div className="flex items-center space-x-2">
-                          <FiUpload className="text-green-500" />
+                          <FiUpload className="text-green-600" />
                           <span className="text-sm text-gray-600">Upload new photo</span>
                         </div>
                         <input
@@ -274,7 +274,7 @@ const UpdateProfile = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2 ${
+                    className={`w-full text-green-100 bg-green-500 hover:bg-green-600 font-medium py-3 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2 ${
                       isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
                     }`}
                   >
@@ -303,7 +303,7 @@ const UpdateProfile = () => {
         {/* Roommate Preferences */}
         {isUser? (
             <div className="bg-white mt-8 rounded-2xl shadow-xl overflow-hidden border border-gray-200 col-span-1">
-              <div className="bg-gradient-to-r from-green-400 to-green-500 p-6 text-white">
+              <div className="bg-green-300 p-6 text-green-800">
                 <h2 className="text-2xl font-bold flex items-center">
                   <FiUsers className="mr-2" />
                   Roommate Preferences
@@ -313,7 +313,7 @@ const UpdateProfile = () => {
                 <div className="mb-6">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-medium text-gray-900">Current Status</h3>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${person?.roommate && person?.gender ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${person?.roommate && person?.gender ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                       {person?.roommate && person?.gender ? 'Active' : 'Not Set'}
                     </span>
                   </div>
@@ -359,7 +359,7 @@ const UpdateProfile = () => {
                   <div>
                     <button
                       type="submit"
-                      className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2"
+                      className="w-full text-green-100 bg-green-500 hover:bg-green-600 font-medium py-3 px-4 rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2"
                     >
                       <FiUsers className="text-lg" />
                       <span>Update Preferences</span>
