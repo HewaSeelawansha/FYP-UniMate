@@ -165,7 +165,6 @@ const UpdateBoarding = () => {
       const selectedAmenities = amenitiesList.filter(amenity => data[amenity]);
       const updatedBoarding = {
         name: data.name,
-        owner: user.email,
         address: data.address,
         lng: lng,
         lat: lat,
@@ -176,7 +175,7 @@ const UpdateBoarding = () => {
         images: imageUrls,
         amenities: selectedAmenities,
         beds: data.beds,
-        status: item.status,
+        status: 'Pending',
       };
 
       // Submit to backend
@@ -190,7 +189,8 @@ const UpdateBoarding = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        navigate(-1);
+        navigate('/owner');
+        window.location.reload();
       }
     } catch (error) {
       console.error('Error updating boarding:', error);
@@ -208,7 +208,7 @@ const UpdateBoarding = () => {
 
   const handleGoBack = () => navigate(-1);
 
-  if (item?.owner !== user?.email) {
+  if (item && user && item?.owner !== user?.email) {
     return (
       <div className='w-full max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md'>
         <h2 className='text-3xl font-bold text-center text-gray-800 mb-6'>
@@ -227,7 +227,7 @@ const UpdateBoarding = () => {
   }
 
   return (
-    <div className='w-full mx-auto p-4 sm:p-6'>
+    <div className='w-full max-w-4xl mx-auto p-4 sm:p-6'>
       <div className='overflow-hidden'>
         {/* Header */}
         <div className="flex xl:flex-row flex-col items-center justify-between mb-8">
