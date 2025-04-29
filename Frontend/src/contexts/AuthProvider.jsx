@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { createContext } from 'react';
-import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
+import { sendEmailVerification, GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import app from '../firebase/firebase.config';
@@ -33,7 +33,6 @@ const AuthProvider = ({children}) => {
 
     const logOut = () =>{
         localStorage.removeItem('genius-token');
-        //window.location.reload();
         return signOut(auth);
     }
 
@@ -48,6 +47,10 @@ const AuthProvider = ({children}) => {
 const reloadUser = async () => {
     await auth.currentUser.reload();
     setUser(auth.currentUser);
+  };
+
+  const sendEmail = async () => {
+    sendEmailVerification(auth.currentUser);
   };
 
     useEffect( () =>{
@@ -83,7 +86,8 @@ const reloadUser = async () => {
         logOut,
         signUpWithGmail,
         updateUserProfile,
-        reloadUser
+        reloadUser,
+        sendEmail
     }
 
     return (
