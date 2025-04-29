@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import bannerImg from '/BannerBGG.png';
+import bannerImg from '/HomeBG1.png';
 import { Link } from 'react-router-dom';
 
 const HeroBanner = () => {
