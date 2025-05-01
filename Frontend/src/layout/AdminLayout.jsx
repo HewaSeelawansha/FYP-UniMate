@@ -57,15 +57,15 @@ const AdminLayout = () => {
                   </Link>
                 </li>
                 <hr />
-                <li className='mt-3'><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard"><MdDashboard /> Dashboard</Link></li>
-                <li><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/manage-boarding"><FaPlusCircle /> Manage Hostel</Link></li>
-                <li className=''><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/bookings"><FaPlusCircle /> Bookings</Link></li>
-                <li className=''><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/transactions"><FaPlusCircle /> Transactions</Link></li>
-                <li className='mb-3'><Link className='hover:bg-blue-100 rounded-lg' to="/dashboard/users"><FaUser /> All Users</Link></li>
+                <li className='mt-3'><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard"><MdDashboard /> Dashboard</Link></li>
+                <li><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/manage-boarding"><FaPlusCircle /> Manage Hostel</Link></li>
+                <li className=''><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/bookings"><FaPlusCircle /> Bookings</Link></li>
+                <li className=''><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/transactions"><FaPlusCircle /> Transactions</Link></li>
+                <li className='mb-3'><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/users"><FaUser /> All Users</Link></li>
                 <hr/>
-                <li className='mt-3'><Link to="/chats" className="hover:bg-green-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
-                <li><Link to="/" className="hover:bg-green-200 rounded-lg"><MdDashboard /> Home</Link></li>
-                <li><Link to="/browse" className="hover:bg-green-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
+                <li className='mt-3'><Link to="/chats" className="hover:bg-gray-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
+                <li><Link to="/" className="hover:bg-gray-200 rounded-lg"><MdDashboard /> Home</Link></li>
+                <li><Link to="/browse" className="hover:bg-gray-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
                 <li><a className="hover:bg-red-200 rounded-lg" onClick={handleLogout}><TbLogout2/> Logout</a></li>
               </ul>
             </div>
