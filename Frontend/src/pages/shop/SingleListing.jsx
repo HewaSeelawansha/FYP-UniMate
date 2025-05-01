@@ -254,7 +254,7 @@ const SingleListing = () => {
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-gray-500">PRICE</h3>
-                      <p className="text-lg font-bold text-green-500">${listing.price}/month</p>
+                      <p className="text-lg font-bold text-green-500">LKR {listing.price?.toLocaleString()}/month</p>
                     </div>
                   </div>
                   
@@ -266,7 +266,7 @@ const SingleListing = () => {
                       <h3 className="text-sm font-semibold text-gray-500">KEY MONEY</h3>
                       <p className="text-lg font-medium text-gray-900">
                         {listing.keyMoney > 0 ? (
-                          <span className="text-green-500">${listing.keyMoney}</span>
+                          <span className="text-green-500">{listing.keyMoney} LKR</span>
                         ) : (
                           <span className="text-blue-500">Not Required</span>
                         )}
@@ -365,12 +365,12 @@ const SingleListing = () => {
                         <div className="flex items-center justify-between mb-4">
                           <div>
                             <span className="text-sm text-gray-500">Price: </span>
-                            <span className="font-bold text-green-600">Rs. {listingItem.price?.toLocaleString()}/mo</span>
+                            <span className="font-bold text-green-500">LKR {listingItem.price?.toLocaleString()}/month</span>
                           </div>
                           <div>
                             <span className="text-sm text-gray-500">Key Money: </span>
                             <span className={listingItem.keyMoney === 0 ? "text-blue-500" : "text-orange-500"}>
-                              {listingItem.keyMoney === 0 ? 'None' : `Rs. ${listingItem.keyMoney}`}
+                              {listingItem.keyMoney === 0 ? 'None' : `LKR ${listingItem.keyMoney}`}
                             </span>
                           </div>
                         </div>
@@ -607,7 +607,7 @@ const SingleListing = () => {
           <Tabs.Item title="Find Roommates" icon={FaBuildingUser}>
             <div className="p-6 md:p-8">
               {listing.owner ? (
-                <RoommateComponent gender={listing.owner} />
+                <RoommateComponent gender={listing.gender} />
               ) : (
                 <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
                   <p className="text-green-800">
@@ -628,6 +628,7 @@ const SingleListing = () => {
                   price={listing.price} 
                   keyMoney={listing.keyMoney} 
                   owner={listing.owner} 
+                  gender={listing.gender}
                 />
               ) : (
               <div className="bg-green-100 border-l-4 border-green-500 rounded-lg p-6 text-center">
