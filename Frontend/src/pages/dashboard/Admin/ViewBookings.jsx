@@ -250,7 +250,7 @@ const ViewBookings = () => {
                 <div className="flex flex-col w-full sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
   <div className="flex w-full space-x-3">
     <Link 
-      to={`/owner/view-listing/${item.listing._id}`}
+      to={`/dashboard/view-listing/${item.listing._id}`}
       className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition duration-200"
     >
       <FcViewDetails className="mr-2" />
