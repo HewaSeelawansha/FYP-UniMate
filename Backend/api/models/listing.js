@@ -9,7 +9,6 @@ const listingSchema = new Schema({
     distance: {
         type: Number,
         required: true,
-        default: 10
     },
     owner: {
         type: String,
