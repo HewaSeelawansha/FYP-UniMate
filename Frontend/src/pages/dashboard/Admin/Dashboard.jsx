@@ -51,45 +51,29 @@ const AdminDashboard = () => {
       return res.data;
     }
   });
-
+  
   // Calculate statistics
   const pendingBookings = bookings.filter(b => b.status === 'Pending').length;
   const pendingListings = listings.filter(l => l.status === 'Pending').length;
   const pendingBoardings = boardings.filter(b => b.status === 'Pending').length;
-
+  
   const totalEarnings = payments.reduce((sum, payment) => sum + payment.price, 0);
   const rentalEarnings = payments.filter(p => p.paid === 'Rental').reduce((sum, p) => sum + p.price, 0);
   const keyMoneyEarnings = payments.filter(p => p.paid === 'Key Money').reduce((sum, p) => sum + p.price, 0);
-
+  
   const studentCount = users.filter(u => u.role === 'user').length;
   const ownerCount = users.filter(u => u.role === 'owner').length;
-  const adminCount = users.filter(u => u.role === 'admin').length;
-
+  
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Dashboard <span className='text-green-500'>Overview</span></h1>
         </div>
 
-        {/* Summary Banner */}
-        <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-6 rounded-r-lg">
-          <div className="flex items-center">
-            <FaExclamationCircle className="text-emerald-500 mr-3 text-xl" />
-            <div>
-              <p className="font-semibold text-emerald-800">
-                Platform Overview: {studentCount} students, {ownerCount} owners, and {boardings.length} boarding houses in the system.
-              </p>
-              <p className="text-sm text-emerald-600">
-                {pendingBookings} pending bookings, {pendingListings} pending listings, and {pendingBoardings} pending boardings need review.
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
           {/* Users Card */}
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
             <div className="flex items-center justify-between">
@@ -110,6 +94,28 @@ const AdminDashboard = () => {
               className="mt-4 inline-flex items-center text-sm text-green-600 hover:text-green-700"
             >
               View all users <IoIosArrowForward className="ml-1" />
+            </Link>
+          </div>
+
+          {/* Listings Card */}
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-pink-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 font-medium">Total Listings</p>
+                <p className="text-2xl font-bold text-gray-800">{listings.length}</p>
+                <div className="flex space-x-2 mt-2">
+                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Pending: {pendingListings}</span>
+                </div>
+              </div>
+              <div className="bg-pink-100 p-3 rounded-full">
+                <FaHome className="text-pink-600 text-xl" />
+              </div>
+            </div>
+            <Link 
+              to="/dashboard/manage-boardings" 
+              className="mt-4 inline-flex items-center text-sm text-pink-600 hover:text-pink-700"
+            >
+              View all listings <IoIosArrowForward className="ml-1" />
             </Link>
           </div>
 
@@ -169,8 +175,8 @@ const AdminDashboard = () => {
                   }).format(totalEarnings)}
                 </p>
                 <div className="flex space-x-2 mt-2">
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Rental: {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'LKR'}).format(rentalEarnings)}</span>
-                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Key Money: {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'LKR'}).format(keyMoneyEarnings)}</span>
+                  <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">Rental: {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'LKR'}).format(rentalEarnings)}</span>
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Key Money: {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'LKR'}).format(keyMoneyEarnings)}</span>
                 </div>
               </div>
               <div className="bg-amber-100 p-3 rounded-full">
@@ -251,14 +257,14 @@ const AdminDashboard = () => {
           <div className="space-y-4">
             {/* Recent Payments */}
             <div>
-              <h3 className="font-medium text-gray-700 mb-2 flex items-center">
+              <h3 className="font-medium bg-green-100 px-3 py-1 rounded-lg text-gray-700 mb-2 flex items-center">
                 <FaMoneyBillWave className="text-green-500 mr-2" />
                 Latest Payments
               </h3>
               {payments.slice(0, 3).map((payment, index) => (
                 <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
                   <div>
-                    <p className="font-medium">{payment.listing?.name || 'Unknown Listing'}</p>
+                    <p className="font-medium">{payment.listing?.name || 'Unknown Listing'} in {payment.listing?.boarding}</p>
                     <p className="text-sm text-gray-500">{payment.email}</p>
                   </div>
                   <div className="text-right">
@@ -287,14 +293,14 @@ const AdminDashboard = () => {
 
             {/* Recent Bookings */}
             <div>
-              <h3 className="font-medium text-gray-700 mb-2 flex items-center">
+              <h3 className="font-medium bg-blue-100 px-3 py-1 rounded-lg  text-gray-700 mb-2 flex items-center">
                 <FaCalendarAlt className="text-blue-500 mr-2" />
                 Latest Bookings
               </h3>
               {bookings.slice(0, 3).map((booking, index) => (
                 <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
                   <div>
-                    <p className="font-medium">{booking.listing?.name || 'Unknown Listing'}</p>
+                    <p className="font-medium">{booking.listing?.name || 'Unknown Listing'} in {booking.listing?.boarding}</p>
                     <p className="text-sm text-gray-500">{booking.email}</p>
                   </div>
                   <div className="text-right">
