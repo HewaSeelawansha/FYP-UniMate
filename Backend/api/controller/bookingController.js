@@ -9,8 +9,11 @@ const getBookigsByEmail = async (req, res) => {
             return res.status(400).json({ message: 'Email is required' });
         }
         const query = { email: email };
-        const result = await Booking.find(query).exec();
-        res.status(200).json(result); 
+        const bookings = await Booking.find(query)
+        .sort({createdAt: -1})
+        .populate('listing') 
+        .exec();
+        res.status(200).json(bookings); 
     } catch (error) {
         console.error('Error fetching booking:', error.message);
         res.status(500).json({ message: error.message });
@@ -31,7 +34,7 @@ const getAllBookings = async (req, res) => {
   }
 }
 
-// get bookings by listing id
+// get bookings by property owner
 const getBookingsByOwner = async (req, res) => {
   try {
       const ownerEmail = req.params.email;
@@ -70,8 +73,8 @@ const getBookigsByUserListing = async (req, res) => {
           return res.status(400).json({ message: 'Listing ID and email are required' });
       }
       const query = { listing: id, email: email };
-      const result = await Booking.findOne(query).exec();
-      res.status(200).json(result); 
+      const bookings = await Booking.findOne(query).exec();
+      res.status(200).json(bookings); 
   } catch (error) {
       console.error('Error fetching bookings:', error.message);
       res.status(500).json({ message: 'Internal Server Error' });
