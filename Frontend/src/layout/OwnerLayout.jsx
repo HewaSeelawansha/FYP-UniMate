@@ -303,16 +303,16 @@ const OwnerLayout = () => {
                 </Link>
             </li>
             <hr />
-            <li className='mt-3'><Link className='hover:bg-green-200 rounded-lg' to="/owner"><MdDashboard /> Owner Dashboard</Link></li>
-            <li><Link className='hover:bg-green-200 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle /> View Hostel</Link></li>
-            <li><Link className='hover:bg-green-200 rounded-lg' to="/owner/add-listing"><FaPlusCircle /> Add Listing</Link></li>
-            <li><Link className='hover:bg-green-200 rounded-lg' to="/owner/manage-items"><FaEdit /> Manage Listings</Link></li>
-            <li><Link className='hover:bg-green-200 rounded-lg' to="/owner/manage-booking"><FaShoppingBag /> Manage Booking</Link></li>
-            <li  className='mb-3'><Link className='hover:bg-green-200 rounded-lg' to="/owner/recent-payments"><FaShoppingBag /> Rental & Key Money</Link></li>
+            <li className='mt-3'><Link className='hover:bg-gray-200 rounded-lg' to="/owner"><MdDashboard /> Owner Dashboard</Link></li>
+            <li><Link className='hover:bg-gray-200 rounded-lg' to={`/owner/view-boarding/${user.email}`}><FaPlusCircle /> View Hostel</Link></li>
+            <li><Link className='hover:bg-gray-200 rounded-lg' to="/owner/add-listing"><FaPlusCircle /> Add Listing</Link></li>
+            <li><Link className='hover:bg-gray-200 rounded-lg' to="/owner/manage-items"><FaEdit /> Manage Listings</Link></li>
+            <li><Link className='hover:bg-gray-200 rounded-lg' to="/owner/manage-booking"><FaShoppingBag /> Manage Booking</Link></li>
+            <li  className='mb-3'><Link className='hover:bg-gray-200 rounded-lg' to="/owner/recent-payments"><FaShoppingBag /> Rental & Key Money</Link></li>
             <hr/>
-            <li className='mt-3'><Link to="/chats" className="hover:bg-green-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
-            <li><Link to="/" className="hover:bg-green-200 rounded-lg"><MdDashboard /> Home</Link></li>
-            <li><Link to="/browse" className="hover:bg-green-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
+            <li className='mt-3'><Link to="/chats" className="hover:bg-gray-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
+            <li><Link to="/" className="hover:bg-gray-200 rounded-lg"><MdDashboard /> Home</Link></li>
+            <li><Link to="/browse" className="hover:bg-gray-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
             <li><a className="hover:bg-red-200 rounded-lg" onClick={handleLogout}><TbLogout2/> Logout</a></li>
             </ul>
         </div>
