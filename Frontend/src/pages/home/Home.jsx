@@ -1,27 +1,28 @@
-import React from 'react'
-import Banner from '../../components/Banner'
-import UniversityHubLocator from './UniversityHubLocator'
-import PropertyShowcase from './PropertyShowcase'
-import Testimonials from './Testimonials'
-import AmenitiesSpotlight from './AmenitiesSpotlight'
-import FeaturesGrid from './FeaturesGrid'
-import CallToAction from './CallToAction'
-import ActionBanner from './ActionBanner'
-import Services from './Services'
+import React, { useState, useEffect } from 'react';
+import Banner from '../../components/Banner';
+import UniversityHubLocator from './UniversityHubLocator';
+import AmenitiesSpotlight from './AmenitiesSpotlight';
+import FeaturesGrid from './FeaturesGrid';
+import Services from './Services';
+import PopularPlaces from './PopularPlaces';
+import StatsSection from './StatsSection';
+import AIChatbot from '../../components/AIChatbot';
 
 const Home = () => {
+
   return (
     <div>
       <Banner/>
-      <ActionBanner/>
+      <PopularPlaces/>
+      <StatsSection/>
       <UniversityHubLocator/>
       <AmenitiesSpotlight/>
       <FeaturesGrid/>
-      <PropertyShowcase/>
-      <Testimonials/>
       <Services/>
-    </div>
-  )
-}
 
-export default Home
+      <AIChatbot />
+    </div>
+  );
+};
+
+export default Home;
