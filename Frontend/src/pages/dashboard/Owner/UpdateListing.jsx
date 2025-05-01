@@ -94,7 +94,8 @@ const UpdateListing = () => {
         amenities: selectedAmenities || item.amenities,
         price: data.price,
         available: data.available,
-        keyMoney: keyMoney
+        keyMoney: keyMoney,
+        status: 'Pending',
       };
 
       const response = await axiosSecure.patch(`/listing/${item._id}`, updatedListing);
