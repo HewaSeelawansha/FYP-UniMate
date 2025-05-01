@@ -113,18 +113,27 @@ const ViewBoarding = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto">
         {/* Header Section */}
-
-        <div className="flex xl:flex-row flex-col justify-between items-center mb-8">
-          <button
-            onClick={handleGoBack}
-            className="xl:mb-0 my-2 flex items-center text-green-600 hover:text-green-700 transition duration-200"
-          >
-            <IoIosArrowBack className="mr-2" /> Back
-          </button>
-          <h1 className="text-3xl font-bold text-gray-800">
-            {boarding.name}<span className='text-green-500'> Boarding</span>
-          </h1>
-          <div className="w-8"></div> {/* Spacer for alignment */}
+        <div className="flex flex-col lg:flex-row justify-between items-start md:items-center mb-8">
+          <div className=''>
+            <button
+              onClick={() => navigate(-1)}
+              className="mb-4 flex items-center text-green-600 hover:text-green-700 transition duration-200"
+            >
+              <IoIosArrowBack className="mr-2" /> Back
+            </button>
+            <h1 className="text-3xl font-bold text-gray-800">
+              {boarding.name}<span className='text-green-500'> Boarding</span>
+            </h1>
+          </div>
+          
+          {/* Filter */}
+          <div className="flex items-center space-x-2 mx-6 mt-4 md:mt-0">
+            <div className="mt-4 relative">
+              <h1 className={`${boarding?.status === "Approved" ? 'text-emerald-500' : 'text-yellow-500'} text-3xl font-bold bg-white shadow-xl rounded-full p-2`}>
+                {boarding?.status}
+              </h1>
+            </div>
+          </div>
         </div>
 
         {/* Image Carousel */}
