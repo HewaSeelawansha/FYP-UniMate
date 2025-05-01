@@ -1,5 +1,5 @@
 {
-  "name": "foodie-server",
+  "name": "unimate-server",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
