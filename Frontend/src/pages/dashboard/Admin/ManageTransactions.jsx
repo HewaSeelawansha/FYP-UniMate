@@ -120,7 +120,7 @@ const ManageTransactions = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto">
         {/* Header */}
         <div className="flex flex-col xl:flex-row justify-between items-start md:items-center mb-8">
@@ -320,8 +320,8 @@ const ManageTransactions = () => {
                           <span className="font-medium">{payment.listing?.name}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Room Type:</span>
-                          <span className="font-medium">{payment.listing?.type}</span>
+                          <span className="text-gray-600">Boarding:</span>
+                          <span className="font-medium">{payment.listing?.boarding}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Available beds:</span>
