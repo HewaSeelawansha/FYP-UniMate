@@ -128,18 +128,18 @@ const Browse = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-2">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-emerald-500 to-teal-600 pb-24 pt-32">
+      <div className="relative bg-green-200 pb-24 pt-32">
         <div className="container mx-auto px-4 relative z-10">
           <div className="container mx-auto text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl md:text-5xl font-bold mb-6 text-white"
+              className="text-4xl md:text-5xl font-bold mb-6 text-gray-900"
             >
-              Find Your <span className="text-emerald-200">Perfect</span> Student Home
+              Find Your <span className="text-green-500">Perfect</span> Student Home
             </motion.h1>
-            <p className="text-lg md:text-xl text-emerald-100 mb-8">
+            <p className="text-lg md:text-xl text-gray-600 mb-8">
               Discover comfortable, affordable accommodations tailored for student life
             </p>
             
@@ -158,7 +158,7 @@ const Browse = () => {
                   onChange={handleSearchChange}
                   className="w-full px-6 py-4 pr-12 rounded-full border-2 border-emerald-300 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 shadow-lg transition-all duration-300"
                 />
-                <button className="absolute right-4 top-1/2 transform -translate-y-1/2 text-emerald-600 hover:text-emerald-800 transition-colors">
+                <button className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-emerald-800 transition-colors">
                   {isLoading ? <FaSpinner className="animate-spin" /> : <FaSearch className="text-xl" />}
                 </button>
               </div>
@@ -176,10 +176,10 @@ const Browse = () => {
           {/* Mobile Filters Toggle */}
           <button 
             onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-            className="md:hidden flex items-center justify-between w-full px-4 py-3 bg-emerald-50 rounded-lg border border-emerald-100"
+            className={`${isFiltersOpen ? 'bg-green-200' : ''} md:hidden flex items-center justify-between w-full px-4 py-2 rounded-full border border-green-500`}
           >
-            <span className="font-medium text-emerald-800">Filters</span>
-            {isFiltersOpen ? <IoIosArrowUp className="text-emerald-600" /> : <IoIosArrowDown className="text-emerald-600" />}
+            <span className={`font-medium ${isFiltersOpen ? 'text-gray-700' : 'text-green-600'}`}>Filters</span>
+            {isFiltersOpen ? <IoIosArrowUp className="text-gray-700" /> : <IoIosArrowDown className="text-green-600" />}
           </button>
 
           {/* Category Filters - Desktop */}
@@ -190,51 +190,51 @@ const Browse = () => {
                 onClick={() => filterItems(category.id)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   selectedCategory === category.id
-                    ? 'bg-emerald-600 text-white font-semibold shadow-md'
-                    : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-100'
+                    ? 'bg-green-400 text-white font-semibold'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 {category.name}
               </button>
             ))}
+            <button
+              onClick={() => setIsAdvancedFiltersOpen(!isAdvancedFiltersOpen)}
+              className={`${isAdvancedFiltersOpen ? 'bg-green-400' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} hidden md:flex items-center rounded-full px-4 py-2`}
+            >
+              <span className={`${isAdvancedFiltersOpen ? 'bg-green-400 text-white font-semibold' : ''} text-sm font-medium mr-2`}>
+                {isAdvancedFiltersOpen ? 'Hide Filters' : 'More Filters'}
+              </span>
+              {isAdvancedFiltersOpen ? <IoIosArrowUp className="text-white" /> : <IoIosArrowDown className="text-gray-700" />}
+            </button>
           </div>
 
           {/* Sorting and Filters Toggle */}
           <div className="flex items-center gap-3">
             {/* Filters Toggle Button */}
-            <button
-              onClick={() => setIsAdvancedFiltersOpen(!isAdvancedFiltersOpen)}
-              className="hidden md:flex items-center bg-emerald-50 rounded-full px-4 py-2 border border-emerald-100 hover:bg-emerald-100 transition-colors"
-            >
-              <span className="text-sm font-medium text-emerald-800 mr-2">
-                {isAdvancedFiltersOpen ? 'Hide Filters' : 'More Filters'}
-              </span>
-              {isAdvancedFiltersOpen ? <IoIosArrowUp className="text-emerald-600" /> : <IoIosArrowDown className="text-emerald-600" />}
-            </button>
 
             {/* Sorting */}
-            <div className="flex border-none items-center bg-emerald-50 rounded-full overflow-hidden focus:outline-none border border-emerald-100">
-              <div className="pl-3 pr-2 py-3 border-none bg-emerald-600 text-white">
-                <FaFilter className="text-sm" />
+            <div className="flex border-none items-center bg-gray-100 rounded-full overflow-hidden focus:outline-none">
+                <div className="pl-3 pr-2 py-[11px] border-none bg-gray-800 text-white">
+                  <FaFilter className="text-sm" />
+                </div>
+                <select
+                  name="sort"
+                  id="sort"
+                  onChange={(e) => handleSortChange(e.target.value)}
+                  value={sortOptions}
+                  className="appearance-none bg-green-200 border border-none px-3 py-2 text-sm font-medium focus:ring-0 focus:outline-none"
+                  disabled={isLoading}
+                >
+                  <option value="">Sort by</option>
+                  <option value="newly">Newest First</option>
+                  <option value="A-Z">A-Z</option>
+                  <option value="Z-A">Z-A</option>
+                  <option value="low-high">Price: Low to High</option>
+                  <option value="high-low">Price: High to Low</option>
+                  <option value="d-l2h">Distance: Low to High</option>
+                  <option value="d-h2l">Distance: High to Low</option>
+                </select>
               </div>
-              <select
-                name="sort"
-                id="sort"
-                onChange={(e) => handleSortChange(e.target.value)}
-                value={sortOptions}
-                className="appearance-none bg-emerald-50 border-none px-3 py-2 text-sm font-medium text-emerald-800 focus:outline-none"
-                disabled={isLoading}
-              >
-                <option value="">Sort by</option>
-                <option value="newly">Newest First</option>
-                <option value="A-Z">A-Z</option>
-                <option value="Z-A">Z-A</option>
-                <option value="low-high">Price: Low to High</option>
-                <option value="high-low">Price: High to Low</option>
-                <option value="d-l2h">Distance: Low to High</option>
-                <option value="d-h2l">Distance: High to Low</option>
-              </select>
-            </div>
           </div>
         </div>
 
@@ -251,16 +251,19 @@ const Browse = () => {
               <div className="mt-4 space-y-6">
                 {/* Category Filters */}
                 <div>
-                  <h4 className="text-sm font-semibold text-emerald-800 mb-2">Room Type</h4>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Room Type</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {categories.map((category) => (
                       <button
-                        key={category.id}
-                        onClick={() => filterItems(category.id)}
-                        className={`px-3 py-2 rounded-full text-xs font-medium transition-colors ${
+                      key={category.id}
+                        onClick={() => {
+                          filterItems(category.id);
+                          setIsFiltersOpen(false);
+                        }}
+                        className={`px-3 py-2 rounded-full text-sm font-medium transition-colors ${
                           selectedCategory === category.id
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-100'
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
                         {category.name}
@@ -271,12 +274,12 @@ const Browse = () => {
 
                 {/* Gender Filter Dropdown */}
                 <div>
-                  <h4 className="text-sm font-semibold text-emerald-800 mb-2">Gender</h4>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Gender</h4>
                   <div className="relative">
                     <select
                       onChange={(e) => filterGender(e.target.value)}
                       value={selectedGender}
-                      className="w-full px-4 py-2 rounded-lg border border-blue-100 bg-blue-50 text-blue-800 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full px-4 py-2 rounded-full border border-none bg-green-200 text-gray-700 appearance-none focus:outline-none focus:ring-0"
                     >
                       <option value="">All Genders</option>
                       {genderOptions.map((option) => (
@@ -285,20 +288,17 @@ const Browse = () => {
                         </option>
                       ))}
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <IoIosArrowDown className="text-blue-600" />
-                    </div>
                   </div>
                 </div>
 
                 {/* Key Money Filter Dropdown */}
                 <div>
-                  <h4 className="text-sm font-semibold text-emerald-800 mb-2">Key Money</h4>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Key Money</h4>
                   <div className="relative">
                     <select
                       onChange={(e) => filterKeyMoney(e.target.value)}
                       value={selectedKeyMoney}
-                      className="w-full px-4 py-2 rounded-lg border border-purple-100 bg-purple-50 text-purple-800 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-300"
+                      className="w-full px-4 py-2 rounded-full border border-none bg-green-200 text-gray-700 appearance-none focus:outline-none focus:ring-0"
                     >
                       <option value="">All Key Money Options</option>
                       {keyMoneyOptions.map((option) => (
@@ -307,18 +307,15 @@ const Browse = () => {
                         </option>
                       ))}
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <IoIosArrowDown className="text-purple-600" />
-                    </div>
                   </div>
                 </div>
 
                 {/* Price Range Filter */}
                 <div>
-                  <h4 className="text-sm font-semibold text-emerald-800 mb-2">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">
                     Price Range: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
                   </h4>
-                  <div className="px-2 py-4">
+                  <div className="px-2 py-4 mx-1">
                     <Range
                       values={priceRange}
                       step={5000}
@@ -328,7 +325,7 @@ const Browse = () => {
                       renderTrack={({ props, children }) => (
                         <div
                           {...props}
-                          className="h-2 w-full bg-emerald-100 rounded-full"
+                          className="h-2 w-full bg-green-200 rounded-full"
                         >
                           {children}
                         </div>
@@ -336,7 +333,7 @@ const Browse = () => {
                       renderThumb={({ props }) => (
                         <div
                           {...props}
-                          className="h-5 w-5 rounded-full bg-emerald-600 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          className="h-4 w-4 rounded-full bg-green-500 shadow-md focus:outline-none focus:ring-2 focus:ring-green-600"
                         />
                       )}
                     />
@@ -345,10 +342,10 @@ const Browse = () => {
 
                 {/* Distance Range Filter */}
                 <div>
-                  <h4 className="text-sm font-semibold text-emerald-800 mb-2">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">
                     Distance: {distanceRange[0]}km - {distanceRange[1]}km
                   </h4>
-                  <div className="px-2 py-4">
+                  <div className="px-2 py-4 mx-1">
                     <Range
                       values={distanceRange}
                       step={1}
@@ -358,7 +355,7 @@ const Browse = () => {
                       renderTrack={({ props, children }) => (
                         <div
                           {...props}
-                          className="h-2 w-full bg-emerald-100 rounded-full"
+                          className="h-2 w-full bg-green-200 rounded-full"
                         >
                           {children}
                         </div>
@@ -366,7 +363,7 @@ const Browse = () => {
                       renderThumb={({ props }) => (
                         <div
                           {...props}
-                          className="h-5 w-5 rounded-full bg-emerald-600 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          className="h-4 w-4 rounded-full bg-green-500 shadow-md focus:outline-none focus:ring-2 focus:ring-green-600"
                         />
                       )}
                     />
@@ -379,16 +376,16 @@ const Browse = () => {
 
         {/* Desktop Advanced Filters Panel */}
         {isAdvancedFiltersOpen && (
-          <div className="hidden md:block mt-6 pt-6 border-t border-emerald-100">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="hidden md:block mt-6 pt-6 border-t border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {/* Gender Filter Dropdown */}
               <div>
-                <h4 className="text-sm font-semibold text-emerald-800 mb-3">Gender</h4>
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Gender</h4>
                 <div className="relative">
                   <select
                     onChange={(e) => filterGender(e.target.value)}
                     value={selectedGender}
-                    className="w-full px-4 py-2 rounded-lg border border-blue-100 bg-blue-50 text-blue-800 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    className="w-full px-4 py-2 rounded-full border-none bg-green-200 text-gray-700 appearance-none focus:outline-none focus:ring-0"
                   >
                     <option value="">All Genders</option>
                     {genderOptions.map((option) => (
@@ -397,20 +394,17 @@ const Browse = () => {
                       </option>
                     ))}
                   </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <IoIosArrowDown className="text-blue-600" />
-                  </div>
                 </div>
               </div>
 
               {/* Key Money Filter Dropdown */}
               <div>
-                <h4 className="text-sm font-semibold text-emerald-800 mb-3">Key Money</h4>
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Key Money</h4>
                 <div className="relative">
                   <select
                     onChange={(e) => filterKeyMoney(e.target.value)}
                     value={selectedKeyMoney}
-                    className="w-full px-4 py-2 rounded-lg border border-purple-100 bg-purple-50 text-purple-800 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-300"
+                    className="w-full px-4 py-2 rounded-full border-none bg-green-200 text-gray-700  appearance-none focus:outline-none focus:ring-0"
                   >
                     <option value="">All Key Money Options</option>
                     {keyMoneyOptions.map((option) => (
@@ -419,21 +413,15 @@ const Browse = () => {
                       </option>
                     ))}
                   </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <IoIosArrowDown className="text-purple-600" />
-                  </div>
                 </div>
               </div>
 
               {/* Price Range Filter */}
               <div>
-                <h4 className="text-sm font-semibold text-emerald-800 mb-3">
-                  Price Range
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                  Price Range - {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
                 </h4>
-                <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
-                  <div className="mb-4 text-center font-medium text-emerald-800">
-                    {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
-                  </div>
+                <div className="bg-green-200 p-4 rounded-full border-none">
                   <div className="px-2">
                     <Range
                       values={priceRange}
@@ -444,7 +432,7 @@ const Browse = () => {
                       renderTrack={({ props, children }) => (
                         <div
                           {...props}
-                          className="h-2 w-full bg-emerald-100 rounded-full"
+                          className="h-2 w-full bg-green-50 rounded-full"
                         >
                           {children}
                         </div>
@@ -452,7 +440,7 @@ const Browse = () => {
                       renderThumb={({ props }) => (
                         <div
                           {...props}
-                          className="h-5 w-5 rounded-full bg-emerald-600 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          className="h-4 w-4 rounded-full bg-green-400 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-600"
                         />
                       )}
                     />
@@ -462,13 +450,10 @@ const Browse = () => {
 
               {/* Distance Range Filter */}
               <div>
-                <h4 className="text-sm font-semibold text-emerald-800 mb-3">
-                  Distance (km)
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                  Distance (km) - {distanceRange[0]}km - {distanceRange[1]}km
                 </h4>
-                <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
-                  <div className="mb-4 text-center font-medium text-emerald-800">
-                    {distanceRange[0]}km - {distanceRange[1]}km
-                  </div>
+                <div className="bg-green-200 p-4 rounded-full border-none">
                   <div className="px-2">
                     <Range
                       values={distanceRange}
@@ -479,7 +464,7 @@ const Browse = () => {
                       renderTrack={({ props, children }) => (
                         <div
                           {...props}
-                          className="h-2 w-full bg-emerald-100 rounded-full"
+                          className="h-2 w-full bg-green-50 rounded-full"
                         >
                           {children}
                         </div>
@@ -487,7 +472,7 @@ const Browse = () => {
                       renderThumb={({ props }) => (
                         <div
                           {...props}
-                          className="h-5 w-5 rounded-full bg-emerald-600 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          className="h-4 w-4 rounded-full bg-green-400 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-600"
                         />
                       )}
                     />
@@ -525,14 +510,21 @@ const Browse = () => {
         {!isLoading && !error && (
           <div className="mb-6 flex justify-between items-center">
             <p className="text-gray-600">
-              Showing <span className="font-semibold text-emerald-700">{filteredItems.length}</span> of <span className="font-semibold text-emerald-700">{totalListings}</span> properties
+              Showing <span className="font-semibold">{filteredItems.length}</span> of <span className="font-semibold">{totalListings}</span> properties
             </p>
-            {(searchQuery || selectedCategory !== "all" || selectedGender !== "all" || selectedKeyMoney !== "all" || priceRange[0] > 0 || priceRange[1] < 100000 || distanceRange[0] > 0 || distanceRange[1] < 50) && (
+            {(searchQuery || 
+              selectedCategory !== "all" || 
+              selectedGender !== "all" || 
+              selectedKeyMoney !== "all" || 
+              priceRange[0] !== 0 || 
+              priceRange[1] !== 100000 || 
+              distanceRange[0] !== 0 ||
+              distanceRange[1] !== 50) && (
               <button
                 onClick={showAll}
-                className="flex items-center text-sm text-emerald-600 hover:text-emerald-800 font-medium"
+                className="flex items-center text-sm text-gray-500 hover:text-gray-700"
               >
-                Clear all filters
+                Clear filters
                 <FaTimes className="ml-1" />
               </button>
             )}
