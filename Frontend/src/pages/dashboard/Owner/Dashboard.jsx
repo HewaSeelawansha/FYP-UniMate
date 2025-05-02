@@ -154,7 +154,7 @@ const OwnerDashboard = () => {
             <div className="space-y-4">
               {recentPayments.length > 0 ? (
                 recentPayments.map((pay) => (
-                  <div key={pay._id} className="bg-blue-50 flex items-center justify-between p-4 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                  <div key={pay._id} className="bg-gray-50 flex items-center justify-between p-4 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
                     <div>
                       <p className="font-medium text-gray-800">{pay.email}</p>
                       <p className="text-sm text-gray-500 flex items-center gap-1">
@@ -190,7 +190,7 @@ const OwnerDashboard = () => {
             <div className="space-y-4">
               {recentListings.length > 0 ? (
                 recentListings.map((listing) => (
-                  <div key={listing._id} className="bg-blue-50 p-4 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                  <div key={listing._id} className="bg-gray-50 p-4 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
                     <div className="flex items-start space-x-3">
                       {listing.images?.length > 0 ? (
                         <img 
@@ -280,7 +280,7 @@ const OwnerDashboard = () => {
           <h2 className="text-xl font-bold text-gray-800 mb-6">Listing Fees Summary</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-blue-100">
+              <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Listing</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
