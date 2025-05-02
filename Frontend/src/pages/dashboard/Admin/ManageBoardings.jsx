@@ -122,7 +122,7 @@ const ManageBoardings = () => {
         <h1 className="mx-2 text-3xl font-bold text-gray-800">
         Manage Uploaded <span className='text-green-500'>Boarding Houses</span>
         </h1>
-        <div className="w-8"></div> {/* Spacer for alignment */}
+        <div className="w-8"></div> 
       </div>
 
       {/* Add a summary banner at the top */}
@@ -247,22 +247,6 @@ const ManageBoardings = () => {
                             <option value='Rejected'>Rejected</option>
                           </select>
                         </div>
-                        {/* <button 
-                          onClick={() => toggleListings(item._id)}
-                          className="py-2 px-2 font-semibold justify-center bg-green-500 p-1 rounded-lg flex items-center text-white hover:bg-green-600 transition duration-200"
-                        >
-                          {expandedBoarding === item._id ? (
-                            <>
-                              <FaChevronUp className="mr-1" />
-                              <span>Hide Listings</span>
-                            </>
-                          ) : (
-                            <>
-                              <span>Show Listings</span>
-                              <FaChevronDown className="ml-1" />
-                            </>
-                          )}
-                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -272,7 +256,6 @@ const ManageBoardings = () => {
                 {expandedBoarding === item._id && (
                   <div className="mt-6 border-t pt-4">
                     <h4 className="font-bold text-lg mb-4 flex items-center">
-                      <FaHome className="text-green mr-2" />
                       Listings from this boarding
                       {pendingListingsCount > 0 && (
                         <span className="ml-2 bg-red-100 text-red-800 text-sm font-medium px-2 py-0.5 rounded-full">
