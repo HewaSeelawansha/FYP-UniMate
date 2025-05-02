@@ -107,7 +107,7 @@ const ViewBookings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 md:px-6 lg:px-8">
       <div className="w-full mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start md:items-center mb-8">
@@ -202,7 +202,7 @@ const ViewBookings = () => {
                     <FaHome className="text-green-600" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-800">{item.listing?.name || 'Property'}</h4>
+                    <h4 className="font-medium text-gray-800">{item.listing?.name || 'Property'} in {item.listing?.boarding}</h4>
                     <p className="text-sm text-gray-500 mt-1">
                       Requested by <span className="text-blue-600">{item.email}</span>
                     </p>
@@ -238,34 +238,26 @@ const ViewBookings = () => {
                   </div>
                 </div>
             
-                {/* Payment Amount */}
-                {/* <div className="bg-green-50 p-3 rounded-lg mb-4">
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm font-medium text-gray-700">Total Amount</p>
-                    <p className="text-lg font-bold text-green-600">LKR {item.payment}</p>
-                  </div>
-                </div> */}
-            
                 {/* Action Buttons */}
                 <div className="flex flex-col w-full sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
-  <div className="flex w-full space-x-3">
-    <Link 
-      to={`/dashboard/view-listing/${item.listing._id}`}
-      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition duration-200"
-    >
-      <FcViewDetails className="mr-2" />
-      View Listing
-    </Link>
+                  <div className="flex w-full space-x-3">
+                    <Link 
+                      to={`/dashboard/view-listing/${item.listing._id}`}
+                      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition duration-200"
+                    >
+                      <FcViewDetails className="mr-2" />
+                      View Listing
+                    </Link>
 
-    <button 
-      onClick={() => handleChat(user.email, item.email)}
-      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 transition duration-200"
-    >
-      <TbSend2 className="mr-2" />
-      Message
-    </button>
-  </div>
-</div>
+                    <button 
+                      onClick={() => handleChat(user.email, item.email)}
+                      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 transition duration-200"
+                    >
+                      <TbSend2 className="mr-2" />
+                      Message
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
             ))}
@@ -278,8 +270,8 @@ const ViewBookings = () => {
             <h2 className="text-xl font-bold text-gray-800 mb-2">No Bookings Found</h2>
             <p className="text-gray-600 mb-4">
               {selectedCategory === "all" 
-                ? "You don't have any bookings yet." 
-                : "No bookings found for this listing."}
+                ? "This boarding don't have any bookings yet." 
+                : "No bookings found for this boarding house."}
             </p>
             {selectedCategory !== "all"?
             <button
