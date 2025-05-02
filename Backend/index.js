@@ -5,8 +5,52 @@ const port = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const http = require('http');
+const socketIO = require('socket.io'); 
+
 // This is your test secret API key.
 const stripe = require("stripe")(process.env.STRIPE_PK);
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize Socket.io
+const io = socketIO(server, {
+  cors: {
+    origin: "http://localhost:5173",
+  },
+});
+
+// Socket.io logic
+let activeUsers = [];
+
+io.on("connection", (socket) => {
+  console.log("A user connected");
+  
+  socket.on("new-user-add", (newUserId) => {
+    if (!activeUsers.some((user) => user.userId === newUserId)) {
+      activeUsers.push({ userId: newUserId, socketId: socket.id });
+      console.log("New User Connected", activeUsers);
+    }
+    io.emit("get-users", activeUsers);
+  });
+
+  socket.on("disconnect", () => {
+    activeUsers = activeUsers.filter((user) => user.socketId !== socket.id);
+    console.log("User Disconnected", activeUsers);
+    io.emit("get-users", activeUsers);
+  });
+
+  socket.on("send-message", (data) => {
+    const { receiverId } = data;
+    const user = activeUsers.find((user) => user.userId === receiverId);
+    console.log("Sending from socket to :", receiverId)
+    console.log("Data: ", data)
+    if (user) {
+      io.to(user.socketId).emit("recieve-message", data);
+    }
+  });
+});
 
 //middleware
 app.use(cors());
@@ -70,6 +114,6 @@ app.get('/', (req, res) => {
   res.send('Hello Baby!')
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Unimate listening on port ${port}`)
 });
