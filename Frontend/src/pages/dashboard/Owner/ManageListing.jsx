@@ -284,7 +284,7 @@ const ManageListing = () => {
         {filteredItems.length > 0 ? (
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {filteredItems.map((item) => (
-              <div key={item._id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+              <div key={item._id} className="bg-white border-l-4 border-emerald-500 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
                 {/* Listing Image */}
                 <div className="relative h-[300px] overflow-hidden">
                   {item.images && item.images.length > 0 ? (
