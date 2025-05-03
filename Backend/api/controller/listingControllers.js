@@ -184,9 +184,27 @@ const searchListing = async (req, res) => {
           query.keyMoney = 0;
         }
       }
+
+      if (req.query.priceMin) {
+        query.price = { $gte: parseInt(req.query.priceMin) };
+      }
+
+      if (req.query.priceMax) {
+        query.price = query.price || {};
+        query.price.$lte = parseInt(req.query.priceMax);
+      }
+      
+      if (req.query.distanceMin) {
+        query.distance = { $gte: parseInt(req.query.distanceMin) };
+      }
+
+      if (req.query.distanceMax) {
+        query.distance = query.distance || {};
+        query.distance.$lte = parseInt(req.query.distanceMax);
+      }
   
       // Sorting (for Browse page)
-      let sortOption = { createdAt: -1 }; // Default
+      let sortOption = { createdAt: -1 }; 
       if (sort) {
         const sortMap = {
           'newly': { createdAt: -1 },

@@ -67,10 +67,15 @@ const listingSchema = new Schema({
         enum: ['Pending', 'Approved', 'Rejected'],
         default: 'Pending'
     },
-    }, { 
-        timestamps: true 
-    }
-);
+    embeddingVector: {
+        type: [Number],
+        select: false
+    },
+}, { 
+    timestamps: true 
+});
+
+listingSchema.index({ embeddingVector: 'cosmosSearch' }, { name: 'vectorSearchIndex' });
 
 const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing;
