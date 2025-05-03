@@ -51,7 +51,20 @@ const OwnerLayout = () => {
     { id: 'cctv', label: 'CCTV' },
     { id: 'study', label: 'Study Area' },
     { id: 'parking', label: 'Parking' },
-    { id: 'gym', label: 'Gym' }
+    { id: 'gym', label: 'Gym' },
+    { id: 'laundry', label: 'Laundry Service' },
+    { id: 'kitchen', label: 'Shared Kitchen' },
+    { id: 'A/C', label: 'Air Conditioning' },
+    { id: 'cleaning', label: 'Room Cleaning' },
+    { id: 'elevator', label: 'Elevator' },
+    { id: 'security', label: 'Security Guard' },
+    { id: 'water', label: 'Hot & Cold Water' },
+    { id: 'tv', label: 'TV' },
+    { id: 'balcony', label: 'Balcony' },
+    { id: 'petfriendly', label: 'Pet Friendly' },
+    { id: 'bed', label: 'Bed & Mattress' },
+    { id: 'fan', label: 'Ceiling Fan' },
+    { id: 'desk', label: 'Study Desk' }
   ];
 
   const handleLogout = () => {
@@ -435,7 +448,7 @@ const OwnerLayout = () => {
                           <input
                             type="checkbox"
                             {...register(amenity.id)}
-                            className="checkbox checkbox-sm border-gray-300 rounded text-orange-600 focus:ring-orange-500"
+                            className="border-gray-300 rounded text-green-600 focus:ring-0"
                           />
                           <span className="text-sm text-gray-700">{amenity.label}</span>
                         </label>

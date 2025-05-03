@@ -197,7 +197,7 @@ const AdminDashboard = () => {
           <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
             <Link 
-              to="/dashboard/manage-boardings" 
+              to="/dashboard/manage-boarding" 
               className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition duration-200 flex items-center"
             >
               <div className="bg-green-100 p-3 rounded-full mr-4">
@@ -210,27 +210,27 @@ const AdminDashboard = () => {
             </Link>
 
             <Link 
-              to="/dashboard/view-bookings" 
+              to="/dashboard/bookings" 
               className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition duration-200 flex items-center"
             >
               <div className="bg-blue-100 p-3 rounded-full mr-4">
                 <FaCalendarAlt className="text-blue-600" />
               </div>
               <div>
-                <h3 className="font-medium text-gray-800">Manage Bookings</h3>
+                <h3 className="font-medium text-gray-800">Review Bookings</h3>
                 <p className="text-sm text-gray-500">{pendingBookings} pending approval</p>
               </div>
             </Link>
 
             <Link 
-              to="/dashboard/manage-listings" 
+              to="/dashboard/transactions" 
               className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition duration-200 flex items-center"
             >
               <div className="bg-purple-100 p-3 rounded-full mr-4">
                 <FcViewDetails className="text-xl" />
               </div>
               <div>
-                <h3 className="font-medium text-gray-800">Review Listings</h3>
+                <h3 className="font-medium text-gray-800">Review Transactions</h3>
                 <p className="text-sm text-gray-500">{pendingListings} pending approval</p>
               </div>
             </Link>

@@ -101,16 +101,16 @@ const Users = () => {
         {users.map((user, index) => (
           <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
             {/* Card Header */}
-            <div className="bg-gradient-to-r from-green-500 to-green-400 p-4 text-white">
+            <div className="border-green-500 border-l-4 bg-emerald-50 p-4 text-green-700">
               <div className="flex justify-between items-center">
                 <h3 className="font-bold text-lg flex items-center">
                   <FaUser className="mr-2" />
                   {user.name}
                 </h3>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  user.role === 'admin' ? 'bg-blue-500 text-white' :
-                  user.role === 'owner' ? 'bg-blue-100 text-blue-800' :
-                  'bg-emerald-100 text-emerald-800'
+                  user.role === 'admin' ? 'bg-green-200 text-green-700' :
+                  user.role === 'owner' ? 'bg-purple-100 text-purple-800' :
+                  'bg-yellow-100 text-yellow-800'
                 }`}>
                   {user.role === 'admin' ? 'Admin' : user.role === 'owner' ? 'Owner' : 'Student'}
                 </span>
@@ -146,7 +146,7 @@ const Users = () => {
                 <div className="flex items-center space-x-3">
                   <button 
                     onClick={() => handleDeleteUser(user)}
-                    className="flex items-center text-white bg-rose-600 hover:bg-rose-700 px-3 py-1 rounded-lg transition duration-200"
+                    className="flex items-center text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1 rounded-lg transition duration-200"
                   >
                     <FaTrashAlt className="mr-1" />
                     Delete

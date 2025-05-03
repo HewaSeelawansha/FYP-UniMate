@@ -1,45 +1,44 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import useBoarding from '../../hooks/useBoarding';
 
 const UniversityHubLocator = () => {
-  const universities = [
-    { name: "Main Campus", position: [6.9271, 79.8612], hostels: 28 },
-    { name: "Engineering Faculty", position: [6.9205, 79.8673], hostels: 15 },
-    { name: "Medical School", position: [6.9328, 79.8576], hostels: 12 }
-  ];
+  const [boardings, boardingLoading, refetchBoarding] = useBoarding();
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Find Hostels Near Your Campus</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Interactive map showing prime locations near university hubs
-          </p>
+        <div className='text-left'>
+          <p className='text-xl font-semibold uppercase text-green-500'>Interactive Map</p>
+          <h2 className='title md:w-[550px]'>Boarding Houses Near Your University </h2>
         </div>
         
-        <div className="rounded-xl overflow-hidden shadow-xl h-96 relative">
+        <div className="z-10 mt-8 rounded-xl overflow-hidden shadow-xl xl:h-[700px] h-[500px] relative">
           <MapContainer 
-            center={[6.9271, 79.8612]} 
-            zoom={14} 
+            center={[6.841134387957852, 80.00295750709832
+            ]} 
+            zoom={13} 
             style={{ height: "100%", width: "100%" }}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {universities.map((uni, index) => (
-              <Marker key={index} position={uni.position}>
+            {/* NSBM */}
+            <Marker position={[6.821380, 80.041691]}>
+              <Popup>
+                <div className="font-semibold">NSBM Green University Town</div>
+              </Popup>
+            </Marker>
+            {boardings.map((boarding, index) => (
+              <Marker key={index} position={[boarding.lat, boarding.lng]}>
                 <Popup>
-                  <div className="font-semibold">{uni.name}</div>
-                  <div>{uni.hostels} verified hostels nearby</div>
+                  <div className="font-semibold">{boarding.name}</div>
+                  <div className="font-semibold">{boarding.owner}</div>
                 </Popup>
               </Marker>
             ))}
           </MapContainer>
-          <div className="absolute bottom-4 left-4 bg-white px-4 py-2 rounded-lg shadow-md">
-            <button className="text-green-600 font-medium">View All Campus Areas →</button>
-          </div>
         </div>
       </div>
     </section>

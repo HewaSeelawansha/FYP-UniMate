@@ -82,7 +82,7 @@ const Bookings = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
-            Your <span className="text-green-500">Your Bookings</span>
+            Your <span className="text-green-500">Bookings</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8">
             View all your booking and contact property owners.

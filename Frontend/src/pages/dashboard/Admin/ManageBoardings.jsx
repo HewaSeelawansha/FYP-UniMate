@@ -6,7 +6,7 @@ import { FcViewDetails } from "react-icons/fc";
 import { Link, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import useAxiosSecure from '../../../hooks/useAxiosSecure'
-import { IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const ManageBoardings = () => {
   const [boarding, boardingLoading, refetchBoarding] = useBoarding();
@@ -81,6 +81,43 @@ const ManageBoardings = () => {
         text: 'An error occurred while updating the listing status.',
         showConfirmButton: true,
         background: '#ffffff'
+      });
+    }
+  };
+
+  const handleChat = async (sender, receiver) => {
+    const chatData = {
+      senderId: sender,
+      receiverId: receiver,
+    };
+  
+    try {
+      const existingChat = await axiosSecure.get(`/chat/find/${receiver}/${sender}`);
+      if (existingChat.data !== null) {
+        navigate(`/chats?chatId=${existingChat.data._id}`);
+        return;
+      }
+  
+      const response = await axiosSecure.post(`/chat`, chatData);
+  
+      if (response.data) {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Chat Created Successfully',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate(`/chats?chatId=${response.data._id}`);
+      }
+    } catch (error) {
+      console.error('Error creating or fetching chat:', error);
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'An error occurred while processing the chat request.',
+        showConfirmButton: true,
       });
     }
   };
@@ -163,7 +200,7 @@ const ManageBoardings = () => {
                       )}
                     </span>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      item.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                      item.status === 'Approved' ? 'bg-green-200 text-green-800' :
                       item.status === 'Rejected' ? 'bg-red-100 text-red-800' :
                       'bg-yellow-100 text-yellow-800'
                     }`}>
@@ -212,7 +249,7 @@ const ManageBoardings = () => {
 
                       <button 
                         onClick={() => toggleListings(item._id)}
-                        className="mb-2 lg:mb-0 flex items-center px-3 py-[7px] bg-gray-400 rounded-lg font-semibold text-white hover:bg-gray-500 transition duration-200"
+                        className={`${expandedBoarding === item._id && 'bg-emerald-50'} mb-2 lg:mb-0 flex items-center px-3 py-[7px] border border-green-500 rounded-lg font-semibold text-green-500 hover:bg-emerald-50 transition duration-200`}
                       >
                         {expandedBoarding === item._id ? (
                           <>
@@ -231,14 +268,21 @@ const ManageBoardings = () => {
 
                         <Link 
                           to={`/dashboard/view-boarding/${item.owner}`}
-                          className="flex items-center px-3 py-[7px] bg-emerald-400 rounded-lg font-semibold text-white hover:bg-emerald-500 transition duration-200"
+                          className="flex items-center px-3 py-[8px] bg-emerald-400 rounded-lg font-semibold text-white hover:bg-emerald-500 transition duration-200"
                         >
                           <span>View</span>
                         </Link>
 
+                        <button 
+                          onClick={() => handleChat(user.email, item.owner)} 
+                          className="flex items-center px-3 py-[8px] bg-emerald-400 rounded-lg font-semibold text-white hover:bg-emerald-500 transition duration-200"
+                        >
+                          Contact
+                        </button>
+
                         <div className="flex items-center space-x-2">
                           <select
-                            className="rounded-lg border-gray-300 text-sm focus:ring-green-500 focus:border-green-500"
+                            className="rounded-lg border-green-500 text-green-500 text-sm focus:ring-0 focus:border-green-500"
                             onChange={(e) => handleBoardingStatus(item._id, e.target.value)}
                             defaultValue={item.status}
                           >
@@ -270,7 +314,7 @@ const ManageBoardings = () => {
                           <div 
                             key={idx} 
                             className={`p-4 rounded-lg ${listing.status === 'Pending' &&
-                              'bg-red-50 border-l-4 border-red-500'} border-l-4 border-emerald-500 bg-gray-100 max-h-96 overflow-hidden`}
+                              'bg-red-50 border-l-4 border-red-500'} border-l-4 border-emerald-500 bg-emerald-50 max-h-96 overflow-hidden`}
                           >
                             {/* Top Row - Name, Status, and Pay Status */}
                             <div className="flex justify-between items-center mb-3">
@@ -356,14 +400,14 @@ const ManageBoardings = () => {
                             <div className="flex justify-between items-center border-t pt-3">
                               <Link 
                                 to={`/dashboard/view-listing/${listing._id}`}
-                                className="flex items-center px-3 py-[5px] bg-blue-400 rounded-lg font-semibold text-white hover:bg-blue-500 transition duration-200"
+                                className="flex items-center px-3 py-[5px] bg-emerald-400 rounded-lg font-semibold text-white hover:bg-emerald-500 transition duration-200"
                               >
                                 <span>View Details</span>
                               </Link>
                               
                               <div className="flex items-center space-x-2">
                                 <select
-                                  className="rounded-lg  px-3 py-[5px] border-gray-300 text-sm focus:ring-green-500 focus:border-green-500"
+                                  className="rounded-lg border-green-500 text-green-500 text-sm focus:ring-0 focus:border-green-500 px-3 py-[5px]"
                                   defaultValue={listing.status}
                                   onChange={(e) => handleListingStatus(listing._id, e.target.value)}
                                 >

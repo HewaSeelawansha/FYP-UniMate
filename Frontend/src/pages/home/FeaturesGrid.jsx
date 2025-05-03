@@ -26,20 +26,26 @@ const FeaturesGrid = () => {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+
+        {/* <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose StudentHomes</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             We've designed our platform specifically for student needs and budgets
           </p>
+        </div> */}
+
+        <div className='text-left'>
+          <p className='text-xl font-semibold uppercase text-green-500'>Why Choose UniMate</p>
+          <h2 className='title md:w-[550px]'>Specifically for student needs and budgets</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="bg-gray-50 p-8 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-gray-100"
+              className="bg-white shadow-md p-8 rounded-xl hover:shadow-2xl transition-all duration-300 border border-green-500"
             >
               <div className="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
                 {feature.icon}

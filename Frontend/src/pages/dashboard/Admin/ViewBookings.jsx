@@ -7,7 +7,7 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAuth from '../../../hooks/useAuth';
 import useMyListing from '../../../hooks/useMyListing';
 import { TbSend2 } from 'react-icons/tb';
-import { IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import useBoarding from '../../../hooks/useBoarding';
 
 const ViewBookings = () => {
@@ -119,7 +119,7 @@ const ViewBookings = () => {
               <IoIosArrowBack className="mr-2" /> Back
             </button>
             <h1 className="text-3xl font-bold text-gray-800">
-              Manage <span className="text-green-500">Bookings</span>
+              View <span className="text-green-500">Bookings</span>
             </h1>
           </div>
           
@@ -168,7 +168,7 @@ const ViewBookings = () => {
               <div key={index} className="mb-6 bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition duration-200">
               {/* Booking Header */}
               <div className={`px-5 py-4 ${
-                item.status === 'Approved' ? 'bg-green-50 border-l-4 border-green-500' :
+                item.status === 'Approved' ? 'bg-emerald-50 border-l-4 border-green-500' :
                 item.status === 'Rejected' ? 'bg-red-50 border-l-4 border-red-500' :
                 'bg-yellow-50 border-l-4 border-yellow-500'
               }`}>
@@ -202,10 +202,7 @@ const ViewBookings = () => {
                     <FaHome className="text-green-600" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-800">{item.listing?.name || 'Property'} in {item.listing?.boarding}</h4>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Requested by <span className="text-blue-600">{item.email}</span>
-                    </p>
+                    <h4 className="font-medium text-gray-800 mt-1">{item.listing?.name || 'Property'} in {item.listing?.boarding}</h4>
                   </div>
                 </div>
             
@@ -243,7 +240,7 @@ const ViewBookings = () => {
                   <div className="flex w-full space-x-3">
                     <Link 
                       to={`/dashboard/view-listing/${item.listing._id}`}
-                      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition duration-200"
+                      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-sky-50 text-blue-600 hover:bg-blue-100 transition duration-200"
                     >
                       <FcViewDetails className="mr-2" />
                       View Listing
@@ -251,10 +248,18 @@ const ViewBookings = () => {
 
                     <button 
                       onClick={() => handleChat(user.email, item.email)}
-                      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 transition duration-200"
+                      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-emerald-50 text-green-600 hover:bg-green-100 transition duration-200"
                     >
-                      <TbSend2 className="mr-2" />
-                      Message
+                      Contact Student
+                      <IoIosArrowForward className="ml-1" />
+                    </button>
+
+                    <button 
+                      onClick={() => handleChat(user.email, item.listing.owner)}
+                      className="w-1/2 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg bg-yellow-50 text-yellow-600 hover:bg-yellow-100 transition duration-200"
+                    >
+                      Contact Owner
+                      <IoIosArrowForward className="ml-1" />
                     </button>
                   </div>
                 </div>

@@ -238,7 +238,7 @@ const ManageTransactions = () => {
             {filteredPayments.map((payment, index) => (
               <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 {/* Payment Header */}
-                <div className="bg-green-200 px-6 py-4 border-b border-gray-200">
+                <div className="bg-emerald-50 border-l-4 border-green-500 px-6 py-4">
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex items-center mb-2 lg:mb-0">
                       <FaCheckCircle className="text-green-700 text-lg mr-2" />
@@ -256,7 +256,7 @@ const ManageTransactions = () => {
                 <div className="p-6">
                   <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                     {/* Payment Details */}
-                    <div className="space-y-4">
+                    <div className="pb-2 border-b space-y-4">
                       <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
                         Transaction Details
                       </h3>
@@ -279,7 +279,7 @@ const ManageTransactions = () => {
                     </div>
 
                     {/* Student Details */}
-                    <div className="space-y-4">
+                    <div className="pb-2 border-b space-y-4">
                       <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
                         Booking Details
                       </h3>
@@ -310,7 +310,7 @@ const ManageTransactions = () => {
                     </div>
 
                     {/* Listing Details */}
-                    <div className="space-y-4">
+                    <div className="pb-2 border-b space-y-4">
                       <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
                         Accommodation
                       </h3>
@@ -332,12 +332,19 @@ const ManageTransactions = () => {
                   </div>
 
                   {/* Action Button */}
-                  <div className="mt-6 flex justify-end">
+                  <div className="mt-6 flex justify-between">
+                    <button 
+                      onClick={() => handleChat(user.email, payment.email)} 
+                      className="flex items-center text-green-600 hover:text-green-700 font-medium"
+                    >
+                      Contact Student <IoIosArrowForward className="ml-1" />
+                    </button>
+
                     <button 
                       onClick={() => handleChat(user.email, payment.listing.owner)} 
                       className="flex items-center text-green-600 hover:text-green-700 font-medium"
                     >
-                      Contact Student <IoIosArrowForward className="ml-1" />
+                      Contact Owner <IoIosArrowForward className="ml-1" />
                     </button>
                   </div>
                 </div>
