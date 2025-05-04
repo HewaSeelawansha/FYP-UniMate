@@ -7,12 +7,14 @@ import { AuthContext } from "../contexts/AuthProvider";
 import axios from "axios";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import { FcGoogle } from "react-icons/fc";
+import logo from "/logon.png";
 
 const Signup = () => {
     const {
         register,
         handleSubmit,
         formState: { errors },
+        getValues,
       } = useForm();
 
       const {createUser, signUpWithGmail, updateUserProfile, sendEmail, logOut} = useContext(AuthContext);
@@ -51,6 +53,11 @@ const Signup = () => {
       // };
 
       const onSubmit = (data) => {
+        if(data.password !== data.confirmPassword){
+          setErrorMessage("Passwords do not match");
+          return;
+        }
+
         setIsLoading(true);
         setErrorMessage("");
 
@@ -84,6 +91,9 @@ const Signup = () => {
             } else {
               setErrorMessage(error.message || "Signup failed. Please try again.");
             }
+          })
+          .then(()=>{
+            setIsLoading(false);
           });
       };
 
@@ -108,8 +118,11 @@ const Signup = () => {
       };
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+          <div className="max-w-lg w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
             <div className="text-center">
+              <div className="flex justify-center">
+                <img src={logo} alt="" className="w-[150px]" />
+              </div>
               <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
                 Create your account
               </h2>
@@ -182,6 +195,27 @@ const Signup = () => {
                   />
                   {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
                 </div>
+
+                {/* Confirm Password */}
+                <div className="mt-4">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                    Confirm Password
+                  </label>
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+                    placeholder="Re-enter your password"
+                    {...register("confirmPassword", { 
+                      required: "Please confirm your password",
+                      validate: (value) => 
+                        value === getValues("password") || "Passwords do not match"
+                    })}
+                  />
+                  {errors.confirmPassword && <span className="text-red-500 text-sm">{errors.confirmPassword.message}</span>}
+                </div>
               </div>
     
               {/* Error message */}
@@ -216,7 +250,7 @@ const Signup = () => {
             <div className="mt-4">
               <button
                 onClick={() => navigate('/')}
-                className="w-full flex justify-center py-3 px-4 border border-emerald-500 text-sm font-semibold rounded-md text-emerald-600 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                className="w-full flex justify-center py-3 px-4 border border-emerald-500 text-sm font-semibold rounded-md text-emerald-600 bg-white hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               >
                 Continue as Guest
               </button>
