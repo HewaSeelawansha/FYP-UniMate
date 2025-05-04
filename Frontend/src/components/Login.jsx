@@ -7,6 +7,7 @@ import axios from "axios";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import useAuth from "../hooks/useAuth";
 import { FcGoogle } from "react-icons/fc";
+import logo from "/logon.png";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -84,8 +85,11 @@ const Login = () => {
 
   return (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+    <div className="max-w-lg w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
       <div className="text-center">
+        <div className="flex justify-center">
+          <img src={logo} alt="" className="w-[150px]" />
+        </div>
         <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
           Welcome back
         </h2>
