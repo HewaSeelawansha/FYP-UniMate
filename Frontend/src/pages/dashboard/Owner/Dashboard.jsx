@@ -264,13 +264,13 @@ const OwnerDashboard = () => {
             </Link>
             
             <Link 
-              to="/owner/view-boarding" 
+              to="/owner/recent-payments" 
               className="p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition flex items-center gap-3"
             >
               <div className="p-2 rounded-full bg-orange-100 text-orange-600">
                 <FaChartLine size={20} />
               </div>
-              <span className="font-medium text-gray-700">View All Boardings</span>
+              <span className="font-medium text-gray-700">Received Payments</span>
             </Link>
           </div>
         </div>
