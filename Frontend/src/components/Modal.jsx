@@ -7,6 +7,7 @@ import axios from "axios";
 import useAuth from "../hooks/useAuth";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import { FcGoogle } from "react-icons/fc";
+import logo from "/logon.png";
 
 const Modal = () => {
     const {
@@ -77,14 +78,17 @@ const Modal = () => {
     };
     return (
       <dialog id="my_modal_5" className="modal modal-middle">
-        <div className="modal-box max-w-md p-10 rounded-xl shadow-lg">
+        <div className="modal-box max-w-md py-6 px-10 rounded-xl shadow-lg">
           <button 
             onClick={() => document.getElementById("my_modal_5").close()}
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
           >✕</button>
     
           <div className="text-center">
-            <h3 className="text-3xl font-extrabold text-gray-900">
+            <div className="flex justify-center">
+              <img src={logo} alt="" className="w-[150px]" />
+            </div>
+            <h3 className="mt-4 text-3xl font-extrabold text-gray-900">
               Welcome back
             </h3>
             <p className="mt-2 text-sm text-gray-600">
