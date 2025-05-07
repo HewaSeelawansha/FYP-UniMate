@@ -6,6 +6,11 @@ const listingSchema = new Schema({
         type: String,
         required: true
     },
+    boardingID: {
+        type: Schema.Types.ObjectId,
+        ref: 'Boarding',
+        required: true
+    },
     distance: {
         type: Number,
         required: true,
@@ -66,11 +71,7 @@ const listingSchema = new Schema({
         type: String,
         enum: ['Pending', 'Approved', 'Rejected'],
         default: 'Pending'
-    },
-    embeddingVector: {
-        type: [Number],
-        select: false
-    },
+    }
 }, { 
     timestamps: true 
 });
