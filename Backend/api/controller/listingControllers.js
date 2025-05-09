@@ -122,7 +122,7 @@ const updateListing = async (req, res) => {
     }
   };
 
-  // search an existing listing
+// search an existing listing
 // const searchListing = async (req, res) => {
 //     try {
 //         const { q, type, sort, page = 1, limit = 10 } = req.query;
@@ -305,18 +305,6 @@ const searchListing = async (req, res) => {
       }
     }
     
-    // Regular search functionality - now includes boarding fields
-    if (q) {
-      query.$or = [
-        { name: { $regex: q, $options: 'i' } },
-        { description: { $regex: q, $options: 'i' } },
-        { type: { $regex: q, $options: 'i' } },
-        { 'boardingID.name': { $regex: q, $options: 'i' } },
-        { 'boardingID.address': { $regex: q, $options: 'i' } },
-        { 'boardingID.description': { $regex: q, $options: 'i' } }
-      ];
-    }
-    
     // Additional filters
     if (type && type !== 'all') query.type = type;
     if (gender && gender !== 'all') query.gender = gender;
@@ -348,55 +336,153 @@ const searchListing = async (req, res) => {
       'd-h2l': { distance: -1 }
     };
     const sortOption = sortMap[sort] || { createdAt: -1 };
-    
-    // Execute query with population
-    let results, total;
+
+    // Build aggregation pipeline
+    const pipeline = [
+      { $match: query },
+      { $lookup: {
+          from: 'boardings',
+          localField: 'boardingID',
+          foreignField: '_id',
+          as: 'boardingData'
+      }},
+      { $unwind: '$boardingData' }
+    ];
+
+    // Add initial broad search match if query exists
+    if (q) {
+      const searchWords = q.split(' ').filter(word => word.length > 0);
+      const regexPatterns = searchWords.map(word => new RegExp(word, 'i'));
+      
+      pipeline.push({
+        $match: {
+          $or: [
+            { name: { $in: regexPatterns } },
+            { description: { $in: regexPatterns } },
+            { type: { $in: regexPatterns } },
+            { 'boardingData.name': { $in: regexPatterns } },
+            { 'boardingData.address': { $in: regexPatterns } },
+            { 'boardingData.description': { $in: regexPatterns } }
+          ]
+        }
+      });
+    }
+
+    // Add count stage before pagination for total count
+    const countPipeline = [...pipeline, { $count: 'total' }];
+    const totalResult = await Listing.aggregate(countPipeline);
+    const total = totalResult[0]?.total || 0;
+
+    // Add sorting and pagination
+    pipeline.push({ $sort: sortOption });
     
     if (limit) {
-      results = await Listing.find(query)
-        .populate('boardingID')
-        .sort(sortOption)
-        .skip((page - 1) * limit)
-        .limit(parseInt(limit));
-      total = await Listing.countDocuments(query);
-    } else {
-      results = await Listing.find(query)
-        .populate('boardingID')
-        .sort(sortOption);
-      total = results.length;
+      pipeline.push(
+        { $skip: (page - 1) * limit },
+        { $limit: parseInt(limit) }
+      );
     }
-    
-    // Enhanced TF-IDF ranking that includes boarding data
+
+    // Execute aggregation
+    let results = await Listing.aggregate(pipeline);
+
+    // Enhanced relevance scoring with NLP
     if (q && results.length > 0) {
       const tfidf = createSearchIndex(results);
       const searchTerms = preprocessText(q);
+      const searchWords = q.toLowerCase().split(' ');
       
       const scoredResults = results.map(listing => {
         let score = 0;
         
-        // Score for individual terms
+        // Get all text fields for this listing
+        const listingText = [
+          listing.name,
+          listing.description,
+          listing.type,
+          listing.boardingData?.name || '',
+          listing.boardingData?.address || '',
+          listing.boardingData?.description || '',
+          ...(listing.amenities || []),
+          ...(listing.boardingData?.amenities || [])
+        ].filter(Boolean).join(' ').toLowerCase();
+        
+        const listingPreprocessed = preprocessText(listingText);
+        
+        // Score for individual terms using TF-IDF
         searchTerms.split(' ').forEach(term => {
+          // TF-IDF score
           tfidf.tfidfs(term, (i, measure) => {
             if (i === results.indexOf(listing)) score += measure;
           });
+          
+          // Partial match bonus
+          if (listingPreprocessed.includes(term)) {
+            score += 0.7;
+          }
         });
         
-        // Bonus for exact matches in listing
-        if (listing.name.toLowerCase().includes(q.toLowerCase())) {
+        // Exact match bonuses
+        searchWords.forEach(word => {
+          // Name matches
+          if (listing.name.toLowerCase().includes(word)) {
+            score += 1.5;
+          }
+          
+          // Boarding name matches
+          if (listing.boardingData?.name.toLowerCase().includes(word)) {
+            score += 1.2;
+          }
+          
+          // Address matches (higher weight for location terms)
+          if (listing.boardingData?.address.toLowerCase().includes(word)) {
+            score += 1.8;
+          }
+          
+          // Type matches
+          if (listing.type.toLowerCase().includes(word)) {
+            score += 1.0;
+          }
+        });
+        
+        // Bonus for matching all search terms
+        const allTermsMatch = searchTerms.split(' ').every(term => 
+          listingPreprocessed.includes(term)
+        );
+        if (allTermsMatch) {
           score += 2.0;
         }
-        // Bonus for exact matches in boarding
-        if (listing.boardingID?.name.toLowerCase().includes(q.toLowerCase())) {
-          score += 1.5;
-        }
-        if (listing.boardingID?.address.toLowerCase().includes(q.toLowerCase())) {
-          score += 1.5;
+        
+        // Bonus for matching the exact phrase
+        if (listingText.includes(q.toLowerCase())) {
+          score += 3.0;
         }
         
-        return { ...listing._doc, relevanceScore: score };
+        // Additional location-based scoring
+        if (listing.boardingData?.address) {
+          const addressTerms = preprocessText(listing.boardingData.address).split(' ');
+          searchTerms.split(' ').forEach(term => {
+            if (addressTerms.includes(term)) {
+              score += 1.5;
+            }
+          });
+        }
+        
+        return { ...listing, relevanceScore: score };
       });
       
-      results = scoredResults.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      // Sort by relevance score, then by any other sort option if scores are equal
+      results = scoredResults.sort((a, b) => {
+        if (b.relevanceScore !== a.relevanceScore) {
+          return b.relevanceScore - a.relevanceScore;
+        }
+        // Fall back to original sort option if relevance is equal
+        const sortField = Object.keys(sortOption)[0];
+        const sortDirection = sortOption[sortField];
+        return sortDirection === 1 ? 
+          (a[sortField] > b[sortField] ? 1 : -1) :
+          (a[sortField] < b[sortField] ? 1 : -1);
+      });
     }
 
     // Response formatting
@@ -408,6 +494,12 @@ const searchListing = async (req, res) => {
     if (limit) {
       response.page = parseInt(page);
       response.pages = Math.ceil(total / limit);
+    }
+    
+    // Add debug information if requested
+    if (req.query.debug) {
+      response.searchTerms = q ? preprocessText(q) : null;
+      response.scoringExplanation = "Results are scored based on term frequency, exact matches, location terms, and type matches";
     }
     
     res.json(req.query.minimal ? results : response);
