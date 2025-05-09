@@ -7,15 +7,18 @@ const stemmer = natural.PorterStemmer;
 const stopwords = new Set([...natural.stopwords, 'in', 'at', 'on', 'of', 'the']);
 
 const preprocessText = (text) => {
-  if (!text) return '';
-  let processed = text.toLowerCase().replace(/'/g, '');
-  processed = processed.replace(/[^\w\s]/gi, '');
-  const tokens = tokenizer.tokenize(processed) || [];
-  return tokens
-    .filter(token => !stopwords.has(token) && token.length > 2)
-    .map(token => stemmer.stem(token))
-    .join(' ');
-};
+    if (!text) return '';
+    let processed = text.toLowerCase()
+      .replace(/'/g, '')       // Remove apostrophes
+      .replace(/\b's\b/g, '')  // Remove possessive 's
+      .replace(/[^\w\s]/gi, ' '); // Replace other special chars with space
+    
+    const tokens = tokenizer.tokenize(processed) || [];
+    return tokens
+      .filter(token => !stopwords.has(token) && token.length > 2)
+      .map(token => stemmer.stem(token))
+      .join(' ');
+  };
 
 const createSearchIndex = (listings) => {
   const tfidf = new TfIdf();
