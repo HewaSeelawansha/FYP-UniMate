@@ -9,7 +9,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 
 const Users = () => {
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   const { refetch, data: users = [], isLoading } = useQuery({
     queryKey: ['users'], 
@@ -143,15 +143,17 @@ const Users = () => {
                   <span>View Details</span>
                 </Link>
 
-                <div className="flex items-center space-x-3">
-                  <button 
-                    onClick={() => handleDeleteUser(user)}
-                    className="flex items-center text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1 rounded-lg transition duration-200"
-                  >
-                    <FaTrashAlt className="mr-1" />
-                    Delete
-                  </button>
-                </div>
+                {user.role !== 'admin' &&
+                  <div className="flex items-center space-x-3">
+                    <button 
+                      onClick={() => handleDeleteUser(user)}
+                      className="flex items-center text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1 rounded-lg transition duration-200"
+                    >
+                      <FaTrashAlt className="mr-1" />
+                      Delete
+                    </button>
+                  </div>
+                }
               </div>
             </div>
           </div>
