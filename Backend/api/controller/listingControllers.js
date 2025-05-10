@@ -359,7 +359,9 @@ const searchListing = async (req, res) => {
           $or: [
             { name: { $in: regexPatterns } },
             { description: { $in: regexPatterns } },
-            { type: { $in: regexPatterns } },
+            { owner: { $in: regexPatterns } },
+            { amenities: { $in: regexPatterns } },
+            { boarding: { $in: regexPatterns } },
             { 'boardingData.name': { $in: regexPatterns } },
             { 'boardingData.address': { $in: regexPatterns } },
             { 'boardingData.description': { $in: regexPatterns } }
