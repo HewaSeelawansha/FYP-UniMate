@@ -1,71 +1,173 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaHeart } from "react-icons/fa";
-import { AuthContext } from "../contexts/AuthProvider";
+import { FaHeart, FaStar, FaMapMarkerAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const Cards = ({ item }) => {
   const [isHeartFilled, setIsHeartFilled] = useState(false);
-  const { _id, name, description, price, images } = item;
+  const { _id, name, description, price, images, location, rating } = item;
   const navigate = useNavigate();
 
-  const handleHeartClick = () => {
+  const handleHeartClick = (e) => {
+    e.stopPropagation();
     setIsHeartFilled(!isHeartFilled);
   };
 
   return (
-    <div className="card bg-white rounded-xl shadow-lg overflow-hidden w-[300px] h-[420px] relative border border-gray-200">
-      {/* Heart Icon */}
-      <div
-        className={`absolute right-2 top-2 p-2 rounded-lg hover:scale-105 bg-emerald-400 ${
-          isHeartFilled ? "text-blue-600" : "text-white"
-        } transition duration-300 cursor-pointer`}
-        onClick={handleHeartClick}
-      >
-        <FaHeart className="h-6 w-6" />
-      </div>
-
-      {/* Listing Image */}
-      <Link to={`/listing/${_id}`}>
-        <figure className="w-full h-[200px] bg-gray-100 flex items-center justify-center">
-          <img
-            src={
-              images[0] ||
-              "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/7eb8bd55408243.5982f1d13533f.jpg"
-            }
-            alt="Listing"
-            className="w-full h-56"
-          />
-        </figure>
-      </Link>
-
-      {/* Listing Details */}
-      <div className="p-4 flex flex-col justify-between flex-grow">
-        <Link to={`/listing/${_id}`}>
-          <h2 className="text-xl font-bold text-gray-800 mb-1">{name}</h2>
-        </Link>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-        {description.length > 33 ? description.slice(0, 33) + "..." : description}
+    <motion.div 
+      whileHover={{ y: -8, transition: { duration: 0.3 } }}
+      className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col"
+    >
+      {/* Image container with overlay for price */}
+      <div className="relative h-48 md:h-56 overflow-hidden">
+        <img 
+          src={images?.[0] || "https://via.placeholder.com/300x200?text=No+Image"}
+          alt={name || "Property"}
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+          onError={(e) => {
+            e.target.onerror = null; 
+            e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+          }}
+        />
         
+        {/* Price tag */}
+        <div className="absolute top-4 left-4 bg-green-500 text-white px-4 py-1 rounded-full font-semibold shadow-lg">
+          LKR {price?.toLocaleString() || 0}/mo
+        </div>
+        
+        {/* Rating */}
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-yellow-500 px-3 py-1 rounded-full font-semibold flex items-center shadow-lg">
+          <FaStar className="mr-1" />{rating?.toFixed(1) || "4.0"}
+        </div>
+        
+        {/* Heart Icon */}
+        <div
+          className={`absolute bottom-4 right-4 p-2 rounded-full ${
+            isHeartFilled ? "bg-red-500 text-white" : "bg-white text-gray-400"
+          } hover:scale-110 shadow-lg transition duration-300 cursor-pointer`}
+          onClick={handleHeartClick}
+        >
+          <FaHeart className="h-5 w-5" />
+        </div>
+      </div>
+      
+      {/* Content */}
+      <div className="p-5 flex-grow flex flex-col">
+        <h3 className="text-lg font-bold mb-2 text-gray-800 line-clamp-1">
+          {name || "Untitled Property"}
+        </h3>
+        
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        {description.length > 33 ? description.slice(0, 33) + "..." : description || 'No Description Available'}
         </p>
 
-        {/* Price */}
-        <h5 className="font-bold text-lg text-blue-600 mb-2">
-          LKR {price?.toLocaleString()}/month
-        </h5>
+        {/* Amenities */}
+        {item.amenities?.length > 0 && (
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-gray-700 mb-1">
+                Amenities
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {item.amenities.slice(0, 2).map((amenity, aIdx) => (
+                  <span
+                    key={aIdx}
+                    className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-lg"
+                  >
+                    {amenity.slice(0, 15)}
+                  </span>
+                ))}
+                {item.amenities.length > 2 && (
+                  <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-lg">
+                    +{item.amenities.length - 2} more
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        
+        <div className="mt-auto">
+          <Link 
+            to={`/listing/${_id}`}
+            className="block text-center bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl transition-colors duration-300"
+          >
+            View Details
+          </Link>
+        </div>
       </div>
-
-      {/* Full-Width View Button */}
-      <button
-        className="w-full bg-emerald-500 text-white py-3 text-lg font-medium hover:bg-emerald-600 transition duration-300"
-        onClick={() => navigate(`/listing/${_id}`)}
-      >
-        View
-      </button>
-    </div>
+    </motion.div>
   );
 };
 
 export default Cards;
+
+// import React, { useContext, useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import { FaHeart } from "react-icons/fa";
+// import { AuthContext } from "../contexts/AuthProvider";
+
+// const Cards = ({ item }) => {
+//   const [isHeartFilled, setIsHeartFilled] = useState(false);
+//   const { _id, name, description, price, images } = item;
+//   const navigate = useNavigate();
+
+//   const handleHeartClick = () => {
+//     setIsHeartFilled(!isHeartFilled);
+//   };
+
+//   return (
+//     <div className="card bg-white rounded-xl shadow-lg overflow-hidden w-[300px] h-[420px] relative border border-gray-200">
+//       {/* Heart Icon */}
+//       <div
+//         className={`absolute right-2 top-2 p-2 rounded-lg hover:scale-105 bg-emerald-400 ${
+//           isHeartFilled ? "text-blue-600" : "text-white"
+//         } transition duration-300 cursor-pointer`}
+//         onClick={handleHeartClick}
+//       >
+//         <FaHeart className="h-6 w-6" />
+//       </div>
+
+//       {/* Listing Image */}
+//       <Link to={`/listing/${_id}`}>
+//         <figure className="w-full h-[200px] bg-gray-100 flex items-center justify-center">
+//           <img
+//             src={
+//               images[0] ||
+//               "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/7eb8bd55408243.5982f1d13533f.jpg"
+//             }
+//             alt="Listing"
+//             className="w-full h-56"
+//           />
+//         </figure>
+//       </Link>
+
+//       {/* Listing Details */}
+//       <div className="p-4 flex flex-col justify-between flex-grow">
+//         <Link to={`/listing/${_id}`}>
+//           <h2 className="text-xl font-bold text-gray-800 mb-1">{name}</h2>
+//         </Link>
+//         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+//         {description.length > 33 ? description.slice(0, 33) + "..." : description}
+        
+//         </p>
+
+//         {/* Price */}
+//         <h5 className="font-bold text-lg text-blue-600 mb-2">
+//           LKR {price?.toLocaleString()}/month
+//         </h5>
+//       </div>
+
+//       {/* Full-Width View Button */}
+//       <button
+//         className="w-full bg-emerald-500 text-white py-3 text-lg font-medium hover:bg-emerald-600 transition duration-300"
+//         onClick={() => navigate(`/listing/${_id}`)}
+//       >
+//         View
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default Cards;
 
 // import React, { useState } from "react";
 // import { Link, useNavigate } from "react-router-dom";
