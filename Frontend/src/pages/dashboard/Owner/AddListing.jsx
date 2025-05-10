@@ -47,7 +47,20 @@ const AddListing = () => {
     { id: 'cctv', label: 'CCTV' },
     { id: 'study', label: 'Study Area' },
     { id: 'parking', label: 'Parking' },
-    { id: 'gym', label: 'Gym' }
+    { id: 'gym', label: 'Gym' },
+    { id: 'laundry', label: 'Laundry Service' },
+    { id: 'kitchen', label: 'Shared Kitchen' },
+    { id: 'A/C', label: 'Air Conditioning' },
+    { id: 'cleaning', label: 'Room Cleaning' },
+    { id: 'elevator', label: 'Elevator' },
+    { id: 'security', label: 'Security Guard' },
+    { id: 'water', label: 'Hot & Cold Water' },
+    { id: 'tv', label: 'TV' },
+    { id: 'balcony', label: 'Balcony' },
+    { id: 'petfriendly', label: 'Pet Friendly' },
+    { id: 'bed', label: 'Bed & Mattress' },
+    { id: 'fan', label: 'Ceiling Fan' },
+    { id: 'desk', label: 'Study Desk' }
   ];
 
   const handleImageChange = (e) => {
@@ -83,6 +96,7 @@ const AddListing = () => {
 
       const newItem = {
         boarding: boarding?.name,
+        boardingID: boarding?._id,
         distance: boarding?.distance,
         owner: user.email,
         name: data.type + " for " + data.gender,
