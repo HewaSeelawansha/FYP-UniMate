@@ -76,7 +76,5 @@ const listingSchema = new Schema({
     timestamps: true 
 });
 
-listingSchema.index({ embeddingVector: 'cosmosSearch' }, { name: 'vectorSearchIndex' });
-
 const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing;
