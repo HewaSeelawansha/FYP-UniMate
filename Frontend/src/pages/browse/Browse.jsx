@@ -385,7 +385,7 @@ const Browse = () => {
                   <select
                     onChange={(e) => filterGender(e.target.value)}
                     value={selectedGender}
-                    className="w-full px-4 py-2 rounded-full border-none bg-green-200 text-gray-700 appearance-none focus:outline-none focus:ring-0"
+                    className="w-full px-4 py-2 rounded-full border-none bg-gray-200 text-gray-700 appearance-none focus:outline-none focus:ring-0"
                   >
                     <option value="">All Genders</option>
                     {genderOptions.map((option) => (
@@ -404,7 +404,7 @@ const Browse = () => {
                   <select
                     onChange={(e) => filterKeyMoney(e.target.value)}
                     value={selectedKeyMoney}
-                    className="w-full px-4 py-2 rounded-full border-none bg-green-200 text-gray-700  appearance-none focus:outline-none focus:ring-0"
+                    className="w-full px-4 py-2 rounded-full border-none bg-gray-200 text-gray-700  appearance-none focus:outline-none focus:ring-0"
                   >
                     <option value="">All Key Money Options</option>
                     {keyMoneyOptions.map((option) => (
@@ -421,7 +421,7 @@ const Browse = () => {
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">
                   Price Range - {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
                 </h4>
-                <div className="bg-green-200 p-4 rounded-full border-none">
+                <div className="bg-gray-200 p-4 rounded-full border-none">
                   <div className="px-2">
                     <Range
                       values={priceRange}
@@ -453,7 +453,7 @@ const Browse = () => {
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">
                   Distance (km) - {distanceRange[0]}km - {distanceRange[1]}km
                 </h4>
-                <div className="bg-green-200 p-4 rounded-full border-none">
+                <div className="bg-gray-200 p-4 rounded-full border-none">
                   <div className="px-2">
                     <Range
                       values={distanceRange}
@@ -569,13 +569,13 @@ const Browse = () => {
         {!isLoading && !error && totalListings > itemsPerPage && (
           <div className="flex justify-center my-12">
             <nav className="flex items-center gap-2">
-              <button
+              {/* <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className="w-10 h-10 flex items-center justify-center rounded-full font-medium bg-emerald-50 text-emerald-800 hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 &lt;
-              </button>
+              </button> */}
               
               {Array.from({ length: Math.ceil(totalListings / itemsPerPage) }).map(
                 (_, index) => (
@@ -585,7 +585,7 @@ const Browse = () => {
                     className={`w-10 h-10 flex items-center justify-center rounded-full font-medium transition-colors ${
                       currentPage === index + 1
                         ? 'bg-emerald-600 text-white shadow-md'
-                        : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                        : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
                     }`}
                   >
                     {index + 1}
@@ -593,13 +593,13 @@ const Browse = () => {
                 )
               )}
               
-              <button
+              {/* <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(totalListings / itemsPerPage)))}
                 disabled={currentPage === Math.ceil(totalListings / itemsPerPage)}
                 className="w-10 h-10 flex items-center justify-center rounded-full font-medium bg-emerald-50 text-emerald-800 hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 &gt;
-              </button>
+              </button> */}
             </nav>
           </div>
         )}
