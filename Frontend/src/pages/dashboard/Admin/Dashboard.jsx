@@ -112,7 +112,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <Link 
-              to="/dashboard/manage-boardings" 
+              to="/dashboard/manage-boarding" 
               className="mt-4 inline-flex items-center text-sm text-pink-600 hover:text-pink-700"
             >
               View all listings <IoIosArrowForward className="ml-1" />
@@ -134,7 +134,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <Link 
-              to="/dashboard/view-bookings" 
+              to="/dashboard/bookings" 
               className="mt-4 inline-flex items-center text-sm text-blue-600 hover:text-blue-700"
             >
               View all bookings <IoIosArrowForward className="ml-1" />
@@ -156,7 +156,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <Link 
-              to="/dashboard/manage-boardings" 
+              to="/dashboard/manage-boarding" 
               className="mt-4 inline-flex items-center text-sm text-purple-600 hover:text-purple-700"
             >
               View all boardings <IoIosArrowForward className="ml-1" />
@@ -184,7 +184,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <Link 
-              to="/dashboard/manage-transactions" 
+              to="/dashboard/transactions" 
               className="mt-4 inline-flex items-center text-sm text-amber-600 hover:text-amber-700"
             >
               View all transactions <IoIosArrowForward className="ml-1" />
