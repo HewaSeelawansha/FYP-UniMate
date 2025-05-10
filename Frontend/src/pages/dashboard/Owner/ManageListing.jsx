@@ -199,7 +199,7 @@ const ManageListing = () => {
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
           {/* All Listings Card */}
           <div 
-            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory === 'all' ? 'border-green-500' : 'border-gray-200'} cursor-pointer transition duration-200 hover:shadow-lg`}
+            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory === 'all' ? 'border-green-500' : 'border-gray-300'} cursor-pointer transition duration-200 hover:shadow-lg`}
             onClick={() => filterItems('all')}
           >
             <div className="flex justify-between items-center">
@@ -215,7 +215,7 @@ const ManageListing = () => {
 
           {/* 1-Person Boarding Room */}
           <div 
-            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory === '1-Person Boarding Room' ? 'border-blue-500' : 'border-gray-200'} cursor-pointer transition duration-200 hover:shadow-lg`}
+            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory === '1-Person Boarding Room' ? 'border-blue-500' : 'border-gray-300'} cursor-pointer transition duration-200 hover:shadow-lg`}
             onClick={() => filterItems('1-Person Boarding Room')}
           >
             <div className="flex justify-between items-center">
@@ -231,7 +231,7 @@ const ManageListing = () => {
 
           {/* 2-Person Shared Room */}
           <div 
-            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory === '2-Person Shared Room' ? 'border-purple-500' : 'border-gray-200'} cursor-pointer transition duration-200 hover:shadow-lg`}
+            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory === '2-Person Shared Room' ? 'border-purple-500' : 'border-gray-300'} cursor-pointer transition duration-200 hover:shadow-lg`}
             onClick={() => filterItems('2-Person Shared Room')}
           >
             <div className="flex justify-between items-center">
@@ -247,7 +247,7 @@ const ManageListing = () => {
 
           {/* 2 to 4-Person Shared Room */}
           <div 
-            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory === '2 to 4-Person Shared Room' ? 'border-orange-500' : 'border-gray-200'} cursor-pointer transition duration-200 hover:shadow-lg`}
+            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory === '2 to 4-Person Shared Room' ? 'border-orange-500' : 'border-gray-300'} cursor-pointer transition duration-200 hover:shadow-lg`}
             onClick={() => filterItems('2 to 4-Person Shared Room')}
           >
             <div className="flex justify-between items-center">
@@ -263,7 +263,7 @@ const ManageListing = () => {
 
           {/* Whole House */}
           <div 
-            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory.includes('Whole House') ? 'border-red-500' : 'border-gray-200'} cursor-pointer transition duration-200 hover:shadow-lg`}
+            className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${selectedCategory.includes('Whole House') ? 'border-red-500' : 'border-gray-300'} cursor-pointer transition duration-200 hover:shadow-lg`}
             onClick={() => filterItems('Whole House-Short Term')}
           >
             <div className="flex justify-between items-center">
@@ -284,9 +284,17 @@ const ManageListing = () => {
         {filteredItems.length > 0 ? (
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {filteredItems.map((item) => (
-              <div key={item._id} className="bg-white border-l-4 border-emerald-500 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+              <div key={item._id} className={`${
+                item.status === 'Approved' ? 'bg-green-50' :
+                item.status === 'Rejected' ? 'bg-red-50' :
+                'bg-yellow-50 '
+                } rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300`}>
                 {/* Listing Image */}
-                <div className="relative h-[300px] overflow-hidden">
+                <div className={`relative h-[300px] overflow-hidden${
+                item.status === 'Approved' ? 'bg-green-50 border-l-4 border-green-500' :
+                item.status === 'Rejected' ? 'bg-red-50 border-l-4 border-red-500' :
+                'bg-yellow-50 border-l-4 border-yellow-400'
+                }`}>
                   {item.images && item.images.length > 0 ? (
                     <img 
                       className="w-full h-full object-cover transition duration-300 hover:scale-105" 
