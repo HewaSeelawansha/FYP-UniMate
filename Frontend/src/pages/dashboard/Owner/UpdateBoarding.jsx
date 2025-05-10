@@ -38,6 +38,27 @@ const UpdateBoarding = () => {
   const [lat, setLat] = useState(item.lat);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const amenitiesList = [
+    { id: 'wifi', label: 'WiFi' },
+    { id: 'cctv', label: 'CCTV' },
+    { id: 'study', label: 'Study Area' },
+    { id: 'parking', label: 'Parking' },
+    { id: 'gym', label: 'Gym' },
+    { id: 'laundry', label: 'Laundry Service' },
+    { id: 'kitchen', label: 'Shared Kitchen' },
+    { id: 'A/C', label: 'Air Conditioning' },
+    { id: 'cleaning', label: 'Room Cleaning' },
+    { id: 'elevator', label: 'Elevator' },
+    { id: 'security', label: 'Security Guard' },
+    { id: 'water', label: 'Hot & Cold Water' },
+    { id: 'tv', label: 'TV' },
+    { id: 'balcony', label: 'Balcony' },
+    { id: 'petfriendly', label: 'Pet Friendly' },
+    { id: 'bed', label: 'Bed & Mattress' },
+    { id: 'fan', label: 'Ceiling Fan' },
+    { id: 'desk', label: 'Study Desk' }
+  ];
   
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -47,15 +68,13 @@ const UpdateBoarding = () => {
       gender: item.gender,
       description: item.description,
       beds: item.beds,
-      wifi: item.amenities.includes('wifi'),
-      cctv: item.amenities.includes('cctv'),
-      'study area': item.amenities.includes('study area'),
-      parking: item.amenities.includes('parking'),
-      gym: item.amenities.includes('gym'),
+      ...amenitiesList.reduce((acc, amenity) => {
+        acc[amenity.id] = item.amenities.includes(amenity.label);
+        return acc;
+      }, {})
     },
   });
 
-  const amenitiesList = ['wifi', 'cctv', 'study area', 'parking', 'gym'];
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
@@ -162,7 +181,7 @@ const UpdateBoarding = () => {
       const distance = calculateDistance(NSBMLocation[0], NSBMLocation[1], lat, lng);
 
       // Prepare updated boarding data
-      const selectedAmenities = amenitiesList.filter(amenity => data[amenity]);
+      const selectedAmenities = amenitiesList.filter(amenity => data[amenity.id]).map(amenity => amenity.label);
       const updatedBoarding = {
         name: data.name,
         address: data.address,
@@ -245,7 +264,7 @@ const UpdateBoarding = () => {
 
         {/* Image Carousel */}
         <div className=''>
-          <div className='rounded-lg overflow-hidden bg-gray-100 xl:h-[700px] sm:h-80 md:h-96'>
+          <div className='rounded-lg bg-gray-100 xl:h-[500px] h-72 md:h-80'>
             <Carousel slideInterval={5000}>
               {item.images.length > 0 ? (
                 item.images.map((image, index) => (
@@ -352,13 +371,13 @@ const UpdateBoarding = () => {
               <label className='block text-sm font-medium text-gray-700 mb-2'>Amenities</label>
               <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3'>
                 {amenitiesList.map((amenity) => (
-                  <label key={amenity} className='flex items-center space-x-2'>
+                  <label key={amenity.id} className="flex items-center space-x-2 cursor-pointer">
                     <input
-                      type='checkbox'
-                      {...register(amenity)}
-                      className='h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded'
+                      type="checkbox"
+                      {...register(amenity.id)}
+                      className="border-gray-300 rounded text-green-600 focus:ring-0"
                     />
-                    <span className='text-sm text-gray-700 capitalize'>{amenity}</span>
+                    <span className="text-sm text-gray-700">{amenity.label}</span>
                   </label>
                 ))}
               </div>
