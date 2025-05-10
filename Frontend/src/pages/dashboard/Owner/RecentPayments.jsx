@@ -255,7 +255,7 @@ const RecentPayments = () => {
             {filteredPayments.map((payment, index) => (
               <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 {/* Payment Header */}
-                <div className="bg-green-200 px-6 py-4 border-b border-gray-200">
+                <div className="bg-green-200 px-6 py-4 border-l-4 border-green-500">
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex items-center mb-2 lg:mb-0">
                       <FaCheckCircle className="text-green-700 text-lg mr-2" />
