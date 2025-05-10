@@ -14,7 +14,7 @@ const Browse = () => {
   const [selectedKeyMoney, setSelectedKeyMoney] = useState("all");
   const [sortOptions, setSortOptions] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8); 
+  const [itemsPerPage] = useState(12); 
   const [searchQuery, setSearchQuery] = useState('');
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
