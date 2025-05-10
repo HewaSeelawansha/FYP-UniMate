@@ -293,8 +293,8 @@ const AdminDashboard = () => {
 
             {/* Recent Bookings */}
             <div>
-              <h3 className="font-medium bg-blue-100 px-3 py-1 rounded-lg  text-gray-700 mb-2 flex items-center">
-                <FaCalendarAlt className="text-blue-500 mr-2" />
+              <h3 className="font-medium bg-green-100 px-3 py-1 rounded-lg  text-gray-700 mb-2 flex items-center">
+                <FaCalendarAlt className="text-green-500 mr-2" />
                 Latest Bookings
               </h3>
               {bookings.slice(0, 3).map((booking, index) => (
@@ -321,7 +321,7 @@ const AdminDashboard = () => {
               {bookings.length > 0 && (
                 <Link 
                   to="/dashboard/view-bookings" 
-                  className="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-700"
+                  className="mt-2 inline-flex items-center text-sm text-green-600 hover:text-green-700"
                 >
                   View all bookings <IoIosArrowForward className="ml-1" />
                 </Link>
