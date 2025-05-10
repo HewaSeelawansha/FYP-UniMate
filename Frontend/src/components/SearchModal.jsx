@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import useAxiosPublic from "../hooks/useAxiosPublic"
 
-const SearchModal = ({ isOpen, onClose }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+const SearchModal = ({ isOpen, onClose, initialSearchQuery = '' }) => {
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,12 +14,16 @@ const SearchModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
-      setSearchQuery('');
+      setSearchQuery(initialSearchQuery);
+      setTimeout(() => inputRef.current?.focus(), 100);
+      if (initialSearchQuery.trim() !== '') {
+        performSearch(initialSearchQuery);
+      }
+    } else {
       setResults([]);
       setError(null);
-      setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [isOpen]);
+  }, [isOpen, initialSearchQuery]);
 
   useEffect(() => {
     const searchDelay = setTimeout(() => {
@@ -185,7 +189,10 @@ const SearchModal = ({ isOpen, onClose }) => {
               {/* Footer */}
               <div className="bg-gray-50 p-3 text-center text-sm text-gray-500 border-t">
                 {results.length > 0 ? (
-                  `${results.length} result${results.length !== 1 ? 's' : ''} found`
+                  <>
+                  <p>Showing {results.length} result{results.length !== 1 ? 's' : ''}</p>
+                  <Link to='/browse' className='text-green-500 hover:text-green-600'>Browse All</Link>
+                  </>
                 ) : (
                   'Press ESC to close'
                 )}
