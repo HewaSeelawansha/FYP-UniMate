@@ -74,3 +74,20 @@ module.exports = {
   createSearchIndex,
   getSimilarListings
 };
+
+// Originally, search functionality likely relied on MongoDB’s basic text matching—queries using regex or $text operators. 
+// While this works for basic keyword searches, it falls short when it comes to understanding relevance, partial matches, 
+// or ranking listings by how well they match the query.
+
+// To fix that, you integrated Natural Language Processing (NLP) using the natural library in Node.js. This lets you:
+
+// Preprocess listings and search queries (remove stopwords, lowercase, stem words).
+
+// Compute TF-IDF (Term Frequency-Inverse Document Frequency) scores to measure how relevant each listing is to the search terms.
+
+// Score and rank results not just on keyword matches, but on how "important" those matches are in context.
+
+// Provide smarter search results, more like what users expect from platforms like Google or Amazon.
+
+// 🚀 In short: NLP was added to move from simple "does this word exist?" searching to "how well does this listing match the meaning of the search?" 
+// — enabling more relevant, intelligent, and user-friendly search results.
