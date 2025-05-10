@@ -88,7 +88,7 @@ const OwnerDashboard = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
           {/* Total Earnings */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Earnings</p>
@@ -101,7 +101,7 @@ const OwnerDashboard = () => {
           </div>
 
           {/* Total Bookings */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-pink-500">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Bookings</p>
@@ -114,7 +114,7 @@ const OwnerDashboard = () => {
           </div>
 
           {/* Pending Payments */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Listings to Pay</p>
@@ -127,7 +127,7 @@ const OwnerDashboard = () => {
           </div>
 
           {/* Approved Listings */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-amber-500">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Approved Listings</p>
