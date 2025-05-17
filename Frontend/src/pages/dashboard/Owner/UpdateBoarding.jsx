@@ -60,7 +60,14 @@ const UpdateBoarding = () => {
     { id: 'desk', label: 'Study Desk' }
   ];
   
-  const { register, handleSubmit, reset } = useForm({
+  const { 
+    register, 
+    handleSubmit, 
+    reset,
+    formState: { errors },
+    setError,
+    clearErrors
+  } = useForm({
     defaultValues: {
       name: item.name,
       address: item.address,
@@ -91,14 +98,25 @@ const UpdateBoarding = () => {
     return (R * c).toFixed(2); // Distance in km with 2 decimal places
   };
 
-  // Handle image selection and preview
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
+    
+    // Check if adding these files would exceed the 5-image limit
+    if (files.length + imagePreviews.length > 5) {
+      setError('images', {
+        type: 'manual',
+        message: 'You can upload a maximum of 5 images'
+      });
+      return;
+    }
+    
     const previews = files.map(file => ({
       file,
       preview: URL.createObjectURL(file)
     }));
+    
     setImagePreviews([...imagePreviews, ...previews]);
+    clearErrors('images');
   };
 
   // Remove image preview
@@ -107,6 +125,12 @@ const UpdateBoarding = () => {
     URL.revokeObjectURL(newPreviews[index].preview);
     newPreviews.splice(index, 1);
     setImagePreviews(newPreviews);
+    if (newPreviews.length === 0) {
+      setError('images', {
+        type: 'manual',
+        message: 'At least one image is required'
+      });
+    }
   };
 
   // Clean up object URLs
@@ -140,6 +164,7 @@ const UpdateBoarding = () => {
         const { x: lng, y: lat } = result.location;
         setLng(lng);
         setLat(lat);
+        clearErrors('location');
       });
 
       return () => map.removeControl(searchControl);
@@ -149,15 +174,22 @@ const UpdateBoarding = () => {
   };
 
   const handleSetLocation = () => {
-    if (lng && lat) {
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: 'Location Set Successfully!',
-        showConfirmButton: false,
-        timer: 1500,
+    if (!lng || !lat) {
+      setError('location', {
+        type: 'manual',
+        message: 'Please set a location on the map'
       });
+      return;
     }
+    
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Location Set Successfully!',
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    clearErrors('location');
   };
 
   const onSubmit = async (data) => {
@@ -304,10 +336,13 @@ const UpdateBoarding = () => {
               <div>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>Place Name*</label>
                 <input
-                  {...register('name', { required: true })}
+                  {...register('name', { required: 'Place name is required' })}
                   type='text'
                   className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
                 />
+                {errors.name && (
+                  <p className='mt-1 text-sm text-red-600'>{errors.name.message}</p>
+                )}
               </div>
             </div>
 
@@ -315,10 +350,13 @@ const UpdateBoarding = () => {
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-1'>Address*</label>
               <input
-                {...register('address', { required: true })}
+                {...register('address', { required: 'Address is required' })}
                 type='text'
                 className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
               />
+              {errors.address && (
+                <p className='mt-1 text-sm text-red-600'>{errors.address.message}</p>
+              )}
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -326,23 +364,36 @@ const UpdateBoarding = () => {
               <div>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>Gender*</label>
                 <select
-                  {...register('gender', { required: true })}
+                  {...register('gender', { required: 'Gender selection is required' })}
                   className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
                 >
+                  <option value="">Select Gender</option>
                   <option value="Girls">Girls Only</option>
                   <option value="Boys">Boys Only</option>
                   <option value="Unisex">Unisex</option>
                 </select>
+                {errors.gender && (
+                  <p className='mt-1 text-sm text-red-600'>{errors.gender.message}</p>
+                )}
               </div>
 
               {/* Beds */}
               <div>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>Total Beds*</label>
                 <input
-                  {...register('beds', { required: true, min: 1 })}
+                  {...register('beds', { 
+                    required: 'Number of beds is required',
+                    min: {
+                      value: 1,
+                      message: 'Must have at least 1 bed'
+                    }
+                  })}
                   type='number'
                   className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
                 />
+                {errors.beds && (
+                  <p className='mt-1 text-sm text-red-600'>{errors.beds.message}</p>
+                )}
               </div>
             </div>
 
@@ -350,20 +401,38 @@ const UpdateBoarding = () => {
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-1'>Contact Number*</label>
               <input
-                {...register('phone', { required: true })}
+                {...register('phone', { 
+                  required: 'Contact number is required',
+                  pattern: {
+                    value: /^[0-9]{10}$/,
+                    message: 'Please enter a valid 10-digit phone number'
+                  }
+                })}
                 type='tel'
                 className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
               />
+              {errors.phone && (
+                <p className='mt-1 text-sm text-red-600'>{errors.phone.message}</p>
+              )}
             </div>
 
             {/* Description */}
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-1'>Description*</label>
               <textarea
-                {...register('description', { required: true })}
+                {...register('description', { 
+                  required: 'Description is required',
+                  minLength: {
+                    value: 20,
+                    message: 'Description should be at least 20 characters'
+                  }
+                })}
                 rows='4'
                 className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
               ></textarea>
+              {errors.description && (
+                <p className='mt-1 text-sm text-red-600'>{errors.description.message}</p>
+              )}
             </div>
 
             {/* Amenities */}
@@ -385,9 +454,23 @@ const UpdateBoarding = () => {
 
             {/* Image Upload */}
             <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>Add More Images</label>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>Add More Images*</label>
               <div className='space-y-4'>
                 {/* Image Previews */}
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-500">
+                    {imagePreviews.length}/5 images selected
+                  </span>
+                  {imagePreviews.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setImagePreviews([])}
+                      className="text-sm text-red-500 hover:text-red-700"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
                 {imagePreviews.length > 0 && (
                   <div className='flex flex-wrap gap-4'>
                     {imagePreviews.map((image, index) => (
@@ -415,14 +498,18 @@ const UpdateBoarding = () => {
                   <p className='text-sm text-gray-600'>Click to upload images</p>
                   <p className='text-xs text-gray-500'>JPEG, PNG (Max 5MB each)</p>
                   <input
-                    {...register('image')}
-                    type='file'
-                    className='hidden'
+                    type="file"
+                    className="hidden"
                     onChange={handleImageChange}
                     multiple
-                    accept='image/*'
+                    accept="image/*"
                   />
                 </label>
+                {errors.images && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.images.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -447,6 +534,7 @@ const UpdateBoarding = () => {
                         const { lat, lng } = e.target.getLatLng();
                         setLat(lat);
                         setLng(lng);
+                        clearErrors('location');
                       },
                     }}
                   >
@@ -463,6 +551,11 @@ const UpdateBoarding = () => {
               >
                 <FaMapLocationDot /> Confirm Location
               </button>
+              {errors.location && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.location.message}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}
