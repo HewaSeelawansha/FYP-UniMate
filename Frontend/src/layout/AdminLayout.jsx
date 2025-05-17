@@ -3,13 +3,15 @@ import { Link, Outlet } from 'react-router-dom'
 import { MdDashboard, MdDashboardCustomize } from "react-icons/md";
 import {FaEdit,FaLocationArrow,FaPlusCircle,FaQuestionCircle,FaRegUser,FaShoppingBag,FaUser,} from "react-icons/fa";
 import logo from "/logon.png";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCartShopping, FaMoneyBillTrendUp } from "react-icons/fa6";
 import Login from '../components/Login';
 import useAdmin from '../hooks/useAdmin';
 import useAuth from '../hooks/useAuth';
 import { IoMdChatboxes } from "react-icons/io";
 import { AuthContext } from '../contexts/AuthProvider';
-import { TbLogout2 } from "react-icons/tb";
+import { TbBrandBooking, TbLogout2 } from "react-icons/tb";
+import { IoHome, IoSearchSharp } from 'react-icons/io5';
+import { BiSolidBuildingHouse } from 'react-icons/bi';
 
 const AdminLayout = () => {
   const {loading} = useAuth()
@@ -58,14 +60,23 @@ const AdminLayout = () => {
                 </li>
                 <hr />
                 <li className='mt-3'><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard"><MdDashboard /> Dashboard</Link></li>
-                <li><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/manage-boarding"><FaPlusCircle /> Manage Hostel</Link></li>
-                <li className=''><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/bookings"><FaPlusCircle /> Bookings</Link></li>
-                <li className=''><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/transactions"><FaPlusCircle /> Transactions</Link></li>
+                <li><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/manage-boarding"><BiSolidBuildingHouse /> Manage Hostel</Link></li>
+                <li className=''><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/bookings"><TbBrandBooking /> Bookings</Link></li>
+                <li className=''><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/transactions"><FaMoneyBillTrendUp /> Transactions</Link></li>
+                <li className=''><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/listing-fees"><FaMoneyBillTrendUp /> Listing Fees</Link></li>
                 <li className='mb-3'><Link className='hover:bg-gray-200 rounded-lg' to="/dashboard/users"><FaUser /> All Users</Link></li>
                 <hr/>
                 <li className='mt-3'><Link to="/chats" className="hover:bg-gray-200 rounded-lg"><IoMdChatboxes /> Chats</Link></li>
-                <li><Link to="/" className="hover:bg-gray-200 rounded-lg"><MdDashboard /> Home</Link></li>
-                <li><Link to="/browse" className="hover:bg-gray-200 rounded-lg"><FaCartShopping /> Browse</Link></li>
+                <li>
+                <Link to="/" className="hover:bg-gray-200 rounded-lg">
+                  <IoHome /> Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/browse" className="hover:bg-gray-200 rounded-lg">
+                  <IoSearchSharp /> Browse
+                </Link>
+              </li>
                 <li><a className="hover:bg-red-200 rounded-lg" onClick={handleLogout}><TbLogout2/> Logout</a></li>
               </ul>
             </div>
