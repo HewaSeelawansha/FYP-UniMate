@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import logo from "/logon.png";
 import { FaRegUser, FaSearch } from "react-icons/fa";
-import { FaTimes } from "react-icons/fa"; // Added FaTimes import
+import { FaTimes } from "react-icons/fa"; 
 import { IoMdChatboxes } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import Modal from "./Modal";
 import Profile from "./Profile";
-import { Link, useNavigate, useLocation } from "react-router-dom"; // Added useLocation
+import { Link, useNavigate, useLocation } from "react-router-dom"; 
 import useAuth from "../hooks/useAuth";
 import SearchModal from "./SearchModal";
 import useAxiosSecure from "../hooks/useAxiosSecure";
@@ -22,7 +22,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation(); // Get current location
+  const location = useLocation(); 
   const axiosSecure = useAxiosSecure();
   const [person, setPerson] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -188,28 +188,9 @@ const Navbar = () => {
                 <img
                   src={logo}
                   alt="Logo"
-                  className="h-9 md:h-10 transition-all duration-300 hover:scale-105"
+                  className="h-11 md:h-13 transition-all duration-300 hover:scale-105"
                 />
               </Link>
-            </div>
-
-            {/* Navigation Links - Desktop */}
-            <div className="hidden lg:flex items-center gap-8 mx-6">
-              {isHomePage && (
-                // Home page navigation - section scrolling
-                navLinks.map((link) => (
-                  <button
-                    key={link.sectionId}
-                    onClick={() => scrollToSection(link.sectionId)}
-                    className={`${
-                      isSticky ? "text-gray-700" : "text-white"
-                    } hover:text-emerald-500 font-medium text-sm relative group transition-colors duration-200`}
-                  >
-                    {link.name}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-500 group-hover:w-full transition-all duration-300"></span>
-                  </button>
-                ))
-              )}
             </div>
 
             {/* Right-aligned elements */}
@@ -303,7 +284,7 @@ const Navbar = () => {
                   className="flex items-center gap-2 py-2 px-4 md:px-5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium shadow-sm hover:shadow-md transition-all duration-200"
                 >
                   <FaRegUser className="text-sm" />
-                  <span className="hidden sm:inline text-sm">Login</span>
+                  <span className="hidden sm:inline py-1 text-sm">Login</span>
                 </button>
               )}
             </div>
