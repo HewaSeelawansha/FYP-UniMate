@@ -41,7 +41,7 @@ const UpdateListing = () => {
     { id: 'desk', label: 'Study Desk' }
   ];
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
       gender: item.gender,
       description: item.description,
@@ -64,17 +64,27 @@ const UpdateListing = () => {
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
   
-  // Handle image selection and preview
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
+    
+    if (files.length + imagePreviews.length > 5) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Too many images',
+        text: 'You can upload a maximum of 5 images',
+        confirmButtonColor: '#16a34a',
+      });
+      return;
+    }
+    
     const previews = files.map(file => ({
       file,
       preview: URL.createObjectURL(file)
     }));
+    
     setImagePreviews([...imagePreviews, ...previews]);
   };
 
-  // Remove image preview
   const removeImage = (index) => {
     const newPreviews = [...imagePreviews];
     URL.revokeObjectURL(newPreviews[index].preview);
@@ -82,7 +92,6 @@ const UpdateListing = () => {
     setImagePreviews(newPreviews);
   };
 
-  // Clean up object URLs
   useEffect(() => {
     return () => {
       imagePreviews.forEach(image => URL.revokeObjectURL(image.preview));
@@ -93,7 +102,6 @@ const UpdateListing = () => {
     setIsSubmitting(true);
     
     try {
-      // Upload new images if any
       let imageUrls = item.images;
       if (imagePreviews.length > 0) {
         const uploadPromises = imagePreviews.map(async (image) => {
@@ -163,7 +171,7 @@ const UpdateListing = () => {
           <h1 className="mx-2 text-3xl font-bold text-gray-800">
             Update <span className='text-green-600'>{item.name}</span>
           </h1>
-          <div className="w-8"></div> {/* Spacer for alignment */}
+          <div className="w-8"></div>
         </div>
 
         {/* Image Carousel */}
@@ -208,19 +216,23 @@ const UpdateListing = () => {
               {/* Listing Type */}
               <div className='form-control'>
                 <label className='block text-sm font-medium text-gray-700 mb-2'>
-                  Listing Type
+                  Listing Type <span className="text-red-500">*</span>
                 </label>
                 <select
-                  {...register('type', { required: true })}
+                  {...register('type', { required: 'Listing type is required' })}
                   className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
                   onChange={(e) => setLtype(e.target.value)}
                 >
+                  <option value="">Select a type</option>
                   <option value='2-Person Shared Room'>2-Person Shared Room</option>
                   <option value='2 to 4-Person Shared Room'>2 to 4-Person Shared Room</option>
                   <option value='1-Person Boarding Room'>1-Person Boarding Room</option>
                   <option value='Whole House-Short Term'>Whole House-Short Term</option>
                   <option value='Whole House-Long Term'>Whole House-Long Term</option>
                 </select>
+                {errors.type && (
+                  <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>
+                )}
               </div>
 
               {/* Gender (disabled) */}
@@ -242,25 +254,39 @@ const UpdateListing = () => {
               {/* Available Beds */}
               <div className='form-control'>
                 <label className='block text-sm font-medium text-gray-700 mb-2'>
-                  Available Beds
+                  Available Beds <span className="text-red-500">*</span>
                 </label>
                 <input
-                  {...register('available', { required: true })}
+                  {...register('available', { 
+                    required: 'Available beds is required',
+                    min: { value: 1, message: 'Must be at least 1' }
+                  })}
                   type='number'
+                  min="1"
                   className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
                 />
+                {errors.available && (
+                  <p className="mt-1 text-sm text-red-600">{errors.available.message}</p>
+                )}
               </div>
 
               {/* Price */}
               <div className='form-control'>
                 <label className='block text-sm font-medium text-gray-700 mb-2'>
-                  Price (LKR)
+                  Price (LKR) <span className="text-red-500">*</span>
                 </label>
                 <input
-                  {...register('price', { required: true })}
+                  {...register('price', { 
+                    required: 'Price is required',
+                    min: { value: 1, message: 'Price must be greater than 0' }
+                  })}
                   type='number'
+                  min="1"
                   className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
                 />
+                {errors.price && (
+                  <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
+                )}
               </div>
             </div>
 
@@ -291,6 +317,7 @@ const UpdateListing = () => {
                     type="number"
                     value={keyMoney}
                     onChange={(e) => setKeyMoney(Number(e.target.value))}
+                    min="0"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
@@ -300,13 +327,19 @@ const UpdateListing = () => {
             {/* Description */}
             <div className='form-control'>
               <label className='block text-sm font-medium text-gray-700 mb-2'>
-                Description
+                Description <span className="text-red-500">*</span>
               </label>
               <textarea
-                {...register('description', { required: true })}
+                {...register('description', { 
+                  required: 'Description is required',
+                  minLength: { value: 20, message: 'Description must be at least 20 characters' }
+                })}
                 rows='4'
                 className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500'
               ></textarea>
+              {errors.description && (
+                <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              )}
             </div>
 
             {/* Image Upload */}
@@ -315,7 +348,20 @@ const UpdateListing = () => {
                 Add More Images
               </label>
               <div className='space-y-4'>
-                {/* Image Previews */}
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-500">
+                    {imagePreviews.length}/5 images selected
+                  </span>
+                  {imagePreviews.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setImagePreviews([])}
+                      className="text-sm text-red-500 hover:text-red-700"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
                 {imagePreviews.length > 0 && (
                   <div className='flex flex-wrap gap-4'>
                     {imagePreviews.map((image, index) => (
@@ -337,18 +383,16 @@ const UpdateListing = () => {
                   </div>
                 )}
                 
-                {/* Upload Area */}
                 <label className='flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors'>
                   <FaUpload className='text-green-600 text-2xl mb-2' />
                   <p className='text-sm text-gray-600'>Click to upload images</p>
                   <p className='text-xs text-gray-500'>JPEG, PNG (Max 5MB each)</p>
                   <input
-                    {...register('image')}
-                    type='file'
-                    className='hidden'
+                    type="file"
+                    className="hidden"
                     onChange={handleImageChange}
                     multiple
-                    accept='image/*'
+                    accept="image/*"
                   />
                 </label>
               </div>
