@@ -4,15 +4,21 @@ import useAxiosSecure from './useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 
 const useUser = () => {
-    const { user, loading } = useAuth();
+    const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
+
+    // Return null or default values when user is not logged in
+    if (!user?.email) {
+        return [null, false];
+    }
+
     const { refetch, data: isUser, isLoading: isUserLoading } = useQuery({
         queryKey: [user.email, 'isUser'],
         queryFn: async () => {
             const res = await axiosSecure.get(`users/user/${user.email}`);
             return res.data?.user;
         },
-        enabled: !loading && !!user?.email
+        enabled: !!user?.email, // Prevents query from running if email is undefined
     });
 
     return [isUser, isUserLoading];
