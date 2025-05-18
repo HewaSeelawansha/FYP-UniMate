@@ -114,7 +114,15 @@ const Signup = () => {
                 navigate("/");
               });
           })
-          .catch((error) => setErrorMessage(error.message || "Signup failed. Please try again."));
+          .catch((error) => {
+            if (error.response && error.response.status === 302) {
+              navigate('/');
+            }
+            console.error("Login error:", error);
+            setErrorMessage("Login Error!");
+          }).then(() => {
+            navigate("/");
+          });
       };
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
