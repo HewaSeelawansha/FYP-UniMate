@@ -77,10 +77,20 @@ const Login = () => {
           .then((response) => {
             // console.log(response);
             alert("Signin successful with Gmail!");
+          })
+          .then(() => {
             navigate("/");
           });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        if (error.response && error.response.status === 302) {
+          navigate('/');
+        }
+        console.error("Login error:", error);
+        setErrorMessage("Login Error!");
+      }).then(() => {
+        navigate("/");
+      });
   };
 
   return (
