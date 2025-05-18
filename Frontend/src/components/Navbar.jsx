@@ -159,31 +159,6 @@ const Navbar = () => {
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center gap-3">
 
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`${
-                  isSticky ? "text-gray-700" : "text-white"
-                } lg:hidden flex flex-col items-center justify-center h-10 w-10 gap-1.5`}
-                aria-label="Toggle menu"
-              >
-                <span
-                  className={`w-5 h-0.5 bg-current transition-all ${
-                    isMobileMenuOpen ? "rotate-45 translate-y-1" : ""
-                  }`}
-                ></span>
-                <span
-                  className={`w-5 h-0.5 bg-current transition-all ${
-                    isMobileMenuOpen ? "opacity-0" : "opacity-100"
-                  }`}
-                ></span>
-                <span
-                  className={`w-5 h-0.5 bg-current transition-all ${
-                    isMobileMenuOpen ? "-rotate-45 -translate-y-1" : ""
-                  }`}
-                ></span>
-              </button>
-
               <Link to="/" className="flex items-center">
                 <img
                   src={logo}
