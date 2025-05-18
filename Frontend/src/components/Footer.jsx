@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaMapMarkerAlt, FaPhone, FaEnvelope } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div>
             <h3 className="text-xl font-bold mb-4">UniMate</h3>
-            <p className="text-gray-400">
+            <p className="text-gray-400 mb-4">
               Helping students find their perfect home away from home since 2025.
             </p>
             <div className="flex gap-4 mt-6">
@@ -28,19 +28,19 @@ const Footer = () => {
           </div>
           
           <div>
-            <h4 className="font-bold mb-4">Quick Links</h4>
+            <h4 className="font-bold mb-4">Explore</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Home</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Browse</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">All Listings</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Popular Areas</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Student Discounts</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Roommate Finder</a></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold mb-4">Support</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Safety Tips</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
@@ -48,28 +48,26 @@ const Footer = () => {
           </div>
           
           <div>
-            <h4 className="font-bold mb-4">Newsletter</h4>
-            <p className="text-gray-400 mb-4">
-              Subscribe to get updates on new listings and student housing tips.
-            </p>
-            <form className="flex">
-              <input 
-                type="email" 
-                placeholder="Your email" 
-                className="px-4 py-2 rounded-l-lg text-gray-900 w-full"
-              />
-              <button 
-                type="submit" 
-                className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-r-lg transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
+            <h4 className="font-bold mb-4">Contact Us</h4>
+            <ul className="space-y-3 text-gray-400">
+              <li className="flex items-start gap-3">
+                <FaMapMarkerAlt className="mt-1 flex-shrink-0" />
+                <span>Mahenwaththa, Pitipana, Homagama, Sri Lanka</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <FaPhone className="flex-shrink-0" />
+                <span>0111-145-678</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <FaEnvelope className="flex-shrink-0" />
+                <span>info@unimate.com</span>
+              </li>
+            </ul>
           </div>
         </div>
         
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-          <p>© 2023 StudentHomes. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} UniMate. All rights reserved.</p>
         </div>
       </div>
     </footer>
