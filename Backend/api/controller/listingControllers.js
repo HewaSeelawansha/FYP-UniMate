@@ -114,7 +114,7 @@ const updateListing = async (req, res) => {
     try {
         const email = req.query.email;
         const query = { owner: email };
-        const result = await Listing.find(query).sort({ createdAt: -1, updatedAt: -1 }).exec();
+        const result = await Listing.find(query).sort({ createdAt: -1 }).exec();
         res.status(200).json(result); 
     } catch (error) {
         console.error('Error fetching listings:', error.message);
