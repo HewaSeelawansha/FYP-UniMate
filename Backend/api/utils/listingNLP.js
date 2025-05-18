@@ -1,4 +1,3 @@
-// utils/listingNLP.js
 const natural = require('natural');
 const TfIdf = natural.TfIdf;
 const tokenizer = new natural.WordTokenizer();
