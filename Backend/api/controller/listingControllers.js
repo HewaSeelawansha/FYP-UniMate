@@ -122,18 +122,6 @@ const updateListing = async (req, res) => {
     }
   };
 
-// search an existing listing
-// const searchListing = async (req, res) => {
-//     try {
-//         const { q, type, sort, page = 1, limit = 10 } = req.query;
-        
-//         // Build base query
-//         const query = { 
-//           available: { $gte: 0 },
-//           status: 'Approved',
-//           payStatus: 'Done'
-//         };
-
 // const searchListing = async (req, res) => {
 //   try {
 //       const { q, type, sort, page = 1, limit = 10, gender, keyMoney } = req.query;
