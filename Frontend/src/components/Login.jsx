@@ -8,6 +8,7 @@ import useAxiosPublic from "../hooks/useAxiosPublic";
 import useAuth from "../hooks/useAuth";
 import { FcGoogle } from "react-icons/fc";
 import logo from "/logon.png";
+import { handleSuccess } from "../utils/authSwal";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -50,13 +51,12 @@ const Login = () => {
         
         await axiosPublic.post("/users", userInfo);
         
-        alert("Login successful!");
+        handleSuccess("Login successful!");
         navigate('/');
     } catch (error) {
         if (error.response && error.response.status === 302) {
           navigate('/');
         }
-        console.error("Login error:", error);
         setErrorMessage("Invalid email or password");
     } finally {
         setIsLoading(false);
@@ -76,7 +76,7 @@ const Login = () => {
         axiosPublic.post("/users", userInfor)
           .then((response) => {
             // console.log(response);
-            alert("Signin successful with Gmail!");
+            handleSuccess("Signin successful with Gmail!");
           })
           .then(() => {
             navigate("/");
@@ -86,7 +86,6 @@ const Login = () => {
         if (error.response && error.response.status === 302) {
           navigate('/');
         }
-        console.error("Login error:", error);
         setErrorMessage("Login Error!");
       }).then(() => {
         navigate("/");
