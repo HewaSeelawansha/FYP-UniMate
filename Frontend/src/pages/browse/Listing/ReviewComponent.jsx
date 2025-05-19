@@ -11,6 +11,8 @@ const ReviewComponent = ({ id, listing }) => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [reviews, setReviews] = useState([]);
+    const [sortedReviews, setSortedReviews] = useState([]);
+    const [sortMethod, setSortMethod] = useState('recent');
     const [reviewText, setReviewText] = useState('');
     const [rating, setRating] = useState(0);
     const [uReviewText, setUReviewText] = useState('');
@@ -21,7 +23,25 @@ const ReviewComponent = ({ id, listing }) => {
     const axiosPublic = useAxiosPublic();
     const [isUser, isUserLoading] = useUser();
     const [booking, setBooking] = useState(null);
+
+    console.log(reviews)
     
+    // Sort function
+    const sortReviews = (reviews, method = 'recent') => {
+        switch(method) {
+            case 'positive-first':
+                return [...reviews].sort((a,b) => b.sentimentScore - a.sentimentScore);
+            case 'critical-first':
+                return [...reviews].sort((a,b) => a.sentimentScore - b.sentimentScore);
+            case 'highest-rating':
+                return [...reviews].sort((a,b) => b.rating - a.rating);
+            case 'lowest-rating':
+                return [...reviews].sort((a,b) => a.rating - b.rating);
+            default:
+                return [...reviews].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
+    };
+
     useEffect(() => {
         const fetchBooking = async () => {
             setLoading(true); 
@@ -43,6 +63,7 @@ const ReviewComponent = ({ id, listing }) => {
         try {
             const response = await axiosPublic.get(`/reviews/${listing}`);
             setReviews(response.data.reviews);
+            setSortedReviews(sortReviews(response.data.reviews, sortMethod));
         } catch (error) {
             console.error("Error fetching reviews:", error);
         } finally {
@@ -53,6 +74,10 @@ const ReviewComponent = ({ id, listing }) => {
     useEffect(() => {
         fetchReviews();
     }, [listing]);
+
+    useEffect(() => {
+        setSortedReviews(sortReviews(reviews, sortMethod));
+    }, [sortMethod, reviews]);
 
     const refetchReview = () => {
         setLoading(true);
@@ -158,22 +183,42 @@ const ReviewComponent = ({ id, listing }) => {
     return (
         <div className="pb-6">
             <div className="pb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                    Customer Reviews
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">
+                        Customer Reviews
+                        {reviews.length > 0 && (
+                            <span className="ml-2 text-green-500">({reviews.length})</span>
+                        )}
+                    </h2>
+                    
                     {reviews.length > 0 && (
-                        <span className="ml-2 text-green-500">({reviews.length})</span>
+                        <div className="mt-4 md:mt-0">
+                            <label htmlFor="sort-method" className="sr-only">Sort reviews</label>
+                            <select
+                                id="sort-method"
+                                value={sortMethod}
+                                onChange={(e) => setSortMethod(e.target.value)}
+                                className="block w-full md:w-auto pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg"
+                            >
+                                <option value="recent">Most Recent</option>
+                                <option value="positive-first">Most Positive</option>
+                                <option value="critical-first">Most Critical</option>
+                                <option value="highest-rating">Highest Rating</option>
+                                <option value="lowest-rating">Lowest Rating</option>
+                            </select>
+                        </div>
                     )}
-                </h2>
+                </div>
                 
                 {reviews.length > 0 ? (
                     <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2">
-                        {reviews.map((review, index) => (
+                        {sortedReviews.map((review, index) => (
                             <div
                                 key={index}
-                                className="p-6 bg-gray-50 rounded-lg relative border border-gray-200"
+                                className={`p-6 ${review.sentiment==='positive'?'bg-emerald-50':review.sentiment==='negative'?'bg-red-50':'bg-gray-50'} rounded-lg relative border border-gray-200`}
                             >
                                 {review.email === user?.email && (
-                                    <div className="absolute top-4 right-4 flex space-x-2">
+                                    <div className="absolute bottom-4 right-4 flex space-x-2">
                                         <button
                                             onClick={() => toggleUpdate(review)}
                                             className="p-2 text-green-500 hover:text-green-600 transition-colors"
@@ -183,12 +228,21 @@ const ReviewComponent = ({ id, listing }) => {
                                         </button>
                                     </div>
                                 )}
+                                <div className="absolute top-4 right-4 flex space-x-2">
+                                    <span className={`ml-2 px-2 py-1 text-xs rounded-full ${
+                                        review.sentiment === 'positive' ? 'bg-emerald-100 text-emerald-800' :
+                                        review.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
+                                        'bg-gray-100 text-gray-800'
+                                    }`}>
+                                        {review.sentiment}
+                                    </span>
+                                </div>
                                 
                                 <div className="flex items-center space-x-2 mb-3">
                                     {[...Array(5)].map((_, i) => (
                                         <span
                                             key={i}
-                                            className={`text-xl ${i < review.rating ? 'text-orange-400' : 'text-orange-300'}`}
+                                            className={`text-xl ${i < review.rating ? 'text-orange-400' : 'text-orange-200'}`}
                                         >
                                             ★
                                         </span>
@@ -198,14 +252,14 @@ const ReviewComponent = ({ id, listing }) => {
                                 
                                 <p className="text-gray-800 mb-4">{review.reviewText}</p>
                                 
-                                <div className="flex justify-between items-center text-sm text-gray-500">
-                                    <p className="font-medium">By {review.email}</p>
+                                <div className="text-sm text-gray-500">
                                     <p>
                                         {new Date(review.createdAt).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric'
-                                        })}
+                                        month: 'short',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                        })} • {' '}
+                                        <span className="font-medium">{review.email}</span>
                                     </p>
                                 </div>
                             </div>

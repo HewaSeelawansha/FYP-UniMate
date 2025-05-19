@@ -287,7 +287,7 @@ const ListingFees = () => {
                   {/* Action Button */}
                   <div className="mt-6 flex justify-end">
                     <button 
-                      onClick={() => navigate(`/dashboard/boarding-details/${listing.boardingID}`)}
+                      onClick={() => navigate(`/dashboard/view-boarding/${listing.owner}`)}
                       className="flex items-center text-green-600 hover:text-green-700 font-medium"
                     >
                       View Boarding Details <IoIosArrowForward className="ml-1" />
