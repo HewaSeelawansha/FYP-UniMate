@@ -252,16 +252,27 @@ const Navbar = () => {
               ) : isLoading ? (
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
               ) : (
-                <button
-                  onClick={() =>
-                    document.getElementById("my_modal_5").showModal()
-                  }
-                  className="flex items-center gap-2 py-2 px-4 md:px-5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium shadow-sm hover:shadow-md transition-all duration-200"
-                >
-                  <FaRegUser className="text-sm" />
-                  <span className="hidden sm:inline py-1 text-sm">Login</span>
-                </button>
+                <>
+                  {/* Desktop Login Button */}
+                  <button
+                    onClick={() => document.getElementById("my_modal_5").showModal()}
+                    className="hidden md:flex items-center gap-2 py-2 px-4 md:px-5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium shadow-sm hover:shadow-md transition-all duration-200"
+                  >
+                    <FaRegUser className="text-sm" />
+                    <span className="hidden sm:inline py-1 text-sm">Login</span>
+                  </button>
+                  
+                  {/* Mobile Login Button */}
+                  <button
+                    onClick={() => document.getElementById("my_modal_5").showModal()}
+                    className="md:hidden flex items-center justify-center h-12 w-12 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white transition-colors duration-200"
+                    aria-label="Login"
+                  >
+                    <FaRegUser className="text-lg" />
+                  </button>
+                </>
               )}
+
             </div>
           </div>
         </div>
