@@ -28,21 +28,22 @@ const AdminLayout = () => {
     <div>
         {
           isAdmin ? 
-          <div className="drawer sm:drawer-open">
+          <div className="drawer lg:drawer-open">
             <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content flex flex-col sm:pl-0">
+            <div className="drawer-content flex flex-col lg:pl-0">
               {/* Mobile header */}
-              <div className="flex items-center justify-between mx-4 sm:hidden">
-                <label htmlFor="my-drawer-2" className="btn bg-blue-300 rounded-full drawer-button">
-                  <MdDashboardCustomize/>
+              <div className="flex items-center justify-between mx-4 lg:hidden">
+                <label htmlFor="my-drawer-2" className="btn bg-emerald-200 rounded-full drawer-button">
+                  <img src={logo} alt="" className="w-[150px]" />
                 </label>
-                <button className='my-2 flex items-center gap-2 btn rounded-full px-6 bg-green-500 text-white'>
+                <button className='my-2 flex items-center gap-2 btn rounded-full px-6 bg-rose-400 text-black'
+                onClick={handleLogout}>
                   <FaRegUser />Logout
                 </button>
               </div>
               
               {/* Outlet container - takes full width on mobile, adjusts for sidebar on larger screens */}
-              <div className='mt-5 sm:mt-0 mx-4 sm:ml-[calc(10px+1rem)] xl:ml-[calc(10px+2rem)] w-auto'>
+              <div className='mt-5 lg:mt-0 mx-4 lg:ml-[calc(10px+1rem)] xl:ml-[calc(10px+2rem)] w-auto'>
                 <Outlet />
               </div>
             </div>
