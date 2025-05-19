@@ -1,9 +1,10 @@
 const Review = require("../models/review");
 const Listing = require("../models/listing");
+const { analyzeReviewSentiment } = require('../utils/listingNLP');
 
 const getAllReviews = async (req, res) => {
     try {
-        const { listingId } = req.params;  // Extract the listingId from the URL
+        const { listingId } = req.params;  
 
         const reviews = await Review.find({ listing: listingId }).sort({createdAt: -1});  
         
@@ -24,23 +25,37 @@ const getAllReviews = async (req, res) => {
 const addReview = async (req, res) => {
     const { listingId, email, rating, reviewText } = req.body;
     try {
-        // Create a new review
+        // Analyze sentiment before saving
+        const { sentiment, score } = analyzeReviewSentiment(reviewText);
+
+        // Create a new review with sentiment data
         const newReview = new Review({
             listing: listingId,
             email,
             rating,
-            reviewText
+            reviewText,
+            sentiment,
+            sentimentScore: score
         });
+
         await newReview.save();
-        // Find the listing and update review count and average rating
+
+        // Find the listing and update review count, average rating, and sentiment stats
         const listing = await Listing.findById(listingId);
         listing.reviewCount += 1;
+        
+        // Calculate average rating
         const reviews = await Review.find({ listing: listingId });
         const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-        listing.rating = Math.round(averageRating);
+        listing.rating = Math.round(averageRating * 10) / 10; 
+
         await listing.save();
         
-        res.status(200).json({ message: "Review added successfully", listing });
+        res.status(200).json({ 
+            message: "Review added successfully", 
+            review: newReview,
+            listing 
+        });
     } catch (error) {
         res.status(500).json({ message: "Error adding review", error });
     }
@@ -93,7 +108,6 @@ const deleteReview = async (req, res) => {
         res.status(500).json({ message: "Error deleting review", error });
     }
 };
-
 
 module.exports = {
     addReview,
