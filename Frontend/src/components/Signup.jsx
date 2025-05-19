@@ -8,6 +8,7 @@ import axios from "axios";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import { FcGoogle } from "react-icons/fc";
 import logo from "/logon.png";
+import { handleError, handleSuccess } from "../utils/authSwal";
 
 const Signup = () => {
     const {
@@ -75,7 +76,7 @@ const Signup = () => {
                 return sendEmail();
               })
               .then(() => {
-                alert('A verification email has been sent. Please check your inbox and verify your email before logging in.');
+                handleSuccess('A verification email has been sent. Please check your inbox and verify your email before logging in.');
                 // Automatically log out the user
                 return logOut();
               });
@@ -87,7 +88,7 @@ const Signup = () => {
           .catch((error) => {
             console.error(error);
             if (error.code === 'auth/email-already-in-use') {
-              alert('This email is already registered. Please use a different email or login instead.');
+              handleError('This email is already registered. Please use a different email or login instead.');
             } else {
               setErrorMessage(error.message || "Signup failed. Please try again.");
             }
@@ -109,8 +110,7 @@ const Signup = () => {
             };
             axiosPublic.post("/users", userInfor)
               .then((response) => {
-                // console.log(response);
-                alert("Signin successful with Gmail!");
+                handleSuccess("Signin successful with Gmail!");
                 navigate("/");
               });
           })
@@ -118,7 +118,6 @@ const Signup = () => {
             if (error.response && error.response.status === 302) {
               navigate('/');
             }
-            console.error("Login error:", error);
             setErrorMessage("Login Error!");
           }).then(() => {
             navigate("/");
