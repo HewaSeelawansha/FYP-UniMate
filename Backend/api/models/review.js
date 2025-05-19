@@ -21,6 +21,15 @@ const reviewSchema = new Schema({
         type: String,
         required: true,
         trim: true
+    },
+    sentiment: {  
+        type: String,
+        enum: ['positive', 'neutral', 'negative'],
+        default: 'neutral'
+    },
+    sentimentScore: {  
+        type: Number,
+        default: 0
     }
 },  {
     timestamps: true,
