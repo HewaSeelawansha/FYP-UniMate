@@ -118,23 +118,20 @@ const analyzeReviewSentiment = (text) => {
   const tokens = preprocessText(text).split(" ");
   let score = 0;
 
-  // Handle negations first
   tokens.forEach((token, i) => {
     if (token === "not" && i < tokens.length - 1) {
       const nextToken = tokens[i + 1];
       if (positiveWords.has(nextToken)) score -= 2;
       if (negativeWords.has(nextToken)) score += 2;
-      return; // Skip the next token to avoid double-counting
+      return; 
     }
   });
 
-  // Standard scoring
   tokens.forEach((token) => {
     if (positiveWords.has(token)) score += 1;
     if (negativeWords.has(token)) score -= 1;
   });
 
-  // Symmetric thresholds
   let sentiment;
   if (score > 0) sentiment = "positive";
   else if (score < 0) sentiment = "negative";
