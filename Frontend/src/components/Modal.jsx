@@ -8,6 +8,7 @@ import useAuth from "../hooks/useAuth";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import { FcGoogle } from "react-icons/fc";
 import logo from "/logon.png";
+import { handleSuccess } from "../utils/authSwal";
 
 const Modal = () => {
     const {
@@ -40,7 +41,7 @@ const Modal = () => {
         };
         axiosPublic.post("/users", userInfor)
           .then((response) => {
-            alert("Signin successful!");
+            handleSuccess("Signin successful!");
           });
         // console.log(user);
         // ...
@@ -66,7 +67,7 @@ const Modal = () => {
             };
             axiosPublic.post("/users", userInfor)
               .then((response) => {
-                alert("Signin successful!");
+                handleSuccess("Signin successful!");
               })
               .then(() => {
                 setTimeout(() => {
