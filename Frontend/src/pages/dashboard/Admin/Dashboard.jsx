@@ -56,6 +56,7 @@ const AdminDashboard = () => {
   const pendingBookings = bookings.filter(b => b.status === 'Pending').length;
   const pendingListings = listings.filter(l => l.status === 'Pending').length;
   const pendingBoardings = boardings.filter(b => b.status === 'Pending').length;
+  const pendingFees = listings.filter(l => l.payStatus !== 'Done').length;
   
   const totalEarnings = payments.reduce((sum, payment) => sum + payment.price, 0);
   const rentalEarnings = payments.filter(p => p.paid === 'Rental').reduce((sum, p) => sum + p.price, 0);
@@ -63,7 +64,24 @@ const AdminDashboard = () => {
   
   const studentCount = users.filter(u => u.role === 'user').length;
   const ownerCount = users.filter(u => u.role === 'owner').length;
-  
+
+  const getPriceByType = (type) => {
+    switch(type) {
+      case '1-Person Boarding Room':
+      case '2-Person Shared Room':
+        return 500;
+      case '2 to 4-Person Shared Room':
+        return 1000;
+      case 'Whole House-Short Term':
+      case 'Whole House-Long Term':
+        return 2000;
+      default:
+        return 0;
+    }
+  };
+
+  const totalFees = listings.reduce((sum, listing) => sum + getPriceByType(listing.type), 0);
+
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto">
@@ -73,7 +91,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
           {/* Users Card */}
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
             <div className="flex items-center justify-between">
@@ -81,8 +99,8 @@ const AdminDashboard = () => {
                 <p className="text-gray-600 font-medium">Total Users</p>
                 <p className="text-2xl font-bold text-gray-800">{users.length}</p>
                 <div className="flex space-x-2 mt-2">
-                  <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded">Students: {studentCount}</span>
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Owners: {ownerCount}</span>
+                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Students: {studentCount}</span>
+                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Owners: {ownerCount}</span>
                 </div>
               </div>
               <div className="bg-green-100 p-3 rounded-full">
@@ -104,7 +122,7 @@ const AdminDashboard = () => {
                 <p className="text-gray-600 font-medium">Total Listings</p>
                 <p className="text-2xl font-bold text-gray-800">{listings.length}</p>
                 <div className="flex space-x-2 mt-2">
-                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Pending: {pendingListings}</span>
+                  <span className="text-xs bg-pink-100 text-pink-800 px-2 py-1 rounded">Pending: {pendingListings}</span>
                 </div>
               </div>
               <div className="bg-pink-100 p-3 rounded-full">
@@ -126,7 +144,7 @@ const AdminDashboard = () => {
                 <p className="text-gray-600 font-medium">Total Bookings</p>
                 <p className="text-2xl font-bold text-gray-800">{bookings.length}</p>
                 <div className="flex space-x-2 mt-2">
-                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Pending: {pendingBookings}</span>
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Pending: {pendingBookings}</span>
                 </div>
               </div>
               <div className="bg-blue-100 p-3 rounded-full">
@@ -148,7 +166,7 @@ const AdminDashboard = () => {
                 <p className="text-gray-600 font-medium">Total Boardings</p>
                 <p className="text-2xl font-bold text-gray-800">{boardings.length}</p>
                 <div className="flex space-x-2 mt-2">
-                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Pending: {pendingBoardings}</span>
+                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Pending: {pendingBoardings}</span>
                 </div>
               </div>
               <div className="bg-purple-100 p-3 rounded-full">
@@ -163,11 +181,11 @@ const AdminDashboard = () => {
             </Link>
           </div>
 
-          {/* Earnings Card */}
+          {/* Transaction - Booking Earning Card */}
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-amber-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 font-medium">Total Earnings</p>
+                <p className="text-gray-600 font-medium">Booking Earnings</p>
                 <p className="text-2xl font-bold text-gray-800">
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
@@ -176,7 +194,7 @@ const AdminDashboard = () => {
                 </p>
                 <div className="flex space-x-2 mt-2">
                   <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">Rental: {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'LKR'}).format(rentalEarnings)}</span>
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Key Money: {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'LKR'}).format(keyMoneyEarnings)}</span>
+                  <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">Key Money: {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'LKR'}).format(keyMoneyEarnings)}</span>
                 </div>
               </div>
               <div className="bg-amber-100 p-3 rounded-full">
@@ -188,6 +206,32 @@ const AdminDashboard = () => {
               className="mt-4 inline-flex items-center text-sm text-amber-600 hover:text-amber-700"
             >
               View all transactions <IoIosArrowForward className="ml-1" />
+            </Link>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-lime-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 font-medium">Listing Fee Earnings</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'LKR'
+                  }).format(totalFees)}
+                </p>
+                <div className="flex space-x-2 mt-2">
+                  <span className="text-xs bg-lime-100 text-lime-800 px-2 py-1 rounded">Pending: {pendingFees}</span>
+                </div>
+              </div>
+              <div className="bg-lime-100 p-3 rounded-full">
+                <FaMoneyBillWave className="text-lime-600 text-xl" />
+              </div>
+            </div>
+            <Link 
+              to="/dashboard/listing-fees" 
+              className="mt-4 inline-flex items-center text-sm text-lime-600 hover:text-lime-700"
+            >
+              View all listing fee earnings <IoIosArrowForward className="ml-1" />
             </Link>
           </div>
         </div>
@@ -213,8 +257,8 @@ const AdminDashboard = () => {
               to="/dashboard/bookings" 
               className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition duration-200 flex items-center"
             >
-              <div className="bg-blue-100 p-3 rounded-full mr-4">
-                <FaCalendarAlt className="text-blue-600" />
+              <div className="bg-pink-100 p-3 rounded-full mr-4">
+                <FaCalendarAlt className="text-pink-600" />
               </div>
               <div>
                 <h3 className="font-medium text-gray-800">Review Bookings</h3>
@@ -226,8 +270,8 @@ const AdminDashboard = () => {
               to="/dashboard/transactions" 
               className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition duration-200 flex items-center"
             >
-              <div className="bg-purple-100 p-3 rounded-full mr-4">
-                <FcViewDetails className="text-xl" />
+              <div className="bg-sky-100 p-3 rounded-full mr-4">
+                <FcViewDetails className="text-xl text-sky-600" />
               </div>
               <div>
                 <h3 className="font-medium text-gray-800">Review Transactions</h3>
