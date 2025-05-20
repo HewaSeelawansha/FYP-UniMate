@@ -29,7 +29,7 @@ const ManageBoardings = () => {
     };
 
     try {
-      const response = await axiosSecure.patch(`/boarding/status//${boardingId}`, data);
+      const response = await axiosSecure.patch(`/boarding/status/${boardingId}`, data);
 
       if (response.data) {
         Swal.fire({
@@ -245,7 +245,7 @@ const ManageBoardings = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex justify-between lg:flex-row flex-col items-center pt-4 border-t">
+                    <div className="flex justify-between md:flex-row flex-col items-center pt-4 border-t">
 
                       <button 
                         onClick={() => toggleListings(item._id)}
@@ -309,122 +309,149 @@ const ManageBoardings = () => {
                     </h4>
                     
                     {boardingListings.length > 0 ? (
-                      <div className="space-y-4">
-                        {boardingListings.map((listing, idx) => (
-                          <div 
-                            key={idx} 
-                            className={`p-4 rounded-lg ${listing.status === 'Pending' &&
-                              'bg-red-50 border-l-4 border-red-500'} border-l-4 border-emerald-500 bg-emerald-50 max-h-96 overflow-hidden`}
-                          >
-                            {/* Top Row - Name, Status, and Pay Status */}
-                            <div className="flex justify-between items-center mb-3">
-                              <div className="flex items-center">
-                                <h5 className="font-medium">
-                                  {listing.name}
-                                </h5>
-                                {listing.status === 'Pending' && (
-                                  <span className="ml-2 flex items-center text-red-600 text-xs">
-                                    <FaExclamationCircle className="mr-1" />
-                                    Needs Approval
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  listing.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                                  listing.status === 'Rejected' ? 'bg-rose-100 text-rose-800' :
-                                  'bg-yellow-100 text-yellow-800'
-                                }`}>
-                                  {listing.status}
-                                </span>
-                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                  {listing.payStatus || 'N/A'}
-                                </span>
-                              </div>
-                            </div>
+  <div className="space-y-4">
+    {boardingListings.map((listing, idx) => (
+      <div 
+        key={idx} 
+        className={`p-4 rounded-lg ${listing.status === 'Pending' ?
+          'bg-red-50 border-l-4 border-red-500' :
+          'border-l-4 border-emerald-500 bg-emerald-50'} md:max-h-96 overflow-hidden`}
+      >
+        {/* Top Row - Name, Status, and Pay Status */}
+        <div className="flex justify-between items-center mb-3">
+          <div className="flex items-center">
+            <h5 className="font-medium text-sm md:text-base">
+              {listing.name}
+            </h5>
+            {listing.status === 'Pending' && (
+              <span className="ml-2 flex items-center text-red-600 text-xs md:text-sm">
+                <FaExclamationCircle className="mr-1" />
+                Needs Approval
+              </span>
+            )}
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className={`px-2 py-1 rounded-full text-xs md:text-sm font-medium ${
+              listing.status === 'Approved' ? 'bg-green-100 text-green-800' :
+              listing.status === 'Rejected' ? 'bg-rose-100 text-rose-800' :
+              'bg-yellow-100 text-yellow-800'
+            }`}>
+              {listing.status}
+            </span>
+            <span className="px-2 py-1 rounded-full text-xs md:text-sm font-medium bg-blue-100 text-blue-800">
+              {listing.payStatus || 'N/A'}
+            </span>
+          </div>
+        </div>
 
-                            {/* Second Row - Image and Details */}
-                            <div className="flex flex-col md:flex-row gap-4 mb-3">
-                              {/* Left Side - Image */}
-                              <div className="h-[110px] w-[200px]">
-                                {listing.images?.length > 0 && (
-                                  <img 
-                                    src={listing.images[0]} 
-                                    alt={listing.name} 
-                                    className="w-full h-full object-cover rounded-lg"
-                                  />
-                                )}
-                              </div>
+        {/* Second Row - Image and Details */}
+        <div className="flex flex-col md:flex-row gap-4 mb-3">
+          {/* Image - Hidden on small screens */}
+          <div className="hidden md:block md:h-[110px] md:w-[200px]">
+            {listing.images?.length > 0 && (
+              <img 
+                src={listing.images[0]} 
+                alt={listing.name} 
+                className="w-full h-full object-cover rounded-lg"
+              />
+            )}
+          </div>
 
-                              {/* Right Side - Details */}
-                              <div className="md:w-3/4">
-                                <div className="grid grid-cols-2 gap-2 mb-2">
-                                  <div className="flex items-center">
-                                    <span className="font-medium mr-1">Available:</span>
-                                    <span>{listing.available || '0'} beds</span>
-                                  </div>
-                                  <div className="flex items-center">
-                                    <span className="font-medium mr-1">Price:</span>
-                                    <span>Rs. {listing.price?.toLocaleString() || '0'}/mo</span>
-                                  </div>
-                                  <div className="flex items-center">
-                                    <span className="font-medium mr-1">Key Money:</span>
-                                    <span>{listing.keyMoney === 0 ? 'No need' : `Rs. ${listing.keyMoney}`}</span>
-                                  </div>
-                                  <div className="flex items-center">
-                                    <span className="font-medium mr-1">Type:</span>
-                                    <span>{listing.type || 'N/A'}</span>
-                                  </div>
-                                </div>
+          {/* Details - Different layout for mobile vs desktop */}
+          <div className="md:w-3/4">
+            {/* Mobile layout (stacked) */}
+            <div className="md:hidden space-y-2 mb-2 text-xs">
+              <div className="flex justify-between">
+                <span className="font-medium">Available:</span>
+                <span>{listing.available || '0'} beds</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Price:</span>
+                <span>Rs. {listing.price?.toLocaleString() || '0'}/mo</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Key Money:</span>
+                <span>{listing.keyMoney === 0 ? 'No need' : `Rs. ${listing.keyMoney}`}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Type:</span>
+                <span>{listing.type || 'N/A'}</span>
+              </div>
+            </div>
 
-                                {/* Amenities */}
-                                {listing.amenities?.length > 0 && (
-                                  <div className="mt-2">
-                                    <div className="font-medium text-sm mb-1">Amenities:</div>
-                                    <div className="flex flex-wrap gap-1">
-                                      {listing.amenities.map((amenity, aIdx) => (
-                                        <span 
-                                          key={aIdx} 
-                                          className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded"
-                                        >
-                                          {amenity}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
+            {/* Desktop layout (grid) */}
+            <div className="hidden md:grid md:grid-cols-2 gap-2 mb-2">
+              <div className="flex items-center">
+                <span className="font-medium mr-1">Available:</span>
+                <span>{listing.available || '0'} beds</span>
+              </div>
+              <div className="flex items-center">
+                <span className="font-medium mr-1">Price:</span>
+                <span>Rs. {listing.price?.toLocaleString() || '0'}/mo</span>
+              </div>
+              <div className="flex items-center">
+                <span className="font-medium mr-1">Key Money:</span>
+                <span>{listing.keyMoney === 0 ? 'No need' : `Rs. ${listing.keyMoney}`}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="font-medium mr-1">Type:</span>
+                <span>{listing.type || 'N/A'}</span>
+              </div>
+            </div>
 
-                            {/* Third Row - Actions */}
-                            <div className="flex justify-between items-center border-t pt-3">
-                              <Link 
-                                to={`/dashboard/view-listing/${listing._id}`}
-                                className="flex items-center px-3 py-[5px] bg-emerald-400 rounded-lg font-semibold text-white hover:bg-emerald-500 transition duration-200"
-                              >
-                                <span>View Details</span>
-                              </Link>
-                              
-                              <div className="flex items-center space-x-2">
-                                <select
-                                  className="rounded-lg border-green-500 text-green-500 text-sm focus:ring-0 focus:border-green-500 px-3 py-[5px]"
-                                  defaultValue={listing.status}
-                                  onChange={(e) => handleListingStatus(listing._id, e.target.value)}
-                                >
-                                  <option value='Pending'>Pending</option>
-                                  <option value='Approved'>Approved</option>
-                                  <option value='Rejected'>Rejected</option>
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-4 text-gray-500">
-                        No listings found for this boarding house.
-                      </div>
-                    )}
+            {/* Amenities */}
+            {listing.amenities?.length > 0 && (
+              <div className="mb-2">
+                <div className="font-medium text-xs md:text-sm mb-1">Amenities:</div>
+                <div className="flex flex-wrap gap-1 md:gap-2">
+                  {listing.amenities.slice(0, 2).map((amenity, aIdx) => (
+                    <span 
+                      key={aIdx} 
+                      className="bg-green-100 text-green-800 text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-lg"
+                    >
+                      {amenity}
+                    </span>
+                  ))}
+                  {listing.amenities.length > 2 && (
+                    <span className="bg-gray-100 text-gray-800 text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-lg">
+                      +{listing.amenities.length - 2} more
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Third Row - Actions */}
+        <div className="flex justify-between items-center border-t pt-3">
+          <Link 
+            to={`/dashboard/view-listing/${listing._id}`}
+            className="flex items-center px-3 py-[5px] bg-emerald-400 rounded-lg font-semibold text-white hover:bg-emerald-500 transition duration-200 text-xs md:text-sm"
+          >
+            <span>View Details</span>
+          </Link>
+          
+          <div className="flex items-center space-x-2">
+            <select
+              className="rounded-lg border-green-500 text-green-500 text-xs md:text-sm focus:ring-0 focus:border-green-500 px-2 md:px-3 py-[5px]"
+              defaultValue={listing.status}
+              onChange={(e) => handleListingStatus(listing._id, e.target.value)}
+            >
+              <option value='Pending'>Pending</option>
+              <option value='Approved'>Approved</option>
+              <option value='Rejected'>Rejected</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+) : (
+  <div className="text-center py-4 text-gray-500 text-sm md:text-base">
+    No listings found for this boarding house.
+  </div>
+)}
                   </div>
                 )}
               </div>
