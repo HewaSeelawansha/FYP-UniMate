@@ -66,23 +66,41 @@ const editReview = async (req, res) => {
     const { rating, reviewText } = req.body;
 
     try {
-        // Find and update the review
+        // Analyze sentiment of the updated review text
+        const { sentiment, score } = analyzeReviewSentiment(reviewText);
+
+        // Find and update the review with sentiment data
         const review = await Review.findByIdAndUpdate(
             reviewId,
-            { rating, reviewText },
+            { 
+                rating, 
+                reviewText,
+                sentiment,
+                sentimentScore: score 
+            },
             { new: true, runValidators: true }
         );
 
         // Recalculate and update the average rating for the listing
         const listing = await Listing.findById(review.listing);
         const reviews = await Review.find({ listing: listing._id });
+        
+        // Calculate new average rating
         const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-        listing.rating = Math.round(averageRating);
+        listing.rating = Math.round(averageRating * 10) / 10;
+        
         await listing.save();
 
-        res.status(200).json({ message: "Review updated successfully", review, listing });
+        res.status(200).json({ 
+            message: "Review updated successfully", 
+            review, 
+            listing 
+        });
     } catch (error) {
-        res.status(500).json({ message: "Error editing review", error });
+        res.status(500).json({ 
+            message: "Error editing review", 
+            error 
+        });
     }
 };
 
