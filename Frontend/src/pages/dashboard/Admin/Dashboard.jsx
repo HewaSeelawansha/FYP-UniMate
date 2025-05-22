@@ -11,7 +11,6 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
 
-  // Fetch all necessary data
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {

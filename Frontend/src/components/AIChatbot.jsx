@@ -17,10 +17,8 @@ const AIChatbot = () => {
 
   const gemini_key = import.meta.env.VITE_GEMINI_API_KEY;
 
-  // Initialize Gemini API
   const genAI = new GoogleGenerativeAI(gemini_key);
 
-  // Predefined suggestions
   const suggestions = [
     { 
       id: 1, 
@@ -48,19 +46,16 @@ const AIChatbot = () => {
     },
   ];
 
-  // Scroll to bottom of chat
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen]);
 
-  // Welcome message
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       const welcomeMessage = {
@@ -72,7 +67,6 @@ const AIChatbot = () => {
     }
   }, [isOpen, messages.length]);
 
-  // Handle click outside to close
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (chatContainerRef.current && !chatContainerRef.current.contains(event.target) && !event.target.closest('button[aria-label="Open AI Chat"]')) {
@@ -105,10 +99,8 @@ const AIChatbot = () => {
     setShowSuggestions(false);
 
     try {
-      // Get the Gemini model
       const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-      // Create context for the AI
       const context = `You are UniMate AI Assistant, a specialized assistant for NSBM Green University students seeking boarding houses. 
       Your ONLY purpose is to help students find accommodation near campus. 
 

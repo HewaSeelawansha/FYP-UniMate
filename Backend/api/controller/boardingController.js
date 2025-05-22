@@ -65,14 +65,12 @@ const updateBoarding = async (req, res) => {
       return res.status(404).json({ message: 'Boarding not found!' });
     }
 
-    // Update the boarding
     const updatedBoarding = await Boarding.findByIdAndUpdate(
       boardingId,
       { name, address, lng, lat, distance, phone, gender, description, images, amenities, beds, status },
       { new: true, runValidators: true }
     );
 
-    // Check if distance was changed and update all listings if it was
     if (distance && distance !== currentBoarding.distance) {
       await Listing.updateMany(
         { owner: updatedBoarding.owner },

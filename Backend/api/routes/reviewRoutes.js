@@ -4,16 +4,16 @@ const Review = require("../models/review");
 const reviewController = require('../controller/reviewController');
 const verifyToken = require('../middleware/verifyToken');
 
-//get listing by email
+//get review by email
 router.get('/:listingId', reviewController.getAllReviews);
 
-// post a menu item
+// post a review
 router.post('/', reviewController.addReview);
 
-// delete a menu item
+// delete a review
 router.delete('/:reviewId', reviewController.deleteReview);
 
-// update single menu item
+// update single review
 router.patch('/:reviewId', reviewController.editReview);
 
 module.exports = router;

@@ -19,18 +19,15 @@ const ListingFees = () => {
   const [listings, listingsLoading, refetchListings] = useListings();
 
   useEffect(() => {
-    // First filter by boarding if selected
     let filtered = listings;
     if (selectedBoarding !== 'all') {
       filtered = listings.filter((item) => item.boarding === selectedBoarding);
     }
     
-    // Then filter by listing type if selected
     if (selectedListingType !== 'all') {
       filtered = filtered.filter((item) => item.type === selectedListingType);
     }
 
-    // Only show listings that have been paid
     filtered = filtered.filter((item) => item.payStatus === 'Done');
     
     setFilteredListings(filtered);
@@ -44,7 +41,6 @@ const ListingFees = () => {
     setSelectedListingType(type);
   };
 
-  // Calculate fees
   const calculateFees = (listings) => {
     const totalFees = listings.reduce((sum, listing) => sum + getPriceByType(listing.type), 0);
     

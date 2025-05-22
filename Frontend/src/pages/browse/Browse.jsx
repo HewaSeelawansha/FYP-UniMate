@@ -24,7 +24,6 @@ const Browse = () => {
   const [distanceRange, setDistanceRange] = useState([0, 50]);
   const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(false);
 
-  // Fetch data with search and filters
   const fetchListings = async () => {
     setIsLoading(true);
     setError(null);

@@ -7,7 +7,6 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-// Configure default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
@@ -21,7 +20,7 @@ const MapComponent = ({ lati, lngi, name }) => {
     const [distance, setDistance] = useState(null);
     const [duration, setDuration] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [mapKey, setMapKey] = useState(Date.now()); // Key to force remount
+    const [mapKey, setMapKey] = useState(Date.now()); 
   
     const NSBMLocation = [6.821380, 80.041691];
   

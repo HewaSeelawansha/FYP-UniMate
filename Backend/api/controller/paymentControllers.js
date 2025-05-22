@@ -19,7 +19,7 @@ const getAllPayments = async (req, res) => {
     }
 }
 
-// post a new menu item
+// post a new payment
 const postPaymentItem = async (req, res) => {
     const payment = req.body;
     const { booking, status, paid, price } = req.body;
@@ -30,18 +30,15 @@ const postPaymentItem = async (req, res) => {
             return res.status(404).json({ message: "Booking not found" });
         }
 
-        // Update the status and paid properties
         updatedBooking.paystatus = status;
         updatedBooking.paid = paid;
         updatedBooking.payment = price;
 
-        // Save the updated booking
         await updatedBooking.save();
 
-        // Return success response
         res.status(200).json({ paymentRequest });
     } catch (error) {
-        console.error(error);  // Add logging for better debugging
+        console.error(error);  
         res.status(400).json({ message: error.message });
     }
 };

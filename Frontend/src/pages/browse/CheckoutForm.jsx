@@ -17,7 +17,7 @@ const CheckoutForm = ({ price, keyMoney, listing, booking }) => {
   const [clientSecret, setClientSecret] = useState("");
   const [processing, setProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [paymentType, setPaymentType] = useState(keyMoney > 0 ? 'both' : 'rental'); // Default to 'rental' if no key money
+  const [paymentType, setPaymentType] = useState(keyMoney > 0 ? 'both' : 'rental'); 
   const [totalAmount, setTotalAmount] = useState(keyMoney > 0 ? price + keyMoney : price);
 
   // Update total amount when payment type changes

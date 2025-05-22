@@ -36,14 +36,12 @@ const AuthProvider = ({children}) => {
         return signOut(auth);
     }
 
-    // update your profile
     const updateUserProfile = (name, photoURL) => {
       return  updateProfile(auth.currentUser, {
             displayName: name, photoURL: photoURL
           })
     }
 
-    // In your useAuth hook (if you have access to modify it)
 const reloadUser = async () => {
     await auth.currentUser.reload();
     setUser(auth.currentUser);

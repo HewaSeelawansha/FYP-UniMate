@@ -7,7 +7,6 @@ const useUser = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
 
-    // Return null or default values when user is not logged in
     if (!user?.email) {
         return [null, false];
     }
@@ -18,7 +17,7 @@ const useUser = () => {
             const res = await axiosSecure.get(`users/user/${user.email}`);
             return res.data?.user;
         },
-        enabled: !!user?.email, // Prevents query from running if email is undefined
+        enabled: !!user?.email, 
     });
 
     return [isUser, isUserLoading];

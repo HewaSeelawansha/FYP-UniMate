@@ -1,11 +1,9 @@
-// Corrected userRoutes.js
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/userControllers');
 const verifyToken = require('../middleware/verifyToken');
 const verifyAdmin = require('../middleware/verifyAdmin');
 
-// Specific routes 
 router.get('/', verifyToken, verifyAdmin, userController.getAllUsers);
 router.get('/roommates/:email', userController.getRUsers); 
 router.get('/admin/:email', verifyToken, userController.getAdmin);

@@ -7,7 +7,6 @@ import useBoarding from "../../hooks/useBoarding";
 import { FaSearch, FaUniversity, FaSlidersH, FaBed } from "react-icons/fa";
 import SearchModal from "../../components/SearchModal";
 
-// Fix default marker icon issue in leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -16,7 +15,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
 
-// Custom icons
 const createCustomIcon = (color, iconName) => {
   return L.divIcon({
     className: "custom-div-icon",
@@ -28,13 +26,10 @@ const createCustomIcon = (color, iconName) => {
   });
 };
 
-// University icon
 const universityIcon = createCustomIcon("#4b5563", "fa-university");
 
-// Property icon
 const propertyIcon = createCustomIcon("#10b981", "fa-home");
 
-// Component to center map on university
 const ChangeMapView = ({ center }) => {
   const map = useMap();
   useEffect(() => {
@@ -52,7 +47,6 @@ const Locator = () => {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Universities data
   const places = [
     {
       id: "NSBM",
@@ -69,17 +63,14 @@ const Locator = () => {
     },
   ];
 
-  // Function to open search modal with a specific query
   const handleSearchBoarding = (boardingName) => {
     setSearchQuery(boardingName);
     setIsSearchModalOpen(true);
   };
 
-  // Filter boardings by distance
   useEffect(() => {
     if (boardings.length > 0) {
       const filtered = boardings.filter((boarding) => {
-        // Calculate distance (using Haversine formula)
         const place = places.find((u) => u.id === selectedPlace);
         if (!place) return false;
 
@@ -88,7 +79,7 @@ const Locator = () => {
         const lat2 = boarding.lat;
         const lon2 = boarding.lng;
 
-        const R = 6371; // Radius of the Earth in km
+        const R = 6371; 
         const dLat = ((lat2 - lat1) * Math.PI) / 180;
         const dLon = ((lon2 - lon1) * Math.PI) / 180;
         const a =
@@ -98,7 +89,7 @@ const Locator = () => {
             Math.sin(dLon / 2) *
             Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const distance = R * c; // Distance in km
+        const distance = R * c; 
 
         return distance <= filterDistance;
       });
@@ -107,7 +98,6 @@ const Locator = () => {
     }
   }, [boardings, selectedPlace, filterDistance]);
 
-  // Change place handler
   const handlePlaceChange = (uniId) => {
     const place = places.find((u) => u.id === uniId);
     if (place) {

@@ -49,7 +49,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
 
   const handleChange = (newMessage) => {
     setNewMessage(newMessage);
-    // Here you would typically emit a typing event to the socket
   };
 
   const handleSend = async (e) => {
@@ -78,7 +77,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-gray-50 to-white">
-      {/* Chat Header */}
       <div className="border-b border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex items-center">
           <div className="relative">
@@ -87,7 +85,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
             />
-            {/* <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${userData?.email !== currentUser ? 'bg-emerald-500' : 'bg-gray-400'}`}></span> */}
           </div>
           <div className="ml-3">
             <h4 className="font-semibold text-gray-800">{userData?.name || "Unknown User"}</h4>
@@ -100,7 +97,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
         </div>
       </div>
 
-      {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
         {messages.map((message, index) => (
           <motion.div
@@ -126,7 +122,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
         ))}
       </div>
 
-      {/* Message Input */}
       <div className="border-t border-gray-200 bg-white p-4">
         <form onSubmit={handleSend} className="flex items-center gap-2">
           <button type="button" className="p-2 text-gray-500 hover:text-green-500 rounded-full hover:bg-gray-100">

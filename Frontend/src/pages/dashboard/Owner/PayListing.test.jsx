@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { useStripe, useElements } from '@stripe/react-stripe-js';
 import PayListing from './PayListing';
 
-// Mock custom hooks
 vi.mock('../../../hooks/useAuth', () => ({
   default: () => ({
     user: {
@@ -23,19 +22,16 @@ vi.mock('../../../hooks/useAxiosSecure', () => ({
   })
 }));
 
-// Mock Stripe
 vi.mock('@stripe/react-stripe-js', () => ({
   CardElement: ({ children }) => <div data-testid="card-element-mock">{children}</div>,
   useStripe: vi.fn(),
   useElements: vi.fn(),
 }));
 
-// Mock React Router
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn(),
 }));
 
-// Mock icons
 vi.mock('react-icons/fa', () => ({
   FaCcVisa: () => <div data-testid="fa-cc-visa" />,
   FaCcMastercard: () => <div data-testid="fa-cc-mastercard" />,
@@ -172,7 +168,6 @@ describe('PayListing Component', () => {
   });
 
   test('disables button when processing', async () => {
-    // Render a button with processing state directly
     await act(async () => {
       render(
         <button 

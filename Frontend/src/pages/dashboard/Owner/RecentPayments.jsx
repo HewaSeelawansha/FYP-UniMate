@@ -20,13 +20,12 @@ const RecentPayments = () => {
   const { data: payments = [], isLoading: paymentsLoading } = useQuery({
     queryKey: ['orders', user?.email],
     queryFn: async () => {
-      if (!user?.email) return []; // Add this check
+      if (!user?.email) return []; 
       const res = await axiosSecure.get(`/payments/owner/${user.email}`);
       return res.data;
     },
   });
 
-  // Fix: Use useMemo for derived state
   const filteredPayments = useMemo(() => {
     let filtered = payments;
     

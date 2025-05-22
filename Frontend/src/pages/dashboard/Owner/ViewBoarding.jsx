@@ -10,7 +10,6 @@ import useAdmin from '../../../hooks/useAdmin';
 import { FaUndoAlt, FaEdit, FaMapMarkerAlt, FaPhone, FaUser, FaHome, FaBed, FaVenusMars, FaCalendarAlt } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
 
-// Fix for default marker icons in Leaflet
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -267,7 +266,7 @@ const ViewBoarding = () => {
             {/* Action Buttons */}
             {isAdmin  &&
               <select
-                className="w-full py-3 px-4 bg-green-400 rounded-lg border-gray-300 focus:ring-green-500 focus:border-green-500 py-1"
+                className="w-full px-4 bg-green-400 rounded-lg border-gray-300 focus:ring-green-500 focus:border-green-500 py-1"
                 defaultValue={boarding.status}
                 onChange={(e) => handleBoardingStatus(boarding._id, e.target.value)}
               >

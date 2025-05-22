@@ -63,7 +63,6 @@ app.post('/jwt', async(req,res) => {
 
 const listingRoutes = require('./api/routes/listingRoutes');
 const boardingRoutes = require('./api/routes/boardingRoutes');
-const cartRoutes = require('./api/routes/cartRoutes');
 const userRoutes = require('./api/routes/userRoutes');
 const paymentsRoutes = require('./api/routes/paymentRoutes');
 const chatRoutes = require('./api/routes/chatRoutes');
@@ -72,7 +71,6 @@ const reviewRoutes = require('./api/routes/reviewRoutes');
 const bookingRoutes = require('./api/routes/bookingRoutes');
 app.use('/boarding', boardingRoutes);
 app.use('/listing', listingRoutes);
-app.use('/carts', cartRoutes);
 app.use('/users', userRoutes);
 app.use('/payments', paymentsRoutes);
 app.use('/chat', chatRoutes);

@@ -16,10 +16,8 @@ import useOwner from '../../../hooks/useOwner';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { IoIosArrowBack } from 'react-icons/io';
 
-// NSBM location coordinates
 const NSBMLocation = [6.821380, 80.041691];
 
-// Fix for default marker icons in Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -85,9 +83,8 @@ const UpdateBoarding = () => {
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
-  // Calculate distance using Haversine formula
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Earth radius in km
+    const R = 6371; 
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = 
@@ -95,13 +92,12 @@ const UpdateBoarding = () => {
       Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
       Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return (R * c).toFixed(2); // Distance in km with 2 decimal places
+    return (R * c).toFixed(2);
   };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     
-    // Check if adding these files would exceed the 5-image limit
     if (files.length + imagePreviews.length > 5) {
       setError('images', {
         type: 'manual',
@@ -119,7 +115,6 @@ const UpdateBoarding = () => {
     clearErrors('images');
   };
 
-  // Remove image preview
   const removeImage = (index) => {
     const newPreviews = [...imagePreviews];
     URL.revokeObjectURL(newPreviews[index].preview);
@@ -133,14 +128,12 @@ const UpdateBoarding = () => {
     }
   };
 
-  // Clean up object URLs
   useEffect(() => {
     return () => {
       imagePreviews.forEach(image => URL.revokeObjectURL(image.preview));
     };
   }, [imagePreviews]);
 
-  // Geocoder component for map
   const Geocoder = () => {
     const map = useMap();
 
@@ -196,7 +189,6 @@ const UpdateBoarding = () => {
     setIsSubmitting(true);
     
     try {
-      // Upload new images if any
       let imageUrls = item.images;
       if (imagePreviews.length > 0) {
         const uploadPromises = imagePreviews.map(async (image) => {
@@ -209,10 +201,8 @@ const UpdateBoarding = () => {
         imageUrls = await Promise.all(uploadPromises);
       }
 
-      // Calculate distance from NSBM
       const distance = calculateDistance(NSBMLocation[0], NSBMLocation[1], lat, lng);
 
-      // Prepare updated boarding data
       const selectedAmenities = amenitiesList.filter(amenity => data[amenity.id]).map(amenity => amenity.label);
       const updatedBoarding = {
         name: data.name,
@@ -229,7 +219,6 @@ const UpdateBoarding = () => {
         status: 'Pending',
       };
 
-      // Submit to backend
       const response = await axiosSecure.patch(`/boarding/${item._id}`, updatedBoarding);
 
       if (response.data) {

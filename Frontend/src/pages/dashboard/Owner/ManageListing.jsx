@@ -16,7 +16,6 @@ const ManageListing = () => {
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
-  // Calculate listing counts by type
   const calculateTypeCounts = () => {
     const counts = {
       'all': mylist.length,

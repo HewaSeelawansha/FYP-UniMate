@@ -32,7 +32,7 @@ const SearchModal = ({ isOpen, onClose, initialSearchQuery = '' }) => {
       } else {
         setResults([]);
       }
-    }, 300); // 300ms debounce
+    }, 300); 
 
     return () => clearTimeout(searchDelay);
   }, [searchQuery]);
@@ -45,7 +45,6 @@ const SearchModal = ({ isOpen, onClose, initialSearchQuery = '' }) => {
       const response = await axiosPublic.get(
         `/listing/search?q=${encodeURIComponent(query)}&minimal=true&limit=5`
       );
-      // Handle both response formats (array or object with listings property)
       const searchResults = Array.isArray(response.data) 
         ? response.data 
         : response.data.listings || [];

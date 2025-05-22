@@ -3,22 +3,22 @@ const router = express.Router();
 const Boarding = require('../models/boarding');
 const boardingController = require('../controller/boardingController')
 
-// get all menus
+// get all boardings
 router.get('/', boardingController.getAllBoardings)
 
-// post a menu item
+// post a boarding
 router.post('/', boardingController.postBoarding)
 
-// delete a menu item
+// delete a boarding
 router.delete('/:id', boardingController.deleteBoarding)
 
-// get single menu item
+// get single boarding
 router.get('/:id', boardingController.singleBoarding);
 
 // get owner boarding
 router.get('/owner/:owner', boardingController.ownerBoarding);
 
-// update single menu item
+// update single boarding
 router.patch('/:id', boardingController.updateBoarding)
 
 // status update

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import HeroBanner from '../../components/Banner';
 import PopularPlaces from './PopularPlaces';
-import StatsSection from './StatsSection';
 import Locator from './Locator';
 import AmenitiesSpotlight from './AmenitiesSpotlight';
 import FeaturesGrid from './FeaturesGrid';
@@ -11,7 +10,6 @@ import { motion } from 'framer-motion';
 const Home = () => {
   const [scrollY, setScrollY] = useState(0);
 
-  // Track scroll position for animation effects
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -21,7 +19,6 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Animation variants for staggered section reveals
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -34,15 +31,6 @@ const Home = () => {
   return (
     <div className="overflow-hidden">
       <HeroBanner />
-      
-      {/* <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={sectionVariants}
-      >
-        <StatsSection />
-      </motion.div> */}
       
       <motion.div
         initial="hidden"
@@ -80,7 +68,6 @@ const Home = () => {
         <FeaturesGrid />
       </motion.div>
       
-      {/* AI Chatbot */}
       <AIChatbot />
     </div>
   );

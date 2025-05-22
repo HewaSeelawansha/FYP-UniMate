@@ -9,6 +9,7 @@ const getAllUsers = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 }
+
 // post a new user
 const createUser = async (req, res) => {
     const user = req.body;
@@ -25,6 +26,7 @@ const createUser = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
 //delete an existing user
 const deleteUser = async (req, res) => {
     const userId = req.params.id;
@@ -108,6 +110,7 @@ const getOwner = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
 //make an owner account
 const makeOwner = async (req, res) => {
     const userId = req.params.id;
@@ -125,6 +128,7 @@ const makeOwner = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
 //get an user account
 const getNUser = async (req, res) => {
     const email = req.params.email;
@@ -143,6 +147,7 @@ const getNUser = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
 //update user
 const updateUser = async (req, res) => {
     const userId = req.params.id;
@@ -164,6 +169,7 @@ const updateUser = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
 };
+
 //update roommate
 const updateRoommate = async (req, res) => {
     const userId = req.params.id;
@@ -185,6 +191,7 @@ const updateRoommate = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
 };
+
 //get users who looking for a roommate
 const getRUsers = async (req, res) => {
     const email = req.params.email;

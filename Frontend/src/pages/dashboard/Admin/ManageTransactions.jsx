@@ -28,13 +28,11 @@ const ManageTransactions = () => {
   });
 
   useEffect(() => {
-    // First filter by listing if selected
     let filtered = payments;
     if (selectedCategory !== 'all') {
       filtered = payments.filter((item) => item.listing.boarding === selectedCategory);
     }
     
-    // Then filter by payment type if selected
     if (selectedPaymentType !== 'all') {
       filtered = filtered.filter((item) => item.paid === selectedPaymentType);
     }
@@ -50,7 +48,6 @@ const ManageTransactions = () => {
     setSelectedPaymentType(type);
   };
 
-  // Calculate earnings
   const calculateEarnings = (payments) => {
     const totalEarnings = payments.reduce((sum, payment) => sum + payment.price, 0);
     const rentalEarnings = payments

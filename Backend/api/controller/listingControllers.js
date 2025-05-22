@@ -122,139 +122,10 @@ const updateListing = async (req, res) => {
     }
   };
 
-// const searchListing = async (req, res) => {
-//   try {
-//       const { q, type, sort, page = 1, limit = 10, gender, keyMoney } = req.query;
-      
-//       // First get all accepted boarding houses
-//       const acceptedBoardings = await Boarding.find(
-//           { status: 'Approved' },
-//           { owner: 1 } // Only return the owner field
-//       );
-
-//       // Extract the owner emails from accepted boardings
-//       const acceptedOwners = acceptedBoardings.map(b => b.owner);
-
-//       // Build base query - now including owner filter
-//       const query = { 
-//         available: { $gte: 0 },
-//         status: 'Approved',
-//         payStatus: 'Done',
-//         owner: { $in: acceptedOwners } // Only listings owned by accepted boarding owners
-//       };
-      
-//       // Search functionality (for Navbar)
-//       if (q) {
-//         query.$or = [
-//           { name: { $regex: q, $options: 'i' } },
-//           { location: { $regex: q, $options: 'i' } },
-//           { type: { $regex: q, $options: 'i' } },
-//           { description: { $regex: q, $options: 'i' } },
-//           { boarding: { $regex: q, $options: 'i' } },
-//           { amenities: { $regex: q, $options: 'i' } }
-//         ];
-//       }
-      
-//       // Additional filters (for Browse page)
-//       if (type && type !== 'all') {
-//         query.type = type;
-//       }
-      
-//       // Gender filter
-//       if (gender && gender !== 'all') {
-//         query.gender = gender;
-//       }
-      
-//       // Key Money filter
-//       if (keyMoney && keyMoney !== 'all') {
-//         if (keyMoney === 'with') {
-//           query.keyMoney = { $gt: 0 };
-//         } else if (keyMoney === 'without') {
-//           query.keyMoney = 0;
-//         }
-//       }
-
-//       if (req.query.priceMin) {
-//         query.price = { $gte: parseInt(req.query.priceMin) };
-//       }
-
-//       if (req.query.priceMax) {
-//         query.price = query.price || {};
-//         query.price.$lte = parseInt(req.query.priceMax);
-//       }
-      
-//       if (req.query.distanceMin) {
-//         query.distance = { $gte: parseInt(req.query.distanceMin) };
-//       }
-
-//       if (req.query.distanceMax) {
-//         query.distance = query.distance || {};
-//         query.distance.$lte = parseInt(req.query.distanceMax);
-//       }
-  
-//       // Sorting (for Browse page)
-//       let sortOption = { createdAt: -1 }; 
-//       if (sort) {
-//         const sortMap = {
-//           'newly': { createdAt: -1 },
-//           'A-Z': { name: 1 },
-//           'Z-A': { name: -1 },
-//           'low-high': { price: 1 },
-//           'high-low': { price: -1 },
-//           'd-l2h': { distance: 1 },
-//           'd-h2l': { distance: -1 }
-//         };
-//         sortOption = sortMap[sort] || sortOption;
-//       }
-      
-//       // Execute query
-//       let results;
-//       let total;
-      
-//       if (limit) {
-//         // Paginated response
-//         results = await Listing.find(query)
-//           .sort(sortOption)
-//           .skip((page - 1) * limit)
-//           .limit(parseInt(limit));
-//         total = await Listing.countDocuments(query);
-//       } else {
-//         // Unlimited response - get all matching documents
-//         results = await Listing.find(query).sort(sortOption);
-//         total = results.length;
-//       }
-  
-//       // Different response formats
-//       if (req.query.minimal) {
-//         // For Navbar - simple array of results
-//         res.json(results);
-//       } else {
-//         // For Browse page
-//         const response = {
-//           listings: results,
-//           total,
-//         };
-        
-//         // Only include pagination info if limit was specified
-//         if (limit) {
-//           response.page = parseInt(page);
-//           response.pages = Math.ceil(total / limit);
-//         }
-        
-//         res.json(response);
-//       }
-  
-//     } catch (error) {
-//       console.error('Search error:', error);
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
-
 const searchListing = async (req, res) => {
   try {
     const { q, type, sort, page = 1, limit = 10, gender, keyMoney, similarTo } = req.query;
     
-    // First get all accepted boarding houses
     const acceptedBoardings = await Boarding.find(
       { status: 'Approved' },
       { owner: 1 }
@@ -262,7 +133,6 @@ const searchListing = async (req, res) => {
 
     const acceptedOwners = acceptedBoardings.map(b => b.owner);
 
-    // Build base query
     const query = { 
       available: { $gte: 1 },
       status: 'Approved',
@@ -270,7 +140,6 @@ const searchListing = async (req, res) => {
       owner: { $in: acceptedOwners }
     };
     
-    // If similarTo is provided, find similar listings
     if (similarTo) {
       try {
         const targetListing = await Listing.findById(similarTo).populate('boardingID');
@@ -293,7 +162,6 @@ const searchListing = async (req, res) => {
       }
     }
     
-    // Additional filters
     if (type && type !== 'all') query.type = type;
     if (gender && gender !== 'all') query.gender = gender;
     
@@ -313,7 +181,6 @@ const searchListing = async (req, res) => {
       query.distance.$lte = parseInt(req.query.distanceMax);
     }
 
-    // Sorting options
     const sortMap = {
       'newly': { createdAt: -1 },
       'A-Z': { name: 1 },
@@ -325,7 +192,6 @@ const searchListing = async (req, res) => {
     };
     const sortOption = sortMap[sort] || { createdAt: -1 };
 
-    // Build aggregation pipeline
     const pipeline = [
       { $match: query },
       { $lookup: {
@@ -337,7 +203,6 @@ const searchListing = async (req, res) => {
       { $unwind: '$boardingData' }
     ];
 
-    // Add initial broad search match if query exists
     if (q) {
       const searchWords = q.split(' ').filter(word => word.length > 0);
       const regexPatterns = searchWords.map(word => new RegExp(word, 'i'));
@@ -358,12 +223,10 @@ const searchListing = async (req, res) => {
       });
     }
 
-    // Add count stage before pagination for total count
     const countPipeline = [...pipeline, { $count: 'total' }];
     const totalResult = await Listing.aggregate(countPipeline);
     const total = totalResult[0]?.total || 0;
 
-    // Add sorting and pagination
     pipeline.push({ $sort: sortOption });
     
     if (limit) {
@@ -373,10 +236,8 @@ const searchListing = async (req, res) => {
       );
     }
 
-    // Execute aggregation
     let results = await Listing.aggregate(pipeline);
 
-    // Enhanced relevance scoring with NLP
     if (q && results.length > 0) {
       const tfidf = createSearchIndex(results);
       const searchTerms = preprocessText(q);
@@ -385,7 +246,6 @@ const searchListing = async (req, res) => {
       const scoredResults = results.map(listing => {
         let score = 0;
         
-        // Get all text fields for this listing
         const listingText = [
           listing.name,
           listing.description,
@@ -399,43 +259,34 @@ const searchListing = async (req, res) => {
         
         const listingPreprocessed = preprocessText(listingText);
         
-        // Score for individual terms using TF-IDF
         searchTerms.split(' ').forEach(term => {
-          // TF-IDF score
           tfidf.tfidfs(term, (i, measure) => {
             if (i === results.indexOf(listing)) score += measure;
           });
           
-          // Partial match bonus
           if (listingPreprocessed.includes(term)) {
             score += 0.7;
           }
         });
         
-        // Exact match bonuses
         searchWords.forEach(word => {
-          // Name matches
           if (listing.name.toLowerCase().includes(word)) {
             score += 1.5;
           }
           
-          // Boarding name matches
           if (listing.boardingData?.name.toLowerCase().includes(word)) {
             score += 1.2;
           }
           
-          // Address matches (higher weight for location terms)
           if (listing.boardingData?.address.toLowerCase().includes(word)) {
             score += 1.8;
           }
           
-          // Type matches
           if (listing.type.toLowerCase().includes(word)) {
             score += 1.0;
           }
         });
         
-        // Bonus for matching all search terms
         const allTermsMatch = searchTerms.split(' ').every(term => 
           listingPreprocessed.includes(term)
         );
@@ -443,12 +294,10 @@ const searchListing = async (req, res) => {
           score += 2.0;
         }
         
-        // Bonus for matching the exact phrase
         if (listingText.includes(q.toLowerCase())) {
           score += 3.0;
         }
         
-        // Additional location-based scoring
         if (listing.boardingData?.address) {
           const addressTerms = preprocessText(listing.boardingData.address).split(' ');
           searchTerms.split(' ').forEach(term => {
@@ -461,12 +310,10 @@ const searchListing = async (req, res) => {
         return { ...listing, relevanceScore: score };
       });
       
-      // Sort by relevance score, then by any other sort option if scores are equal
       results = scoredResults.sort((a, b) => {
         if (b.relevanceScore !== a.relevanceScore) {
           return b.relevanceScore - a.relevanceScore;
         }
-        // Fall back to original sort option if relevance is equal
         const sortField = Object.keys(sortOption)[0];
         const sortDirection = sortOption[sortField];
         return sortDirection === 1 ? 
@@ -475,7 +322,6 @@ const searchListing = async (req, res) => {
       });
     }
 
-    // Response formatting
     const response = {
       listings: results,
       total,
@@ -486,7 +332,6 @@ const searchListing = async (req, res) => {
       response.pages = Math.ceil(total / limit);
     }
     
-    // Add debug information if requested
     if (req.query.debug) {
       response.searchTerms = q ? preprocessText(q) : null;
       response.scoringExplanation = "Results are scored based on term frequency, exact matches, location terms, and type matches";

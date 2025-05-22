@@ -122,10 +122,6 @@ const ManageBooking = () => {
     setSelectedCategory(type);
   };
 
-  // const uniqueList = Array.from(
-  //   new Map(mylist.map(item => [item.name, item])).values()
-  // );
-
   if (loading || listingLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">

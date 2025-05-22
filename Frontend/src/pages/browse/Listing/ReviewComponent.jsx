@@ -24,7 +24,6 @@ const ReviewComponent = ({ id, listing }) => {
     const [isUser, isUserLoading] = useUser();
     const [booking, setBooking] = useState(null);
     
-    // Sort function
     const sortReviews = (reviews, method = 'recent') => {
         switch(method) {
             case 'positive-first':

@@ -108,7 +108,6 @@ const AddListing = () => {
       return;
     }
 
-    // Check if more than 5 images are selected
     if (imagePreviews.length > 5) {
       Swal.fire({
         icon: "error",

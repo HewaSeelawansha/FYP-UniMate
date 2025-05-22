@@ -9,7 +9,6 @@ const Profile = ({ user, role  }) => {
     logOut().then(() => {
       navigate('/');
     }).catch((error) => {
-      // An error happened.
     });
   }
 

@@ -24,35 +24,6 @@ const Signup = () => {
       const [errorMessage, setErrorMessage] = useState("");
       const navigate = useNavigate();
 
-      // const onSubmit = (data) => {
-      //   const email = data.email;
-      //   const password = data.password;
-        
-      //   createUser(email, password)
-      //     .then((result) => {
-      //       const user = result.user;
-      
-      //       // Send email verification
-      //       return sendEmail()
-      //       .then(() => {
-      //         alert('A verification email has been sent. Please check your inbox and verify your email before logging in.');
-      //         // Update user profile with correct data
-      //         return logOut();
-      //       });
-      //     })
-      //     .then(() => {
-      //       navigate("/login"); // Redirect to login after everything is done
-      //     })
-      //     .catch((error) => {
-      //       console.error(error);
-      //       if (error.code === 'auth/email-already-in-use') {
-      //         alert('This email is already registered. Please use a different email or login instead.');
-      //       } else {
-      //         alert('Error during signup: ' + error.message);
-      //       }
-      //     });
-      // };
-
       const onSubmit = (data) => {
         if(data.password !== data.confirmPassword){
           setErrorMessage("Passwords do not match");
@@ -69,20 +40,16 @@ const Signup = () => {
           .then((result) => {
             const user = result.user;
             
-            // Update user profile first
             return updateUserProfile(data.name, data.photoURL)
               .then(() => {
-                // Send verification email
                 return sendEmail();
               })
               .then(() => {
                 handleSuccess('A verification email has been sent. Please check your inbox and verify your email before logging in.');
-                // Automatically log out the user
                 return logOut();
               });
           })
           .then(() => {
-            // Redirect to login after signup
             navigate("/login");
           })
           .catch((error) => {

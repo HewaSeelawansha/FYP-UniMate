@@ -27,7 +27,6 @@ const Navbar = () => {
   const [person, setPerson] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Ref for the entire search container
   const searchContainerRef = useRef(null);
 
   useEffect(() => {
@@ -71,7 +70,6 @@ const Navbar = () => {
       }
     };
 
-    // Click outside to close search
     const handleClickOutside = (e) => {
       if (
         isSearchExpanded &&
@@ -108,13 +106,10 @@ const Navbar = () => {
     }
   };
 
-  // Function to scroll to section
   const scrollToSection = (sectionId) => {
     setIsMobileMenuOpen(false);
-    // If we're not on the home page, navigate there first
     if (location.pathname !== '/') {
       navigate('/');
-      // Add a small delay to allow navigation to complete before scrolling
       setTimeout(() => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -129,7 +124,6 @@ const Navbar = () => {
     }
   };
 
-  // Navigation links array for easier management
   const navLinks = [
     { name: "Stats", sectionId: "stats-section" },
     { name: "Featured Places", sectionId: "popular-places" },
@@ -138,7 +132,6 @@ const Navbar = () => {
     { name: "UniMate Advantages", sectionId: "features-grid" },
   ];
 
-  // Determine which navigation links to show based on current path
   const isHomePage = location.pathname === '/';
 
   return (
@@ -168,9 +161,7 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Right-aligned elements */}
             <div className="flex items-center gap-3 md:gap-4">
-              {/* Desktop Search - Expands to the left */}
               <div
                 ref={searchContainerRef}
                 className="relative hidden md:block"
@@ -178,7 +169,7 @@ const Navbar = () => {
                 <motion.div
                   className="flex items-center justify-end"
                   initial={false}
-                  animate={{ width: isSearchExpanded ? "20rem" : "3rem" }} // Increased width
+                  animate={{ width: isSearchExpanded ? "20rem" : "3rem" }} 
                   transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 >
                   <AnimatePresence>
@@ -228,7 +219,6 @@ const Navbar = () => {
                 </motion.div>
               </div>
 
-              {/* Mobile Search Button */}
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="md:hidden flex items-center justify-center h-12 w-12 rounded-full bg-green-500 hover:bg-green-600 transition-colors duration-200"
@@ -237,7 +227,6 @@ const Navbar = () => {
                 <FaSearch className="text-white" />
               </button>
 
-              {/* Chat Button */}
               <Link
                 to="/chats"
                 className="flex items-center justify-center h-12 w-12 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white transition-colors duration-200"
@@ -246,14 +235,12 @@ const Navbar = () => {
                 <IoMdChatboxes className="text-xl" />
               </Link>
 
-              {/* User Button */}
               {user && person ? (
                 <Profile user={user} role={person.role} />
               ) : isLoading ? (
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
               ) : (
                 <>
-                  {/* Desktop Login Button */}
                   <button
                     onClick={() => document.getElementById("my_modal_5").showModal()}
                     className="hidden md:flex items-center gap-2 py-2 px-4 md:px-5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium shadow-sm hover:shadow-md transition-all duration-200"
@@ -262,7 +249,6 @@ const Navbar = () => {
                     <span className="hidden sm:inline py-1 text-sm">Login</span>
                   </button>
                   
-                  {/* Mobile Login Button */}
                   <button
                     onClick={() => document.getElementById("my_modal_5").showModal()}
                     className="md:hidden flex items-center justify-center h-12 w-12 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white transition-colors duration-200"
@@ -277,7 +263,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -290,7 +275,6 @@ const Navbar = () => {
               <div className="container mx-auto px-4 py-4">
                 <div className="flex flex-col space-y-3">
                   {isHomePage && (
-                    // Home page mobile navigation - section scrolling
                     navLinks.map((link) => (
                       <button
                         key={link.sectionId}
@@ -308,7 +292,6 @@ const Navbar = () => {
         </AnimatePresence>
       </header>
 
-      {/* Search Modal for mobile */}
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => {

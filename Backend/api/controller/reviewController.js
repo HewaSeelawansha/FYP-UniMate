@@ -25,10 +25,8 @@ const getAllReviews = async (req, res) => {
 const addReview = async (req, res) => {
     const { listingId, email, rating, reviewText } = req.body;
     try {
-        // Analyze sentiment before saving
         const { sentiment, score } = analyzeReviewSentiment(reviewText);
 
-        // Create a new review with sentiment data
         const newReview = new Review({
             listing: listingId,
             email,
@@ -40,11 +38,9 @@ const addReview = async (req, res) => {
 
         await newReview.save();
 
-        // Find the listing and update review count, average rating, and sentiment stats
         const listing = await Listing.findById(listingId);
         listing.reviewCount += 1;
         
-        // Calculate average rating
         const reviews = await Review.find({ listing: listingId });
         const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
         listing.rating = Math.round(averageRating * 10) / 10; 
@@ -66,10 +62,8 @@ const editReview = async (req, res) => {
     const { rating, reviewText } = req.body;
 
     try {
-        // Analyze sentiment of the updated review text
         const { sentiment, score } = analyzeReviewSentiment(reviewText);
 
-        // Find and update the review with sentiment data
         const review = await Review.findByIdAndUpdate(
             reviewId,
             { 
@@ -81,11 +75,9 @@ const editReview = async (req, res) => {
             { new: true, runValidators: true }
         );
 
-        // Recalculate and update the average rating for the listing
         const listing = await Listing.findById(review.listing);
         const reviews = await Review.find({ listing: listing._id });
         
-        // Calculate new average rating
         const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
         listing.rating = Math.round(averageRating * 10) / 10;
         
@@ -108,10 +100,8 @@ const deleteReview = async (req, res) => {
     const { reviewId } = req.params;
 
     try {
-        // Find the review and delete it
         const review = await Review.findByIdAndDelete(reviewId);
 
-        // Update the listing's review count and rating
         const listing = await Listing.findById(review.listing);
         listing.reviewCount -= 1;
         const reviews = await Review.find({ listing: listing._id });

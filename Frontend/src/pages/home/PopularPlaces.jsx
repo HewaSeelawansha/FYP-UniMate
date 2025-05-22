@@ -13,21 +13,18 @@ const PopularPlaces = () => {
   const slider = useRef(null);
   const axiosPublic = useAxiosPublic();
 
-  // Fetch listing data
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await axiosPublic.get('/listing');
         const data = response.data;
-        // Filter for approved, paid listings with high ratings
         const highestRating = data.filter(
           item => item.status === "Approved" && 
                  item.payStatus === "Done" && 
                  item.rating > 2
         );
         
-        // Sort by rating (highest first)
         highestRating.sort((a, b) => b.rating - a.rating);
         setListings(highestRating);
       } catch (error) {
@@ -76,7 +73,6 @@ const PopularPlaces = () => {
     ]
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -87,7 +83,6 @@ const PopularPlaces = () => {
     }
   };
 
-  // Custom Card component
   const PropertyCard = ({ item }) => {
     return (
       <motion.div

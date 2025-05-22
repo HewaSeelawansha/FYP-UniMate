@@ -44,7 +44,7 @@ const getBookingsByOwner = async (req, res) => {
       const bookings = await Booking.find()
           .populate({
               path: 'listing',
-              select: 'owner title location price', // Include necessary listing details
+              select: 'owner title location price',
               match: { owner: ownerEmail }
           })
           .sort({ createdAt: -1, updatedAt: -1 }).exec();
@@ -148,7 +148,6 @@ const updateStatus = async (req, res) => {
   const { status } = req.body;
 
   try {
-    // First update the booking status
     const updatedStatus = await Booking.findByIdAndUpdate(
       bookingId,
       { status },
@@ -159,14 +158,12 @@ const updateStatus = async (req, res) => {
       return res.status(404).json({ message: 'Booking not found!' });
     }
 
-    // If status is being updated to 'Approved', decrement available count
     if (status === 'Approved') {
       const listingId = updatedStatus.listing;
       
-      // Find the listing and decrement available count by 1
       const updatedListing = await Listing.findByIdAndUpdate(
         listingId,
-        { $inc: { available: -1 } }, // Decrement by 1
+        { $inc: { available: -1 } }, 
         { new: true, runValidators: true }
       );
 

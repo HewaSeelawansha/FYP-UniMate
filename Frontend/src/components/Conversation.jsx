@@ -24,20 +24,7 @@ const Conversation = ({ data, currentUser, online, isSelected }) => {
       }
     };
 
-    // const getLastMessage = async () => {
-    //   try {
-    //     const response = await fetch(`http://localhost:3000/message/last/${data._id}`);
-    //     if (response.ok) {
-    //       const message = await response.json();
-    //       setLastMessage(message?.text || "");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching last message:", error);
-    //   }
-    // };
-
     getUserData();
-    // getLastMessage();
   }, [data, currentUser]);
 
   return (
@@ -58,7 +45,7 @@ const Conversation = ({ data, currentUser, online, isSelected }) => {
               {userData?.name} {isCurrentUser && "(You)"}
             </h4>
             <span className="text-xs text-gray-400">
-              {lastMessage && "2h"} {/* Replace with actual time */}
+              {lastMessage && "2h"} 
             </span>
           </div>
           <p className="text-sm text-gray-500 truncate">

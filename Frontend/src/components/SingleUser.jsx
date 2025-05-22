@@ -85,7 +85,6 @@ const SingleUser = () => {
 
   return (
     <div className="w-full px-4 mx-auto py-8">
-      {/* Header */}
       <div className="flex xl:flex-row flex-col items-center justify-between mb-8">
         <button
           onClick={() => navigate(-1)}
@@ -96,12 +95,10 @@ const SingleUser = () => {
         <h1 className="text-3xl font-bold text-gray-800">
           User <span className="text-green-500">Details</span>
         </h1>
-        <div className="w-8"></div> {/* Spacer for alignment */}
+        <div className="w-8"></div>
       </div>
 
-      {/* Profile Card */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
-        {/* Profile Header */}
         <div className="bg-gradient-to-r from-green to-green p-6 text-white">
           <div className="flex flex-col md:flex-row items-center">
             <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg mb-4 md:mb-0 md:mr-6">
@@ -129,7 +126,6 @@ const SingleUser = () => {
           </div>
         </div>
 
-        {/* User Details */}
         <div className="p-6">
           <div className="space-y-4">
             <div className="flex items-center p-4 bg-gray-50 rounded-lg">
@@ -159,7 +155,6 @@ const SingleUser = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="mt-8 pt-6 border-t flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
             {isAdmin && person?.role !== 'admin' && (
               <button
@@ -170,13 +165,6 @@ const SingleUser = () => {
                 Delete User
               </button>
             )}
-            {/* <button 
-              onClick={handleGoBack}
-              className="btn bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition duration-200 flex items-center justify-center"
-            >
-              <FaArrowLeft className="mr-2" />
-              Back to Users
-            </button> */}
           </div>
         </div>
       </div>
