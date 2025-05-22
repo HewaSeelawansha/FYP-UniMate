@@ -23,8 +23,6 @@ const ReviewComponent = ({ id, listing }) => {
     const axiosPublic = useAxiosPublic();
     const [isUser, isUserLoading] = useUser();
     const [booking, setBooking] = useState(null);
-
-    console.log(reviews)
     
     // Sort function
     const sortReviews = (reviews, method = 'recent') => {

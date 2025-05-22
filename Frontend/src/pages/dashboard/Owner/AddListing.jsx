@@ -270,7 +270,7 @@ const AddListing = () => {
             {/* Boarding Info Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
                   <FaHome className="text-green-500 mr-2" /> Boarding Name
                 </label>
                 <input
@@ -282,7 +282,7 @@ const AddListing = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
                   <FaUser className="text-green-500 mr-2" /> Owner Email
                 </label>
                 <input
@@ -295,7 +295,7 @@ const AddListing = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+              <label className="text-sm font-medium text-gray-700 mb-1 flex items-center">
                 <FaInfoCircle className="text-green-500 mr-2" /> Listing Title
               </label>
               <input

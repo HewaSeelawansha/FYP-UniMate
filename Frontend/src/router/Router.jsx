@@ -30,6 +30,7 @@ import ListingFee from "../pages/dashboard/Owner/ListingFee";
 import ManageTransactions from "../pages/dashboard/Admin/ManageTransactions";
 import ViewBookings from "../pages/dashboard/Admin/ViewBookings";
 import Bookings from "../pages/dashboard/Bookings";
+import ListingFees from "../pages/dashboard/Admin/ListingFees";
 
 const router = createBrowserRouter([
     {
@@ -76,7 +77,7 @@ const router = createBrowserRouter([
     },
     {
       path: "/update-boarding/:id",
-      element: <UpdateBoarding/>,
+      element: <PrivateRouter><UpdateBoarding/></PrivateRouter>,
       loader: ({params}) => fetch(`http://localhost:3000/boarding/${params.id}`)
     },
     {
@@ -106,6 +107,10 @@ const router = createBrowserRouter([
         {
           path: 'transactions',
           element: <ManageTransactions/>
+        },
+        {
+          path: 'listing-fees',
+          element: <ListingFees/>
         },
         {
           path: 'bookings',
