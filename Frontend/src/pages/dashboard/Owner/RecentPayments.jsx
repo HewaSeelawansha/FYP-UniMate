@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import useAuth from '../../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,33 +12,37 @@ import useMyListing from '../../../hooks/useMyListing';
 const RecentPayments = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure();
+  const axiosSecure = useAxiosSecure(); 
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedPaymentType, setSelectedPaymentType] = useState('all');
-  const [filteredPayments, setFilteredPayments] = useState([]);
   const [myListings, myListingsLoading] = useMyListing();
 
-  const { data: payments = [] } = useQuery({
+  const { data: payments = [], isLoading: paymentsLoading } = useQuery({
     queryKey: ['orders', user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/payments/owner/${user?.email}`);
+      if (!user?.email) return []; // Add this check
+      const res = await axiosSecure.get(`/payments/owner/${user.email}`);
       return res.data;
     },
   });
 
-  useEffect(() => {
-    // First filter by listing if selected
+  // Fix: Use useMemo for derived state
+  const filteredPayments = useMemo(() => {
     let filtered = payments;
+    
     if (selectedCategory !== 'all') {
-      filtered = payments.filter((item) => item.listing?._id === selectedCategory);
+      filtered = filtered.filter((item) => 
+        item.listing?._id === selectedCategory
+      );
     }
     
-    // Then filter by payment type if selected
     if (selectedPaymentType !== 'all') {
-      filtered = filtered.filter((item) => item.paid === selectedPaymentType);
+      filtered = filtered.filter((item) => 
+        item.paid === selectedPaymentType
+      );
     }
     
-    setFilteredPayments(filtered);
+    return filtered;
   }, [payments, selectedCategory, selectedPaymentType]);
 
   const filterItems = (type) => {

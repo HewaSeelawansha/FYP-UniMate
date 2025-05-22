@@ -128,7 +128,7 @@ const ManageListing = () => {
         </p>
         <Link 
           to="/owner/add-listing"
-          className="btn bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center gap-2"
+          className="btn bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center gap-2"
         >
           <FaPlusCircle /> Add New Listing
         </Link>
@@ -282,7 +282,7 @@ const ManageListing = () => {
 
         {/* Listings Grid */}
         {filteredItems.length > 0 ? (
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {filteredItems.map((item) => (
               <div key={item._id} className={`${
                 item.status === 'Approved' ? 'bg-green-50' :

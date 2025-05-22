@@ -16,27 +16,35 @@ const OwnerDashboard = () => {
   const [recentPayments, setRecentPayments] = useState([]);
   const [recentListings, setRecentListings] = useState([]);
   const axiosSecure = useAxiosSecure();
-  const [bookings, setBookings] = useState([]);
-  const [listings, loadingListing] = useMyListing();-
+  const [listings, loadingListing] = useMyListing();
+
+  console.log(listings)
 
   useEffect(() => {
     const fetchAllDashboardData = async () => {
       try {
+        setLoading(true);
+        
         const [bookingRes, paymentRes] = await Promise.all([
           axiosSecure.get(`/booking/owner/${user?.email}`),
           axiosSecure.get(`/payments/owner/${user?.email}`)
         ]);
   
-        const bookings = bookingRes.data.bookings;
-        const payments = paymentRes.data;
+        const bookings = bookingRes.data?.bookings || [];
+        const payments = paymentRes.data || [];
   
-        const totalEarnings = payments.reduce((sum, p) => sum + (p.price || 0), 0);
+        const totalEarnings = payments.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0);
         const pendingPayments = listings.filter(b => b.payStatus !== 'Done').length;
-        const approvedListings = listings.filter(l => l.status === 'Approved').length;
+        const approvedListings = listings.filter(l => l.status === 'Approved' && l.payStatus === 'Done').length;
         const pendingListings = listings.filter(l => l.status === 'Pending').length;
   
-        const sortedPayments = [...payments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
-        const sortedListings = [...listings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
+        const sortedPayments = Array.isArray(payments) 
+          ? [...payments].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 5)
+          : [];
+  
+        const sortedListings = Array.isArray(listings)
+          ? [...listings].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 3)
+          : [];
   
         setStats({
           totalEarnings,
@@ -49,21 +57,40 @@ const OwnerDashboard = () => {
   
         setRecentPayments(sortedPayments);
         setRecentListings(sortedListings);
+  
       } catch (err) {
-        console.error(err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Dashboard load failed',
-          showConfirmButton: false,
-          timer: 1500
+        console.error('Dashboard error:', err);
+        setStats({
+          totalEarnings: 0,
+          pendingPayments: listings.filter(b => b.payStatus !== 'Done').length,
+          approvedListings: listings.filter(l => l.status === 'Approved' && l.payStatus === 'Done').length,
+          pendingListings: listings.filter(l => l.status === 'Pending').length,
+          totalListings: listings.length,
+          totalBookings: 0
         });
+        setRecentPayments([]);
+        setRecentListings(listings.slice(0, 3)); 
+        
+        if (err.response?.status !== 404) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Dashboard load failed',
+            text: 'Could not load all dashboard data',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        }
       } finally {
         setLoading(false);
       }
     };
   
-    if (user?.email && listings.length) fetchAllDashboardData();
-  }, [user?.email, listings]);
+    if (user?.email && listings?.length >= 0) {
+      fetchAllDashboardData();
+    } else {
+      setLoading(false);
+    }
+  }, [user?.email, listings, axiosSecure]);
   
 
   if (loading || loadingListing) {
@@ -107,7 +134,7 @@ const OwnerDashboard = () => {
                 <p className="text-sm text-gray-500">Total Bookings</p>
                 <p className="text-2xl font-bold text-gray-800">{stats.totalBookings}</p>
               </div>
-              <div className="p-3 rounded-full bg-blue-100 text-blue-600">
+              <div className="p-3 rounded-full bg-pink-100 text-pink-500">
                 <FaUsers size={24} />
               </div>
             </div>
@@ -120,7 +147,7 @@ const OwnerDashboard = () => {
                 <p className="text-sm text-gray-500">Listings to Pay</p>
                 <p className="text-2xl font-bold text-gray-800">{stats.pendingPayments}</p>
               </div>
-              <div className="p-3 rounded-full bg-yellow-100 text-yellow-600">
+              <div className="p-3 rounded-full bg-blue-100 text-blue-500">
                 <MdPayments size={24} />
               </div>
             </div>
@@ -130,10 +157,10 @@ const OwnerDashboard = () => {
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-amber-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Approved Listings</p>
+                <p className="text-sm text-gray-500">Live Listings</p>
                 <p className="text-2xl font-bold text-gray-800">{stats.approvedListings}</p>
               </div>
-              <div className="p-3 rounded-full bg-green-100 text-green-600">
+              <div className="p-3 rounded-full bg-amber-100 text-amber-500">
                 <FaHome size={24} />
               </div>
             </div>
