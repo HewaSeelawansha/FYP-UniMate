@@ -114,7 +114,7 @@ const AIChatbot = () => {
 
       STRICT RULES:
       1. ONLY answer questions about boarding houses, rentals, or student accommodation near NSBM
-      2. For all other topics, respond: "I specialize only in boarding house queries near NSBM. Please ask about accommodation."
+      2. For all other topics, respond: "I specialize only in boarding house queries near NSBM. Let's chat about accommodation."
 
       BOARDING HOUSE GUIDANCE:
       - Focus on practical advice about:
