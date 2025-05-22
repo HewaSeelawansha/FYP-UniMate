@@ -264,7 +264,7 @@ const searchListing = async (req, res) => {
 
     // Build base query
     const query = { 
-      available: { $gte: 0 },
+      available: { $gte: 1 },
       status: 'Approved',
       payStatus: 'Done',
       owner: { $in: acceptedOwners }

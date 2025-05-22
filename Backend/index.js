@@ -8,20 +8,16 @@ require('dotenv').config();
 const http = require('http');
 const socketIO = require('socket.io'); 
 
-// This is your test secret API key.
 const stripe = require("stripe")(process.env.STRIPE_PK);
 
-// Create HTTP server
 const server = http.createServer(app);
 
-// Initialize Socket.io
 const io = socketIO(server, {
   cors: {
     origin: "http://localhost:5173",
   },
 });
 
-// Socket.io logic
 let activeUsers = [];
 
 io.on("connection", (socket) => {
@@ -52,23 +48,19 @@ io.on("connection", (socket) => {
   });
 });
 
-//middleware
 app.use(cors());
 app.use(express.json());
 
-//mongodb config
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@unimate-cluster.nltol.mongodb.net/UnimateDB?retryWrites=true&w=majority&appName=Unimate-Cluster`)
     .then(() => console.log('Connected to MongoDB!'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-//jwt config
 app.post('/jwt', async(req,res) => {
   const user = req.body;
   const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
   res.send({token});
 })
 
-//import routes
 const listingRoutes = require('./api/routes/listingRoutes');
 const boardingRoutes = require('./api/routes/boardingRoutes');
 const cartRoutes = require('./api/routes/cartRoutes');
@@ -88,16 +80,14 @@ app.use('/message', messageRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/booking', bookingRoutes);
 
-//stripe routes
 app.post("/create-payment-intent", async (req, res) => {
   const { price } = req.body;
-  const amount = Math.round(price * 100); // Stripe expects amounts in cents/pence for LKR
+  const amount = Math.round(price * 100); 
 
   try {
-    // Create a PaymentIntent with LKR as currency
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
-      currency: "lkr", // Changed from "usd" to "lkr"
+      currency: "lkr", 
       payment_method_types: ["card"],
     });
 
@@ -111,7 +101,7 @@ app.post("/create-payment-intent", async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello Baby!')
+  res.send('Hello World!')
 });
 
 server.listen(port, () => {
